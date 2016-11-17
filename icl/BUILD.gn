@@ -4,6 +4,7 @@ source_set("icl") {
   sources = [
     "err.cc",
     "err.h",
+    "input_file.cc",
     "input_file.h",
     "location.cc",
     "location.h",
@@ -33,10 +34,8 @@ group("tests") {
   testonly = true
   deps = [
     ":string_piece_test",
-    #FIXME needs err.cc
-    #":tokenizer_test",
-    #FIXME needs err.cc
-    #":value_test",
+    ":tokenizer_test",
+    ":value_test",
   ]
 }
 
@@ -50,22 +49,22 @@ test("string_piece_test") {
   ]
 }
 
-#test("tokenizer_test") {
-#  sources = [
-#    "tokenizer_unittest.cc",
-#  ]
-#
-#  deps = [
-#    ":icl",
-#  ]
-#}
+test("tokenizer_test") {
+  sources = [
+    "tokenizer_unittest.cc",
+  ]
 
-#test("value_test") {
-#  sources = [
-#    "value_unittest.cc",
-#  ]
-#
-#  deps = [
-#    ":icl",
-#  ]
-#}
+  deps = [
+    ":icl",
+  ]
+}
+
+test("value_test") {
+  sources = [
+    "value_unittest.cc",
+  ]
+
+  deps = [
+    ":icl",
+  ]
+}
