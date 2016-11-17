@@ -4,20 +4,23 @@
 
 #include "icl/parse_tree.h"
 
+#include <assert.h>
 #include <stdint.h>
 
 #include <string>
 #include <tuple>
 
 //#include "base/stl_util.h"
-//#include "base/strings/string_number_conversions.h"
+#include "icl/string_number_conversions.h"
 //#include "tools/gn/functions.h"
 //#include "tools/gn/operators.h"
 #include "icl/scope.h"
-//#include "tools/gn/string_utils.h"
+#include "icl/string_utils.h"
 
 namespace {
 
+//FIXME
+#if 0
 enum DepsCategory {
   DEPS_CATEGORY_LOCAL,
   DEPS_CATEGORY_RELATIVE,
@@ -49,11 +52,14 @@ std::tuple<StringPiece, StringPiece> SplitAtFirst(StringPiece str, char c) {
                              ? str.substr(index_of_first + 1)
                              : StringPiece());
 }
+#endif
 
 std::string IndentFor(int value) {
   return std::string(value, ' ');
 }
 
+//FIXME
+#if 0
 bool IsSortRangeSeparator(const ParseNode* node, const ParseNode* prev) {
   // If it's a block comment, or has an attached comment with a blank line
   // before it, then we break the range at this point.
@@ -65,7 +71,7 @@ bool IsSortRangeSeparator(const ParseNode* node, const ParseNode* prev) {
 }
 
 StringPiece GetStringRepresentation(const ParseNode* node) {
-  DCHECK(node->AsLiteral() || node->AsIdentifier() || node->AsAccessor());
+  assert(node->AsLiteral() || node->AsIdentifier() || node->AsAccessor());
   if (node->AsLiteral())
     return node->AsLiteral()->value().value();
   else if (node->AsIdentifier())
@@ -74,6 +80,7 @@ StringPiece GetStringRepresentation(const ParseNode* node) {
     return node->AsAccessor()->base().value();
   return StringPiece();
 }
+#endif
 
 }  // namespace
 
@@ -141,7 +148,7 @@ Value AccessorNode::Execute(Scope* scope, Err* err) const {
     return ExecuteArrayAccess(scope, err);
   else if (member_)
     return ExecuteScopeAccess(scope, err);
-  NOTREACHED();
+  assert(false);
   return Value();
 }
 
@@ -150,7 +157,7 @@ LocationRange AccessorNode::GetRange() const {
     return LocationRange(base_.location(), index_->GetRange().end());
   else if (member_)
     return LocationRange(base_.location(), member_->GetRange().end());
-  NOTREACHED();
+  assert(false);
   return LocationRange();
 }
 
@@ -247,15 +254,15 @@ bool AccessorNode::ComputeAndValidateListIndex(Scope* scope,
   int64_t index_int = index_value.int_value();
   if (index_int < 0) {
     *err = Err(index_->GetRange(), "Negative array subscript.",
-        "You gave me " + base::Int64ToString(index_int) + ".");
+        "You gave me " + NumberToString<int64_t>(index_int) + ".");
     return false;
   }
   size_t index_sizet = static_cast<size_t>(index_int);
   if (index_sizet >= max_len) {
     *err = Err(index_->GetRange(), "Array subscript out of range.",
-        "You gave me " + base::Int64ToString(index_int) +
+        "You gave me " + NumberToString<int64_t>(index_int) +
         " but I was expecting something from 0 to " +
-        base::SizeTToString(max_len) + ", inclusive.");
+        NumberToString<size_t>(max_len) + ", inclusive.");
     return false;
   }
 
@@ -263,6 +270,8 @@ bool AccessorNode::ComputeAndValidateListIndex(Scope* scope,
   return true;
 }
 
+//FIXME
+#if 0
 // BinaryOpNode ---------------------------------------------------------------
 
 BinaryOpNode::BinaryOpNode() {
@@ -614,7 +623,7 @@ void ListNode::SortList(Comparator comparator) {
     const ParseNode* prev = nullptr;
     for (size_t i = sr.begin; i != sr.end; ++i) {
       const ParseNode* node = contents_[i].get();
-      DCHECK(node->AsLiteral() || node->AsIdentifier() || node->AsAccessor());
+      assert(node->AsLiteral() || node->AsIdentifier() || node->AsAccessor());
       int line_number =
           prev ? prev->GetRange().end().line_number() + 1 : start_line;
       if (node->AsLiteral()) {
@@ -754,7 +763,7 @@ Value LiteralNode::Execute(Scope* scope, Err* err) const {
       return v;
     }
     default:
-      NOTREACHED();
+      assert(false);
       return Value();
   }
 }
@@ -872,3 +881,4 @@ void EndNode::Print(std::ostream& out, int indent) const {
   out << IndentFor(indent) << "END(" << value_.value() << ")\n";
   PrintComments(out, indent);
 }
+#endif

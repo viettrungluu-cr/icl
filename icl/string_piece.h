@@ -303,7 +303,7 @@ BasicStringPiece<STRING_TYPE>::npos =
 extern template class BasicStringPiece<std::string>;
 #endif
 
-// StingPiece operators --------------------------------------------------------
+// StringPiece operators -------------------------------------------------------
 
 bool operator==(const StringPiece& x, const StringPiece& y);
 
