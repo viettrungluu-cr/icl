@@ -5,11 +5,11 @@
 #include "icl/location.h"
 
 #include <assert.h>
-#include <stdio.h>
 
 #include <tuple>
 
 #include "icl/input_file.h"
+#include "icl/string_number_conversions.h"
 
 Location::Location()
     : file_(nullptr),
@@ -50,13 +50,10 @@ std::string Location::Describe(bool include_column_number) const {
   std::string ret = file_->friendly_name().empty() ? file_->name()
                                                    : file_->friendly_name();
   ret += ":";
-  char buf[30];  // Big enough even if |int| is 64-bit.
-  sprintf(buf, "%d", line_number_);
-  ret += buf;
+  ret += NumberToString<int>(line_number_);
   if (include_column_number) {
     ret += ":";
-    sprintf(buf, "%d", column_number_);
-    ret += buf;
+    ret += NumberToString<int>(column_number_);
   }
   return ret;
 }

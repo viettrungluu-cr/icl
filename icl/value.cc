@@ -4,7 +4,6 @@
 
 #include "icl/value.h"
 
-#include <inttypes.h>
 #include <stddef.h>
 
 #include <utility>
@@ -12,6 +11,7 @@
 //#include "base/strings/string_util.h"
 //FIXME
 //#include "tools/gn/scope.h"
+#include "icl/string_number_conversions.h"
 
 Value::Value()
     : type_(NONE),
@@ -136,11 +136,8 @@ std::string Value::ToString(bool quote_string) const {
       return "<void>";
     case BOOLEAN:
       return boolean_value_ ? "true" : "false";
-    case INTEGER: {
-      char buf[30];
-      sprintf(buf, "%" PRId64, int_value_);
-      return buf;
-    }
+    case INTEGER:
+      return NumberToString<int64_t>(int_value_);
     case STRING:
       if (quote_string) {
         std::string result = "\"";
