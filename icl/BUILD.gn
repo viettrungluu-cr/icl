@@ -2,8 +2,7 @@ import("//testing/test.gni")
 
 source_set("icl") {
   sources = [
-    #FIXME needs a lot of work
-    #"err.cc",
+    "err.cc",
     "err.h",
     "input_file.h",
     "location.cc",

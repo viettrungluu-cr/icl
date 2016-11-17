@@ -4,6 +4,7 @@
 
 #include "icl/err.h"
 
+#include <assert.h>
 #include <stddef.h>
 
 //FIXME
@@ -12,8 +13,7 @@
 //#include "tools/gn/filesystem_utils.h"
 #include "icl/input_file.h"
 #include "icl/parse_tree.h"
-//FIXME
-//#include "tools/gn/standard_out.h"
+#include "icl/standard_out.h"
 #include "icl/tokenizer.h"
 #include "icl/value.h"
 
@@ -49,9 +49,9 @@ void FillRangeOnLine(const LocationRange& range, int line_number,
   else
     end_char = range.end().column_number() - 1;
 
-  CHECK(end_char >= begin_char);
-  CHECK(begin_char >= 0 && begin_char <= static_cast<int>(line->size()));
-  CHECK(end_char >= 0 && end_char <= static_cast<int>(line->size()));
+  assert(end_char >= begin_char);
+  assert(begin_char >= 0 && begin_char <= static_cast<int>(line->size()));
+  assert(end_char >= 0 && end_char <= static_cast<int>(line->size()));
   for (int i = begin_char; i < end_char; i++)
     line->at(i) = '-';
 }
@@ -73,8 +73,8 @@ void OutputHighlighedPosition(const Location& location,
 
   // Allow the marker to be one past the end of the line for marking the end.
   highlight.push_back(' ');
-  CHECK(location.column_number() - 1 >= 0 &&
-        location.column_number() - 1 < static_cast<int>(highlight.size()));
+  assert(location.column_number() - 1 >= 0 &&
+         location.column_number() - 1 < static_cast<int>(highlight.size()));
   highlight[location.column_number() - 1] = '^';
 
   // Trim unused spaces from end of line.
@@ -160,13 +160,14 @@ void Err::AppendSubErr(const Err& err) {
 }
 
 void Err::InternalPrintToStdout(bool is_sub_err) const {
-  DCHECK(has_error_);
+  assert(has_error_);
 
   if (!is_sub_err)
     OutputString("ERROR ", DECORATION_RED);
 
   // File name and location.
-  const InputFile* input_file = location_.file();
+//FIXME
+//  const InputFile* input_file = location_.file();
   std::string loc_str = location_.Describe(true);
   if (!loc_str.empty()) {
     if (is_sub_err)
