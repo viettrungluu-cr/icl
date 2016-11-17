@@ -15,7 +15,7 @@
 //FIXME
 //#include "tools/gn/standard_out.h"
 #include "icl/tokenizer.h"
-//#include "tools/gn/value.h"
+#include "icl/value.h"
 
 namespace {
 

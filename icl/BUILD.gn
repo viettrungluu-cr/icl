@@ -8,6 +8,8 @@ source_set("icl") {
     "input_file.h",
     "location.cc",
     "location.h",
+    "standard_out.cc",
+    "standard_out.h",
     "token.cc",
     "token.h",
     "tokenizer.cc",
