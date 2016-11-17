@@ -12,6 +12,8 @@ source_set("icl") {
     "token.h",
     "tokenizer.cc",
     "tokenizer.h",
+    "value.cc",
+    "value.h",
   ]
 
   public_deps = [
@@ -32,6 +34,8 @@ group("tests") {
     ":string_piece_test",
     #FIXME needs err.cc
     #":tokenizer_test",
+    #FIXME needs err.cc
+    #":value_test",
   ]
 }
 
@@ -48,6 +52,16 @@ test("string_piece_test") {
 #test("tokenizer_test") {
 #  sources = [
 #    "tokenizer_unittest.cc",
+#  ]
+#
+#  deps = [
+#    ":icl",
+#  ]
+#}
+
+#test("value_test") {
+#  sources = [
+#    "value_unittest.cc",
 #  ]
 #
 #  deps = [
