@@ -27,6 +27,8 @@ source_set("icl") {
 #FIXME needs a lot of work
 #    "parse_tree.cc",
     "parse_tree.h",
+    "scope.cc",
+    "scope.h",
     "standard_out.cc",
     "standard_out.h",
     "token.cc",

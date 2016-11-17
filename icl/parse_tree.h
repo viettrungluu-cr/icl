@@ -11,9 +11,9 @@
 #include <utility>
 #include <vector>
 
-#include "tools/gn/err.h"
-#include "tools/gn/token.h"
-#include "tools/gn/value.h"
+#include "icl/err.h"
+#include "icl/token.h"
+#include "icl/value.h"
 
 class AccessorNode;
 class BinaryOpNode;
