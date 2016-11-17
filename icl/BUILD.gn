@@ -2,12 +2,16 @@ import("//testing/test.gni")
 
 source_set("icl") {
   sources = [
-    "input_file.cc",
+    #FIXME needs a lot of work
+    #"err.cc",
+    "err.h",
     "input_file.h",
     "location.cc",
     "location.h",
     "token.cc",
     "token.h",
+    "tokenizer.cc",
+    "tokenizer.h",
   ]
 
   public_deps = [
@@ -26,6 +30,8 @@ group("tests") {
   testonly = true
   deps = [
     ":string_piece_test",
+    #FIXME needs err.cc
+    #":tokenizer_test",
   ]
 }
 
@@ -38,3 +44,13 @@ test("string_piece_test") {
     ":string_piece",
   ]
 }
+
+#test("tokenizer_test") {
+#  sources = [
+#    "tokenizer_unittest.cc",
+#  ]
+#
+#  deps = [
+#    ":icl",
+#  ]
+#}
