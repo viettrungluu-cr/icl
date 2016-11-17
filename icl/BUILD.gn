@@ -7,6 +7,8 @@ group("tests") {
 #FIXME needs a lot of work
 #    ":parse_tree_test",
     ":tokenizer_test",
+#FIXME needs a lot of work
+#    ":scope_test",
     ":value_test",
 
     # string_piece:
@@ -47,6 +49,16 @@ source_set("icl") {
 #test("parse_tree_test") {
 #  sources = [
 #    "parse_tree_unittest.cc",
+#  ]
+#
+#  deps = [
+#    ":icl",
+#  ]
+#}
+
+#test("scope_test") {
+#  sources = [
+#    "scope_unittest.cc",
 #  ]
 #
 #  deps = [
