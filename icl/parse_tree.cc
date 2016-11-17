@@ -13,7 +13,7 @@
 //#include "base/stl_util.h"
 #include "icl/string_number_conversions.h"
 //#include "tools/gn/functions.h"
-//#include "tools/gn/operators.h"
+#include "icl/operators.h"
 #include "icl/scope.h"
 #include "icl/string_utils.h"
 
@@ -270,8 +270,6 @@ bool AccessorNode::ComputeAndValidateListIndex(Scope* scope,
   return true;
 }
 
-//FIXME
-#if 0
 // BinaryOpNode ---------------------------------------------------------------
 
 BinaryOpNode::BinaryOpNode() {
@@ -441,6 +439,8 @@ void ConditionNode::Print(std::ostream& out, int indent) const {
     if_false_->Print(out, indent + 1);
 }
 
+//FIXME
+#if 0
 // FunctionCallNode -----------------------------------------------------------
 
 FunctionCallNode::FunctionCallNode() {
