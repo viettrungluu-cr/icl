@@ -11,6 +11,9 @@ group("tests") {
 #    ":scope_test",
     ":value_test",
 
+    # string_number_conversions:
+    ":string_number_conversions_test",
+
     # string_piece:
     ":string_piece_test",
   ]
@@ -39,6 +42,10 @@ source_set("icl") {
     "tokenizer.h",
     "value.cc",
     "value.h",
+  ]
+
+  deps = [
+    ":string_number_conversions",
   ]
 
   public_deps = [
@@ -83,6 +90,25 @@ test("value_test") {
 
   deps = [
     ":icl",
+  ]
+}
+
+# string_number_conversions ----------------------------------------------------
+
+source_set("string_number_conversions") {
+  sources = [
+    "string_number_conversions.cc",
+    "string_number_conversions.h",
+  ]
+}
+
+test("string_number_conversions_test") {
+  sources = [
+    "string_number_conversions_unittest.cc",
+  ]
+
+  deps = [
+    ":string_number_conversions",
   ]
 }
 

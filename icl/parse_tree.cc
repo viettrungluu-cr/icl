@@ -9,12 +9,12 @@
 #include <string>
 #include <tuple>
 
-#include "base/stl_util.h"
-#include "base/strings/string_number_conversions.h"
-#include "tools/gn/functions.h"
-#include "tools/gn/operators.h"
-#include "tools/gn/scope.h"
-#include "tools/gn/string_utils.h"
+//#include "base/stl_util.h"
+//#include "base/strings/string_number_conversions.h"
+//#include "tools/gn/functions.h"
+//#include "tools/gn/operators.h"
+#include "icl/scope.h"
+//#include "tools/gn/string_utils.h"
 
 namespace {
 
