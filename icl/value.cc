@@ -4,13 +4,12 @@
 
 #include "icl/value.h"
 
+#include <assert.h>
 #include <stddef.h>
 
 #include <utility>
 
-//#include "base/strings/string_util.h"
-//FIXME
-//#include "tools/gn/scope.h"
+#include "icl/scope.h"
 #include "icl/string_number_conversions.h"
 
 Value::Value()
@@ -56,8 +55,6 @@ Value::Value(const ParseNode* origin, const char* str_val)
       origin_(origin) {
 }
 
-//FIXME
-/*
 Value::Value(const ParseNode* origin, std::unique_ptr<Scope> scope)
     : type_(SCOPE),
       string_value_(),
@@ -65,7 +62,6 @@ Value::Value(const ParseNode* origin, std::unique_ptr<Scope> scope)
       int_value_(0),
       scope_value_(std::move(scope)),
       origin_(origin) {}
-*/
 
 Value::Value(const Value& other)
     : type_(other.type_),
@@ -74,11 +70,8 @@ Value::Value(const Value& other)
       int_value_(other.int_value_),
       list_value_(other.list_value_),
       origin_(other.origin_) {
-//FIXME
-/*
   if (type() == SCOPE && other.scope_value_.get())
     scope_value_ = other.scope_value_->MakeClosure();
-*/
 }
 
 Value::Value(Value&& other) = default;
@@ -92,11 +85,8 @@ Value& Value::operator=(const Value& other) {
   boolean_value_ = other.boolean_value_;
   int_value_ = other.int_value_;
   list_value_ = other.list_value_;
-//FIXME
-/*
   if (type() == SCOPE && other.scope_value_.get())
     scope_value_ = other.scope_value_->MakeClosure();
-*/
   origin_ = other.origin_;
   return *this;
 }
@@ -122,13 +112,10 @@ const char* Value::DescribeType(Type t) {
   }
 }
 
-//FIXME
-/*
 void Value::SetScopeValue(std::unique_ptr<Scope> scope) {
-  DCHECK(type_ == SCOPE);
+  assert(type_ == SCOPE);
   scope_value_ = std::move(scope);
 }
-*/
 
 std::string Value::ToString(bool quote_string) const {
   switch (type_) {
@@ -174,9 +161,6 @@ std::string Value::ToString(bool quote_string) const {
       return result;
     }
     case SCOPE: {
-//FIXME
-break;
-/*
       Scope::KeyValueMap scope_values;
       scope_value_->GetCurrentScopeValues(&scope_values);
       if (scope_values.empty())
@@ -190,7 +174,6 @@ break;
       result += "}";
 
       return result;
-*/
     }
   }
   return std::string();
