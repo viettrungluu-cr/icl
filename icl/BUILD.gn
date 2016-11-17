@@ -1,5 +1,21 @@
 import("//testing/test.gni")
 
+group("tests") {
+  testonly = true
+  deps = [
+    # icl:
+#FIXME needs a lot of work
+#    ":parse_tree_test",
+    ":tokenizer_test",
+    ":value_test",
+
+    # string_piece:
+    ":string_piece_test",
+  ]
+}
+
+# icl --------------------------------------------------------------------------
+
 source_set("icl") {
   sources = [
     "err.cc",
@@ -8,6 +24,9 @@ source_set("icl") {
     "input_file.h",
     "location.cc",
     "location.h",
+#FIXME needs a lot of work
+#    "parse_tree.cc",
+    "parse_tree.h",
     "standard_out.cc",
     "standard_out.h",
     "token.cc",
@@ -23,31 +42,15 @@ source_set("icl") {
   ]
 }
 
-source_set("string_piece") {
-  sources = [
-    "string_piece.cc",
-    "string_piece.h",
-  ]
-}
-
-group("tests") {
-  testonly = true
-  deps = [
-    ":string_piece_test",
-    ":tokenizer_test",
-    ":value_test",
-  ]
-}
-
-test("string_piece_test") {
-  sources = [
-    "string_piece_unittest.cc",
-  ]
-
-  deps = [
-    ":string_piece",
-  ]
-}
+#test("parse_tree_test") {
+#  sources = [
+#    "parse_tree_unittest.cc",
+#  ]
+#
+#  deps = [
+#    ":icl",
+#  ]
+#}
 
 test("tokenizer_test") {
   sources = [
@@ -66,5 +69,24 @@ test("value_test") {
 
   deps = [
     ":icl",
+  ]
+}
+
+# string_piece -----------------------------------------------------------------
+
+source_set("string_piece") {
+  sources = [
+    "string_piece.cc",
+    "string_piece.h",
+  ]
+}
+
+test("string_piece_test") {
+  sources = [
+    "string_piece_unittest.cc",
+  ]
+
+  deps = [
+    ":string_piece",
   ]
 }
