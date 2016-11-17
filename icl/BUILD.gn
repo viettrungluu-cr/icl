@@ -6,6 +6,8 @@ source_set("icl") {
     "input_file.h",
     "location.cc",
     "location.h",
+    "token.cc",
+    "token.h",
   ]
 
   public_deps = [

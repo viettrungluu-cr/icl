@@ -5,32 +5,3 @@ group("all") {
     "//icl:tests",
   ]
 }
-
-#import("//testing/test.gni")
-#
-#source_set("hello_lib") {
-#  sources = [
-#    "hello.cc",
-#    "hello.h",
-#  ]
-#}
-#
-#executable("hello") {
-#  sources = [
-#    "main.cc",
-#  ]
-#
-#  deps = [
-#    ":hello_lib",
-#  ]
-#}
-#
-#test("hello_test") {
-#  sources = [
-#    "hello_unittest.cc",
-#  ]
-#
-#  deps = [
-#    ":hello_lib",
-#  ]
-#}
