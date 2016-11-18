@@ -5,6 +5,7 @@ group("tests") {
 
   deps = [
     # icl:
+    ":operators_test",
 #FIXME needs a lot of work
 #    ":parse_tree_test",
     ":tokenizer_test",
@@ -78,6 +79,17 @@ source_set("icl_test_support") {
 
   public_deps = [
     ":icl",
+  ]
+}
+
+test("operators_test") {
+  sources = [
+    "operators_unittest.cc",
+  ]
+
+  deps = [
+    ":icl",
+    ":icl_test_support",
   ]
 }
 
