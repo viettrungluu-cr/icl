@@ -68,18 +68,18 @@ source_set("icl") {
   ]
 }
 
-#source_set("icl_test_support") {
-#  testonly = true
-#
-#  sources = [
-#    "test_with_scope.cc",
-#    "test_with_scope.h",
-#  ]
-#
-#  public_deps = [
-#    ":icl",
-#  ]
-#}
+source_set("icl_test_support") {
+  testonly = true
+
+  sources = [
+    "test_with_scope.cc",
+    "test_with_scope.h",
+  ]
+
+  public_deps = [
+    ":icl",
+  ]
+}
 
 #FIXME: operators_unittest.cc, string_utils_unittest.cc functions_unittest.cc
 # function_foreach_unittest.cc parser_unittest.cc

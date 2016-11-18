@@ -14,6 +14,7 @@
 //FIXME
 //#include "base/memory/ref_counted.h"
 #include "icl/err.h"
+#include "icl/item.h"
 //FIXME
 //#include "tools/gn/pattern.h"
 //#include "tools/gn/source_dir.h"
@@ -22,7 +23,6 @@
 
 class FunctionCallNode;
 class ImportManager;
-class Item;
 class ParseNode;
 class Settings;
 class TargetManager;
