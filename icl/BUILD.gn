@@ -7,7 +7,7 @@ group("tests") {
     # icl:
     ":operators_test",
 #FIXME needs a lot of work
-#    ":parse_tree_test",
+    ":parse_tree_test",
     ":tokenizer_test",
     ":scope_test",
     ":value_test",
@@ -93,18 +93,19 @@ test("operators_test") {
   ]
 }
 
-#FIXME: operators_unittest.cc, string_utils_unittest.cc functions_unittest.cc
+#FIXME: string_utils_unittest.cc functions_unittest.cc
 # function_foreach_unittest.cc parser_unittest.cc
 
-#test("parse_tree_test") {
-#  sources = [
-#    "parse_tree_unittest.cc",
-#  ]
-#
-#  deps = [
-#    ":icl",
-#  ]
-#}
+test("parse_tree_test") {
+  sources = [
+    "parse_tree_unittest.cc",
+  ]
+
+  deps = [
+    ":icl",
+    ":icl_test_support",
+  ]
+}
 
 test("scope_test") {
   sources = [

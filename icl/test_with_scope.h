@@ -84,8 +84,6 @@ class TestWithScope {
 //  std::string print_output_;
 };
 
-//FIXME
-#if 0
 // Helper class to treat some string input as a file.
 //
 // Instantiate it with the contents you want, be sure to check for error, and
@@ -94,6 +92,9 @@ class TestParseInput {
  public:
   explicit TestParseInput(const std::string& input);
   ~TestParseInput();
+
+  TestParseInput(const TestParseInput&) = delete;
+  TestParseInput& operator=(const TestParseInput&) = delete;
 
   // Indicates whether and what error occurred during tokenizing and parsing.
   bool has_error() const { return parse_err_.has_error(); }
@@ -110,10 +111,10 @@ class TestParseInput {
   std::unique_ptr<ParseNode> parsed_;
 
   Err parse_err_;
-
-  DISALLOW_COPY_AND_ASSIGN(TestParseInput);
 };
 
+//FIXME
+#if 0
 // Shortcut for creating targets for tests that take the test setup, a pretty-
 // style label, and a target type and sets everything up. The target will
 // default to public visibility.

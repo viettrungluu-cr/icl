@@ -208,9 +208,10 @@ void TestWithScope::SetCommandForTool(const std::string& cmd, Tool* tool) {
 void TestWithScope::AppendPrintOutput(const std::string& str) {
   print_output_.append(str);
 }
+*/
 
 TestParseInput::TestParseInput(const std::string& input)
-    : input_file_(SourceFile("//test")) {
+    : input_file_("//test") {
   input_file_.SetContents(input);
 
   tokens_ = Tokenizer::Tokenize(&input_file_, &parse_err_);
@@ -221,6 +222,7 @@ TestParseInput::TestParseInput(const std::string& input)
 TestParseInput::~TestParseInput() {
 }
 
+/*
 TestTarget::TestTarget(const TestWithScope& setup,
                        const std::string& label_string,
                        Target::OutputType type)
