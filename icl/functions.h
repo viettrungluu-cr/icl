@@ -234,6 +234,7 @@ Value RunPool(const FunctionCallNode* function,
               const std::vector<Value>& args,
               Scope* block_scope,
               Err* err);
+*/
 
 extern const char kPrint[];
 extern const char kPrint_HelpShort[];
@@ -243,6 +244,8 @@ Value RunPrint(Scope* scope,
                const std::vector<Value>& args,
                Err* err);
 
+//FIXME
+/*
 extern const char kProcessFileTemplate[];
 extern const char kProcessFileTemplate_HelpShort[];
 extern const char kProcessFileTemplate_Help[];

@@ -792,6 +792,7 @@ Value RunPool(const FunctionCallNode* function,
 
   return Value();
 }
+#endif
 
 // print -----------------------------------------------------------------------
 
@@ -829,16 +830,19 @@ Value RunPrint(Scope* scope,
   }
   output.push_back('\n');
 
-  const BuildSettings::PrintCallback& cb =
-      scope->settings()->build_settings()->print_callback();
-  if (cb.is_null())
+//FIXME
+//  const BuildSettings::PrintCallback& cb =
+//      scope->settings()->build_settings()->print_callback();
+//  if (cb.is_null())
     printf("%s", output.c_str());
-  else
-    cb.Run(output);
+//  else
+//    cb.Run(output);
 
   return Value();
 }
 
+//FIXME
+#if 0
 // split_list ------------------------------------------------------------------
 
 const char kSplitList[] = "split_list";
@@ -1031,7 +1035,10 @@ struct FunctionInfoInitializer {
     INSERT_FUNCTION(GetTargetOutputs, false)
     INSERT_FUNCTION(Import, false)
     INSERT_FUNCTION(Pool, false)
+*/
     INSERT_FUNCTION(Print, false)
+//FIXME
+/*
     INSERT_FUNCTION(ProcessFileTemplate, false)
     INSERT_FUNCTION(ReadFile, false)
     INSERT_FUNCTION(RebasePath, false)

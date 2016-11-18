@@ -1,6 +1,7 @@
 group("all") {
   testonly = true
   deps = [
+    "//examples",
     "//icl",
     "//icl:tests",
   ]

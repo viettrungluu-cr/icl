@@ -588,7 +588,7 @@ TEST(Parser, CommentsSuffixDifferentLine) {
   DoParserPrintTest(input, expected);
 }
 
-//FIXME not sure why this fails
+//FIXME not sure why this fails (broken AssignComments() somehow?)
 TEST(Parser, DISABLED_CommentsSuffixMultiple) {
   const char* input =
     "executable(\"wee\") {\n"

@@ -11,8 +11,6 @@
 #include <memory>
 #include <vector>
 
-//FIXME
-//#include "base/gtest_prod_util.h"
 #include "icl/err.h"
 #include "icl/parse_tree.h"
 
@@ -136,18 +134,6 @@ class Parser {
 
   // Current index into the tokens.
   size_t cur_;
-
-//FIXME
-/*
-  FRIEND_TEST_ALL_PREFIXES(Parser, BinaryOp);
-  FRIEND_TEST_ALL_PREFIXES(Parser, Block);
-  FRIEND_TEST_ALL_PREFIXES(Parser, Condition);
-  FRIEND_TEST_ALL_PREFIXES(Parser, Expression);
-  FRIEND_TEST_ALL_PREFIXES(Parser, FunctionCall);
-  FRIEND_TEST_ALL_PREFIXES(Parser, List);
-  FRIEND_TEST_ALL_PREFIXES(Parser, ParenExpression);
-  FRIEND_TEST_ALL_PREFIXES(Parser, UnaryOp);
-*/
 };
 
 #endif  // TOOLS_GN_PARSER_H_

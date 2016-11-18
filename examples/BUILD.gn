@@ -1,0 +1,15 @@
+group("examples") {
+  deps = [
+    ":hello",
+  ]
+}
+
+executable("hello") {
+  sources = [
+    "hello.cc",
+  ]
+
+  deps = [
+    "//icl",
+  ]
+}
