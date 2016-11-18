@@ -42,6 +42,8 @@ source_set("icl") {
     "parser.h",
     "scope.cc",
     "scope.h",
+    "settings.cc",
+    "settings.h",
     "standard_out.cc",
     "standard_out.h",
     "string_utils.cc",  #FIXME needs a ton of work
@@ -64,7 +66,7 @@ source_set("icl") {
 }
 
 #FIXME: operators_unittest.cc, string_utils_unittest.cc functions_unittest.cc
-# function_foreach_unittest.cc parse_unittest.cc
+# function_foreach_unittest.cc parser_unittest.cc
 
 #test("parse_tree_test") {
 #  sources = [
