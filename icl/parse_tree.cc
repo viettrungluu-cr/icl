@@ -10,8 +10,6 @@
 #include <algorithm>
 #include <string>
 
-//FIXME
-//#include "base/stl_util.h"
 #include "icl/functions.h"
 #include "icl/operators.h"
 #include "icl/scope.h"
