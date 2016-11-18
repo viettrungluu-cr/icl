@@ -25,12 +25,18 @@ source_set("icl") {
   sources = [
     "err.cc",
     "err.h",
+#FIXME
+    "function_foreach.cc",
+    "functions.cc",
+    "functions.h",
     "input_file.cc",
     "input_file.h",
     "location.cc",
     "location.h",
     "operators.cc",
     "operators.h",
+    "parse_node_value_adapter.cc",
+    "parse_node_value_adapter.h",
 #FIXME needs a lot of work
     "parse_tree.cc",
     "parse_tree.h",
@@ -57,7 +63,8 @@ source_set("icl") {
   ]
 }
 
-#FIXME: operators_unittest.cc, string_utils_unittest.cc
+#FIXME: operators_unittest.cc, string_utils_unittest.cc functions_unittest.cc
+# function_foreach_unittest.cc
 
 #test("parse_tree_test") {
 #  sources = [

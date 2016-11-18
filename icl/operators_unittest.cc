@@ -2,15 +2,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "tools/gn/operators.h"
+#include "icl/operators.h"
 
+#include <gtest/gtest.h>
 #include <stdint.h>
+
 #include <utility>
 
-#include "testing/gtest/include/gtest/gtest.h"
-#include "tools/gn/parse_tree.h"
-#include "tools/gn/pattern.h"
-#include "tools/gn/test_with_scope.h"
+#include "icl/parse_tree.h"
+#include "icl/pattern.h"
+#include "icl/test_with_scope.h"
 
 namespace {
 
