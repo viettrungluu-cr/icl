@@ -9,7 +9,8 @@
 
 #include <algorithm>
 #include <string>
-#include <tuple>
+//FIXME
+//#include <tuple>
 
 //FIXME
 //#include "base/stl_util.h"
@@ -790,8 +791,6 @@ void LiteralNode::SetNewLocation(int line_number) {
       Location(old.file(), line_number, old.column_number(), old.byte()));
 }
 
-//FIXME
-#if 0
 // UnaryOpNode ----------------------------------------------------------------
 
 UnaryOpNode::UnaryOpNode() {
@@ -885,4 +884,3 @@ void EndNode::Print(std::ostream& out, int indent) const {
   out << IndentFor(indent) << "END(" << value_.value() << ")\n";
   PrintComments(out, indent);
 }
-#endif
