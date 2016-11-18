@@ -4,9 +4,11 @@
 
 #include "icl/string_utils.h"
 
+#include <assert.h>
 #include <ctype.h>
 #include <stddef.h>
 
+#include "icl/value.h"
 //FIXME
 /*
 #include "icl/err.h"
@@ -16,11 +18,8 @@
 #include "icl/string_number_conversions.h"
 #include "icl/token.h"
 #include "icl/tokenizer.h"
-#include "icl/value.h"
 */
 
-//FIXME
-/*
 namespace {
 
 // Constructs an Err indicating a range inside a string. We assume that the
@@ -43,6 +42,8 @@ Err ErrInsideStringToken(const Token& token, size_t offset, size_t size,
   return Err(LocationRange(begin_loc, end_loc), msg, help);
 }
 
+//FIXME
+/*
 // Notes about expression interpolation. This is based loosly on Dart but is
 // slightly less flexible. In Dart, seeing the ${ in a string is something
 // the toplevel parser knows about, and it will recurse into the block
@@ -237,6 +238,7 @@ bool AppendHexByte(Scope* scope,
   output->push_back(value);
   return true;
 }
+*/
 
 }  // namespace
 
@@ -244,9 +246,9 @@ bool ExpandStringLiteral(Scope* scope,
                          const Token& literal,
                          Value* result,
                          Err* err) {
-  DCHECK(literal.type() == Token::STRING);
-  DCHECK(literal.value().size() > 1);  // Should include quotes.
-  DCHECK(result->type() == Value::STRING);  // Should be already set.
+  assert(literal.type() == Token::STRING);
+  assert(literal.value().size() > 1);  // Should include quotes.
+  assert(result->type() == Value::STRING);  // Should be already set.
 
   // The token includes the surrounding quotes, so strip those off.
   const char* input = &literal.value().data()[1];
@@ -276,11 +278,14 @@ bool ExpandStringLiteral(Scope* scope,
             "I was expecting an identifier, 0xFF, or {...} after the $.");
         return false;
       }
+//FIXME
+/*
       if (input[i] == '0') {
         if (!AppendHexByte(scope, literal, input, size, &i, &output, err))
           return false;
       } else if (!AppendStringInterpolation(scope, literal, input, size, &i,
                                      &output, err))
+*/
         return false;
     } else {
       output.push_back(input[i]);
@@ -289,6 +294,8 @@ bool ExpandStringLiteral(Scope* scope,
   return true;
 }
 
+//FIXME
+/*
 size_t EditDistance(const StringPiece& s1,
                     const StringPiece& s2,
                     size_t max_edit_distance) {

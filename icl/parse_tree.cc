@@ -7,14 +7,16 @@
 #include <assert.h>
 #include <stdint.h>
 
+#include <algorithm>
 #include <string>
 #include <tuple>
 
+//FIXME
 //#include "base/stl_util.h"
-#include "icl/string_number_conversions.h"
-//#include "tools/gn/functions.h"
+#include "icl/functions.h"
 #include "icl/operators.h"
 #include "icl/scope.h"
+#include "icl/string_number_conversions.h"
 #include "icl/string_utils.h"
 
 namespace {
@@ -58,8 +60,6 @@ std::string IndentFor(int value) {
   return std::string(value, ' ');
 }
 
-//FIXME
-#if 0
 bool IsSortRangeSeparator(const ParseNode* node, const ParseNode* prev) {
   // If it's a block comment, or has an attached comment with a blank line
   // before it, then we break the range at this point.
@@ -80,7 +80,6 @@ StringPiece GetStringRepresentation(const ParseNode* node) {
     return node->AsAccessor()->base().value();
   return StringPiece();
 }
-#endif
 
 }  // namespace
 
@@ -439,8 +438,6 @@ void ConditionNode::Print(std::ostream& out, int indent) const {
     if_false_->Print(out, indent + 1);
 }
 
-//FIXME
-#if 0
 // FunctionCallNode -----------------------------------------------------------
 
 FunctionCallNode::FunctionCallNode() {
@@ -650,6 +647,8 @@ void ListNode::SortAsStringsList() {
   });
 }
 
+//FIXME
+/*
 void ListNode::SortAsDepsList() {
   // Sorts first relative targets, then absolute, each group is sorted
   // alphabetically.
@@ -660,6 +659,7 @@ void ListNode::SortAsDepsList() {
            std::make_pair(GetDepsCategory(bstr), SplitAtFirst(bstr, ':'));
   });
 }
+*/
 
 // Breaks the ParseNodes of |contents| up by ranges that should be separately
 // sorted. In particular, we break at a block comment, or an item that has an
@@ -751,7 +751,9 @@ Value LiteralNode::Execute(Scope* scope, Err* err) const {
         return Value();
       }
       int64_t result_int;
-      if (!base::StringToInt64(s, &result_int)) {
+      // TODO(vtl): Should have |StringPiece| versions of the conversion
+      // functions.
+      if (!StringToNumberWithError<int64_t>(s.as_string(), &result_int)) {
         *err = MakeErrorDescribing("This does not look like an integer");
         return Value();
       }
@@ -788,6 +790,8 @@ void LiteralNode::SetNewLocation(int line_number) {
       Location(old.file(), line_number, old.column_number(), old.byte()));
 }
 
+//FIXME
+#if 0
 // UnaryOpNode ----------------------------------------------------------------
 
 UnaryOpNode::UnaryOpNode() {
