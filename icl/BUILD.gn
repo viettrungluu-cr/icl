@@ -8,8 +8,7 @@ group("tests") {
 #FIXME needs a lot of work
 #    ":parse_tree_test",
     ":tokenizer_test",
-#FIXME needs a lot of work
-#    ":scope_test",
+    ":scope_test",
     ":value_test",
 
     # string_number_conversions:
@@ -70,6 +69,7 @@ source_set("icl") {
 
 source_set("icl_test_support") {
   testonly = true
+  visibility = [ ":*" ]
 
   sources = [
     "test_with_scope.cc",
@@ -94,15 +94,16 @@ source_set("icl_test_support") {
 #  ]
 #}
 
-#test("scope_test") {
-#  sources = [
-#    "scope_unittest.cc",
-#  ]
-#
-#  deps = [
-#    ":icl",
-#  ]
-#}
+test("scope_test") {
+  sources = [
+    "scope_unittest.cc",
+  ]
+
+  deps = [
+    ":icl",
+    ":icl_test_support",
+  ]
+}
 
 test("tokenizer_test") {
   sources = [

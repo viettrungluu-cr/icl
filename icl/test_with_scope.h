@@ -31,13 +31,13 @@ class TestWithScope {
   TestWithScope(const TestWithScope&) = delete;
   TestWithScope& operator=(const TestWithScope&) = delete;
 
-/*
-  BuildSettings* build_settings() { return &build_settings_; }
+//FIXME
+//  BuildSettings* build_settings() { return &build_settings_; }
   Settings* settings() { return &settings_; }
   const Settings* settings() const { return &settings_; }
-  Toolchain* toolchain() { return &toolchain_; }
-  const Toolchain* toolchain() const { return &toolchain_; }
-*/
+//FIXME
+//  Toolchain* toolchain() { return &toolchain_; }
+//  const Toolchain* toolchain() const { return &toolchain_; }
   Scope* scope() { return &scope_; }
   const Scope::ItemVector& items() { return items_; }
 
