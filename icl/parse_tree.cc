@@ -9,8 +9,6 @@
 
 #include <algorithm>
 #include <string>
-//FIXME
-//#include <tuple>
 
 //FIXME
 //#include "base/stl_util.h"
@@ -21,41 +19,6 @@
 #include "icl/string_utils.h"
 
 namespace {
-
-//FIXME
-#if 0
-enum DepsCategory {
-  DEPS_CATEGORY_LOCAL,
-  DEPS_CATEGORY_RELATIVE,
-  DEPS_CATEGORY_ABSOLUTE,
-  DEPS_CATEGORY_OTHER,
-};
-
-DepsCategory GetDepsCategory(StringPiece deps) {
-  if (deps.length() < 2 || deps[0] != '"' || deps[deps.size() - 1] != '"')
-    return DEPS_CATEGORY_OTHER;
-
-  if (deps[1] == ':')
-    return DEPS_CATEGORY_LOCAL;
-
-  if (deps[1] == '/')
-    return DEPS_CATEGORY_ABSOLUTE;
-
-  return DEPS_CATEGORY_RELATIVE;
-}
-
-std::tuple<StringPiece, StringPiece> SplitAtFirst(StringPiece str, char c) {
-  if (!str.starts_with("\"") || !str.ends_with("\""))
-    return std::make_tuple(str, StringPiece());
-
-  str = str.substr(1, str.length() - 2);
-  size_t index_of_first = str.find(c);
-  return std::make_tuple(str.substr(0, index_of_first),
-                         index_of_first != StringPiece::npos
-                             ? str.substr(index_of_first + 1)
-                             : StringPiece());
-}
-#endif
 
 std::string IndentFor(int value) {
   return std::string(value, ' ');
@@ -647,20 +610,6 @@ void ListNode::SortAsStringsList() {
     return astr < bstr;
   });
 }
-
-//FIXME
-/*
-void ListNode::SortAsDepsList() {
-  // Sorts first relative targets, then absolute, each group is sorted
-  // alphabetically.
-  SortList([](const ParseNode* a, const ParseNode* b) {
-    StringPiece astr = GetStringRepresentation(a);
-    StringPiece bstr = GetStringRepresentation(b);
-    return std::make_pair(GetDepsCategory(astr), SplitAtFirst(astr, ':')) <
-           std::make_pair(GetDepsCategory(bstr), SplitAtFirst(bstr, ':'));
-  });
-}
-*/
 
 // Breaks the ParseNodes of |contents| up by ranges that should be separately
 // sorted. In particular, we break at a block comment, or an item that has an

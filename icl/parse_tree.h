@@ -406,8 +406,6 @@ class ListNode : public ParseNode {
   }
 
   void SortAsStringsList();
-//FIXME
-//  void SortAsDepsList();
 
   // During formatting, do we want this list to always be multliline? This is
   // used to make assignments to deps, sources, etc. always be multiline lists,
