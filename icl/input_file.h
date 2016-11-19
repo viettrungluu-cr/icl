@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef TOOLS_GN_INPUT_FILE_H_
-#define TOOLS_GN_INPUT_FILE_H_
+#ifndef ICL_INPUT_FILE_H_
+#define ICL_INPUT_FILE_H_
 
 #include <assert.h>
 
@@ -12,6 +12,8 @@
 //#include "base/files/file_path.h"
 //#include "tools/gn/source_dir.h"
 //#include "tools/gn/source_file.h"
+
+namespace icl {
 
 class InputFile {
  public:
@@ -62,4 +64,6 @@ class InputFile {
   std::string contents_;
 };
 
-#endif  // TOOLS_GN_INPUT_FILE_H_
+}  // namespace icl
+
+#endif  // ICL_INPUT_FILE_H_

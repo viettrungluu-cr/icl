@@ -11,6 +11,8 @@
 #include "icl/location.h"
 #include "icl/token.h"
 
+namespace icl {
+
 class ParseNode;
 class Value;
 
@@ -83,5 +85,7 @@ class Err {
 
   std::vector<Err> sub_errs_;
 };
+
+}  // namespace icl
 
 #endif  // ICL_ERR_H_

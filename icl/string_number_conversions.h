@@ -10,8 +10,7 @@
 
 #include <string>
 
-//FIXME
-//namespace icl {
+namespace icl {
 
 // Converts |number| to a string with a locale-independent decimal
 // representation of it. This is available for all |NumberType|s (u)intN_t (from
@@ -40,7 +39,6 @@ NumberType StringToNumber(const std::string& string) {
   return StringToNumberWithError(string, &rv) ? rv : static_cast<NumberType>(0);
 }
 
-//FIXME
-//}  // namespace icl
+}  // namespace icl
 
 #endif  // ICL_STRING_NUMBER_CONVERSIONS_H_

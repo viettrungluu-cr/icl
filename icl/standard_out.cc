@@ -20,6 +20,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+namespace icl {
+
 namespace {
 
 bool initialized = false;
@@ -207,3 +209,5 @@ void PrintLongHelp(const std::string& text) {
     OutputString("\n```\n");
 */
 }
+
+}  // namespace icl

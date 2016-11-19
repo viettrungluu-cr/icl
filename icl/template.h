@@ -10,6 +10,8 @@
 
 #include "base/memory/ref_counted.h"
 
+namespace icl {
+
 class BlockNode;
 class Err;
 class FunctionCallNode;
@@ -55,5 +57,7 @@ class Template : public base::RefCountedThreadSafe<Template> {
   std::unique_ptr<Scope> closure_;
   const FunctionCallNode* definition_;
 };
+
+}  // namespace icl
 
 #endif  // ICL_TEMPLATE_H_

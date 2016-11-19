@@ -5,6 +5,9 @@
 #include "testing/gtest/include/gtest/gtest.h"
 #include "tools/gn/test_with_scope.h"
 
+namespace icl {
+namespace {
+
 TEST(FunctionForeach, CollisionOnLoopVar) {
   TestWithScope setup;
   TestParseInput input(
@@ -73,3 +76,6 @@ TEST(FunctionForeach, MarksIdentAsUsed) {
   EXPECT_TRUE(setup.scope()->CheckForUnusedVars(&err));
   EXPECT_FALSE(err.has_error());
 }
+
+}  // namespace
+}  // namespace icl

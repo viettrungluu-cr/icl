@@ -13,6 +13,8 @@
 #include "icl/string_piece.h"
 #include "icl/token.h"
 
+namespace icl {
+
 class InputFile;
 
 class Tokenizer {
@@ -86,5 +88,7 @@ class Tokenizer {
   int line_number_;
   int column_number_;
 };
+
+}  // namespace icl
 
 #endif  // ICL_TOKENIZER_H_

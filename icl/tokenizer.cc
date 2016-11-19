@@ -8,6 +8,8 @@
 
 #include "icl/input_file.h"
 
+namespace icl {
+
 namespace {
 
 //FIXME move these?
@@ -417,3 +419,5 @@ Err Tokenizer::GetErrorForInvalidToken(const Location& location) const {
 
   return Err(location, "Invalid token.", help);
 }
+
+}  // namespace icl

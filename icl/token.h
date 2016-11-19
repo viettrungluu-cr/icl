@@ -8,6 +8,8 @@
 #include "icl/location.h"
 #include "icl/string_piece.h"
 
+namespace icl {
+
 class Token {
  public:
   enum Type {
@@ -82,5 +84,7 @@ class Token {
   StringPiece value_;
   Location location_;
 };
+
+}  // namespace icl
 
 #endif  // ICL_TOKEN_H_

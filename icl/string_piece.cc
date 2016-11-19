@@ -12,8 +12,8 @@
 #include <algorithm>
 #include <ostream>
 
-//FIXME
-//namespace base {
+namespace icl {
+
 namespace {
 
 // For each character in characters_wanted, sets the index corresponding
@@ -325,5 +325,5 @@ void AssertIteratorsInOrder(std::string::const_iterator begin,
 #endif
 
 }  // namespace internal
-//FIXME
-//}  // namespace base
+
+}  // namespace icl

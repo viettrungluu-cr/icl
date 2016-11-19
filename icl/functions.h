@@ -11,6 +11,8 @@
 
 #include "icl/string_piece.h"
 
+namespace icl {
+
 class Err;
 class BlockNode;
 class FunctionCallNode;
@@ -509,5 +511,7 @@ class NonNestableBlock {
   // delete nonexistant keys which will cause assertions.
   bool key_added_;
 };
+
+}  // namespace icl
 
 #endif  // ICL_FUNCTIONS_H_

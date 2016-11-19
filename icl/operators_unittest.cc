@@ -14,6 +14,7 @@
 //#include "icl/pattern.h"
 #include "icl/test_with_scope.h"
 
+namespace icl {
 namespace {
 
 bool IsValueIntegerEqualing(const Value& v, int64_t i) {
@@ -99,8 +100,6 @@ class TestBinaryOpNode : public BinaryOpNode {
   // the identifier token.
   Token left_identifier_token_ownership_;
 };
-
-}  // namespace
 
 //FIXME
 /*
@@ -366,3 +365,6 @@ TEST(Operators, PlusEqualsUsed) {
   EXPECT_FALSE(setup.scope()->IsSetButUnused(foo));
   EXPECT_TRUE(nested.IsSetButUnused(foo));
 }
+
+}  // namespace
+}  // namespace icl

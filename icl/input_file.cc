@@ -9,6 +9,8 @@
 //FIXME
 //#include "base/files/file_util.h"
 
+namespace icl {
+
 InputFile::InputFile(std::string name)
     : name_(std::move(name)) {
 //FIXME
@@ -34,3 +36,5 @@ bool InputFile::Load(const base::FilePath& system_path) {
   return false;
 }
 */
+
+}  // namespace icl

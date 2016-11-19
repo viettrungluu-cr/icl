@@ -9,6 +9,8 @@
 
 #include "icl/string_piece.h"
 
+namespace icl {
+
 class Err;
 class Scope;
 class Token;
@@ -49,5 +51,7 @@ size_t EditDistance(const StringPiece& s1,
 // StringPiece if none of the strings in |words| is close.
 StringPiece SpellcheckString(const StringPiece& text,
                              const std::vector<StringPiece>& words);
+
+}  // namespace icl
 
 #endif  // ICL_STRING_UTILS_H_

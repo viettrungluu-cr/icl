@@ -14,6 +14,8 @@
 #include "tools/gn/value.h"
 #include "tools/gn/variables.h"
 
+namespace icl {
+
 Template::Template(const Scope* scope, const FunctionCallNode* def)
     : closure_(scope->MakeClosure()),
       definition_(def) {
@@ -125,3 +127,5 @@ Value Template::Invoke(Scope* scope,
 LocationRange Template::GetDefinitionRange() const {
   return definition_->GetRange();
 }
+
+}  // namespace icl

@@ -10,8 +10,7 @@
 #include <limits>
 #include <type_traits>
 
-//FIXME
-//namespace icl {
+namespace icl {
 namespace {
 
 // Helper for |StringToNumberWithError()|. Note that this may modify |*number|
@@ -154,5 +153,4 @@ template bool StringToNumberWithError<int64_t>(const std::string& string,
 template bool StringToNumberWithError<uint64_t>(const std::string& string,
                                                 uint64_t* number);
 
-//FIXME
-//}  // namespace icl
+}  // namespace icl

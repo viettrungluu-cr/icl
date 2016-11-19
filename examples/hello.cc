@@ -13,7 +13,7 @@
 #include "icl/token.h"
 #include "icl/tokenizer.h"
 
-static void PanicOnError(const Err& err, const char* msg) {
+static void PanicOnError(const icl::Err& err, const char* msg) {
   if (err.has_error()) {
     // TODO(vtl): Ugh.
     err.PrintToStdout();
@@ -23,19 +23,19 @@ static void PanicOnError(const Err& err, const char* msg) {
 }
 
 int main() {
-  InputFile input("noname");
+  icl::InputFile input("noname");
   input.SetContents("a = \"hello world\"\n"
                     "print(a)");
 
-  Err err;
-  std::vector<Token> tokens = Tokenizer::Tokenize(&input, &err);
+  icl::Err err;
+  std::vector<icl::Token> tokens = icl::Tokenizer::Tokenize(&input, &err);
   PanicOnError(err, "tokenization failed");
 
-  std::unique_ptr<ParseNode> ast = Parser::Parse(tokens, &err);
+  std::unique_ptr<icl::ParseNode> ast = icl::Parser::Parse(tokens, &err);
   PanicOnError(err, "parse failed");
 
-  Settings settings;
-  Scope scope(&settings);
+  icl::Settings settings;
+  icl::Scope scope(&settings);
   ast->Execute(&scope, &err);
   PanicOnError(err, "execute failed");
 

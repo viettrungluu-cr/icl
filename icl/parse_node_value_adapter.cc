@@ -7,6 +7,8 @@
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
 
+namespace icl {
+
 ParseNodeValueAdapter::ParseNodeValueAdapter() : ref_(nullptr) {
 }
 
@@ -45,3 +47,5 @@ bool ParseNodeValueAdapter::InitForType(Scope* scope,
   *err = Err(node, err->message(), err->help_text());
   return false;
 }
+
+}  // namespace icl

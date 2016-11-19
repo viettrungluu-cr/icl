@@ -13,6 +13,9 @@
 #include "icl/scope.h"
 #include "icl/test_with_scope.h"
 
+namespace icl {
+namespace {
+
 TEST(ParseTree, Accessor) {
   TestWithScope setup;
 
@@ -257,3 +260,6 @@ TEST(ParseTree, Integers) {
     EXPECT_TRUE(err.has_error());
   }
 }
+
+}  // namespace
+}  // namespace icl

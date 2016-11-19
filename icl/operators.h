@@ -5,6 +5,8 @@
 #ifndef ICL_OPERATORS_H_
 #define ICL_OPERATORS_H_
 
+namespace icl {
+
 class BinaryOpNode;
 class Err;
 class ParseNode;
@@ -21,5 +23,7 @@ Value ExecuteBinaryOperator(Scope* scope,
                             const ParseNode* left,
                             const ParseNode* right,
                             Err* err);
+
+}  // namespace icl
 
 #endif  // ICL_OPERATORS_H_

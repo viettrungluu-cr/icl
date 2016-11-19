@@ -7,6 +7,8 @@
 //#include "base/logging.h"
 //#include "tools/gn/settings.h"
 
+namespace icl {
+
 Item::Item(const Settings* settings)
     : settings_(settings), defined_from_(nullptr) {
 }
@@ -63,3 +65,5 @@ bool Item::OnResolved(Err* err) {
   return true;
 }
 */
+
+}  // namespace icl

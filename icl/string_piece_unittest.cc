@@ -9,8 +9,8 @@
 
 #include <string>
 
-//FIXME
-//namespace base {
+namespace icl {
+namespace {
 
 template <typename T>
 class CommonStringPieceTest : public ::testing::Test {
@@ -650,5 +650,5 @@ TYPED_TEST(CommonStringPieceTest, CheckConstructors) {
   ASSERT_TRUE(empty == BasicStringPiece<TypeParam>(empty.begin(), empty.end()));
 }
 
-//FIXME
-//}  // namespace base
+}  // namespace
+}  // namespace icl

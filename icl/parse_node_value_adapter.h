@@ -7,6 +7,8 @@
 
 #include "icl/value.h"
 
+namespace icl {
+
 class ParseNode;
 
 // Provides a means to convert a parse node to a value without causing a copy
@@ -51,5 +53,7 @@ class ParseNodeValueAdapter {
   const Value* ref_;
   Value temporary_;
 };
+
+}  // namespace icl
 
 #endif  // ICL_PARSE_NODE_VALUE_ADAPTER_H_

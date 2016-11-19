@@ -12,6 +12,9 @@
 #include "tools/gn/test_with_scope.h"
 #include "tools/gn/value.h"
 
+namespace icl {
+namespace {
+
 TEST(Functions, Defined) {
   TestWithScope setup;
 
@@ -125,3 +128,6 @@ TEST(Functions, SplitList) {
       "rounding = [[1, 2], [3, 4], [5], [6]]\n",
       setup.print_output());
 }
+
+}  // namespace
+}  // namespace icl

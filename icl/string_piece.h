@@ -27,8 +27,7 @@
 #include <iosfwd>
 #include <string>
 
-//FIXME
-//namespace base {
+namespace icl {
 
 template <typename STRING_TYPE> class BasicStringPiece;
 typedef BasicStringPiece<std::string> StringPiece;
@@ -352,7 +351,6 @@ struct StringPieceHash {
   }
 };
 
-//FIXME
-//}  // namespace base
+}  // namespace icl
 
 #endif  // ICL_STRING_PIECE_H_

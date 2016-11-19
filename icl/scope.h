@@ -21,6 +21,8 @@
 #include "icl/string_piece.h"
 #include "icl/value.h"
 
+namespace icl {
+
 class FunctionCallNode;
 class ImportManager;
 class ParseNode;
@@ -385,5 +387,7 @@ class Scope {
 //FIXME
 //  SourceDir source_dir_;
 };
+
+}  // namespace icl
 
 #endif  // ICL_SCOPE_H_

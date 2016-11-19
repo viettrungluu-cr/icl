@@ -32,6 +32,8 @@
 #include "tools/gn/variables.h"
 */
 
+namespace icl {
+
 namespace {
 
 // Some functions take a {} following them, and some don't. For the ones that
@@ -1148,3 +1150,5 @@ Value RunFunction(Scope* scope,
 }
 
 }  // namespace functions
+
+}  // namespace icl

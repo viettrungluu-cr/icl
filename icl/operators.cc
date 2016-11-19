@@ -16,9 +16,12 @@
 #include "icl/token.h"
 #include "icl/value.h"
 
+namespace icl {
+
 namespace {
 
-const char kSourcesName[] = "sources";
+//FIXME
+//const char kSourcesName[] = "sources";
 
 // Helper class used for assignment operations: =, +=, and -= to generalize
 // writing to various types of destinations.
@@ -795,3 +798,5 @@ Value ExecuteBinaryOperator(Scope* scope,
 
   return Value();
 }
+
+}  // namespace icl

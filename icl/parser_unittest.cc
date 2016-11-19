@@ -12,6 +12,7 @@
 #include "icl/input_file.h"
 #include "icl/tokenizer.h"
 
+namespace icl {
 namespace {
 
 bool GetTokens(const InputFile* input, std::vector<Token>* result) {
@@ -90,8 +91,6 @@ void DoExpressionErrorTest(const char* input, int err_line, int err_char) {
   EXPECT_EQ(err_line, err.location().line_number());
   EXPECT_EQ(err_char, err.location().column_number());
 }
-
-}  // namespace
 
 TEST(Parser, Literal) {
   DoExpressionPrintTest("5", "LITERAL(5)\n");
@@ -745,3 +744,6 @@ TEST(Parser, BlockValues) {
     "    LITERAL(\"asd\")\n";
   DoParserPrintTest(input, expected);
 }
+
+}  // namespace
+}  // namespace icl

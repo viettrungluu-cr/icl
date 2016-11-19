@@ -8,6 +8,7 @@
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
 
+namespace icl {
 namespace functions {
 
 const char kForEach[] = "foreach";
@@ -107,3 +108,4 @@ Value RunForEach(Scope* scope,
 }
 
 }  // namespace functions
+}  // namespace icl

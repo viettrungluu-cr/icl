@@ -14,6 +14,8 @@
 #include "icl/err.h"
 #include "icl/parse_tree.h"
 
+namespace icl {
+
 class Parser;
 typedef std::unique_ptr<ParseNode> (Parser::*PrefixFunc)(const Token& token);
 typedef std::unique_ptr<ParseNode> (
@@ -135,5 +137,7 @@ class Parser {
   // Current index into the tokens.
   size_t cur_;
 };
+
+}  // namespace icl
 
 #endif  // TOOLS_GN_PARSER_H_

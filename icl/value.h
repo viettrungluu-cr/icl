@@ -13,6 +13,8 @@
 
 #include "icl/err.h"
 
+namespace icl {
+
 class ParseNode;
 class Scope;
 
@@ -130,5 +132,7 @@ class Value {
 
   const ParseNode* origin_;
 };
+
+}  // namespace icl
 
 #endif  // ICL_VALUE_H_

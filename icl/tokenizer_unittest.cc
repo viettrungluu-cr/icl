@@ -10,6 +10,7 @@
 #include "icl/input_file.h"
 #include "icl/token.h"
 
+namespace icl {
 namespace {
 
 struct TokenExpectation {
@@ -35,8 +36,6 @@ bool CheckTokenizer(const char* input, const TokenExpectation (&expect)[len]) {
   }
   return true;
 }
-
-}  // namespace
 
 TEST(Tokenizer, Empty) {
   InputFile empty_string_input("/test");
@@ -227,3 +226,6 @@ TEST(Tokenizer, CommentsContinued) {
       "}",
       fn2));
 }
+
+}  // namespace
+}  // namespace icl

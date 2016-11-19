@@ -10,6 +10,8 @@
 //#include "tools/gn/label.h"
 //#include "tools/gn/visibility.h"
 
+namespace icl {
+
 //class Config;
 class ParseNode;
 //class Pool;
@@ -67,5 +69,7 @@ explicit Item(const Settings* settings);
 
 //  Visibility visibility_;
 };
+
+}  // namespace icl
 
 #endif  // ICL_ITEM_H_

@@ -4,6 +4,8 @@
 
 #include "icl/token.h"
 
+namespace icl {
+
 Token::Token() : type_(INVALID), value_() {
 }
 
@@ -22,3 +24,5 @@ bool Token::IsIdentifierEqualTo(const char* v) const {
 bool Token::IsStringEqualTo(const char* v) const {
   return type_ == STRING && value_ == v;
 }
+
+}  // namespace icl

@@ -12,6 +12,8 @@
 #include "icl/scope.h"
 #include "icl/string_number_conversions.h"
 
+namespace icl {
+
 Value::Value()
     : type_(NONE),
       boolean_value_(false),
@@ -222,3 +224,5 @@ bool Value::operator==(const Value& other) const {
 bool Value::operator!=(const Value& other) const {
   return !operator==(other);
 }
+
+}  // namespace icl

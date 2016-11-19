@@ -12,6 +12,8 @@
 #include "icl/operators.h"
 #include "icl/token.h"
 
+namespace icl {
+
 const char kGrammar_Help[] =
     R"*(Language and grammar for GN build files
 
@@ -884,3 +886,5 @@ void Parser::AssignComments(ParseNode* file) {
       const_cast<ParseNode*>(*i)->comments_mutable()->ReverseSuffix();
   }
 }
+
+}  // namespace icl

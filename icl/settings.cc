@@ -9,7 +9,12 @@
 #include "base/logging.h"
 #include "build/build_config.h"
 #include "tools/gn/filesystem_utils.h"
+*/
 
+namespace icl {
+
+//FIXME
+/*
 Settings::Settings(const BuildSettings* build_settings,
                    const std::string& output_subdir_name)
     : build_settings_(build_settings),
@@ -36,3 +41,5 @@ Settings::Settings(const BuildSettings* build_settings,
 
 Settings::~Settings() {
 }
+
+}  // namespace icl

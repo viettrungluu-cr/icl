@@ -16,6 +16,7 @@
 #include "icl/tokenizer.h"
 #include "icl/value.h"
 
+namespace icl {
 namespace {
 
 std::string GetNthLine(const StringPiece& data, int n) {
@@ -198,3 +199,5 @@ void Err::InternalPrintToStdout(bool is_sub_err) const {
   for (const auto& sub_err : sub_errs_)
     sub_err.InternalPrintToStdout(true);
 }
+
+}  // namespace icl

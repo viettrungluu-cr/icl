@@ -15,6 +15,8 @@
 #include "icl/token.h"
 #include "icl/value.h"
 
+namespace icl {
+
 class AccessorNode;
 class BinaryOpNode;
 class BlockCommentNode;
@@ -553,5 +555,7 @@ class EndNode : public ParseNode {
  private:
   Token value_;
 };
+
+}  // namespace icl
 
 #endif  // ICL_PARSE_TREE_H_

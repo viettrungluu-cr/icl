@@ -7,6 +7,8 @@
 
 #include <string>
 
+namespace icl {
+
 enum TextDecoration {
   DECORATION_NONE = 0,
   DECORATION_DIM,
@@ -31,5 +33,7 @@ void PrintShortHelp(const std::string& line);
 //   colon (or the whole line if not).
 // - Lines whose first non-whitespace character is a # are dimmed.
 void PrintLongHelp(const std::string& text);
+
+}  // namespace icl
 
 #endif  // ICL_STANDARD_OUT_H_

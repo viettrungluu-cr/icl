@@ -16,6 +16,8 @@
 #include "icl/string_number_conversions.h"
 #include "icl/string_utils.h"
 
+namespace icl {
+
 namespace {
 
 std::string IndentFor(int value) {
@@ -831,3 +833,5 @@ void EndNode::Print(std::ostream& out, int indent) const {
   out << IndentFor(indent) << "END(" << value_.value() << ")\n";
   PrintComments(out, indent);
 }
+
+}  // namespace icl

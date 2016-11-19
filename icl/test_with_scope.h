@@ -21,6 +21,8 @@
 //#include "tools/gn/toolchain.h"
 #include "icl/value.h"
 
+namespace icl {
+
 // A helper class for setting up a Scope that a test can use. It makes a
 // toolchain and sets up all the build state.
 class TestWithScope {
@@ -126,5 +128,7 @@ class TestTarget : public Target {
   ~TestTarget() override;
 };
 #endif
+
+}  // namespace icl
 
 #endif  // ICL_TEST_WITH_SCOPE_H_

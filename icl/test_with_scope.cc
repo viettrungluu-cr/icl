@@ -11,6 +11,8 @@
 #include "icl/parser.h"
 #include "icl/tokenizer.h"
 
+namespace icl {
+
 //FIXME
 #if 0
 namespace {
@@ -235,3 +237,5 @@ TestTarget::TestTarget(const TestWithScope& setup,
 TestTarget::~TestTarget() {
 }
 */
+
+}  // namespace icl

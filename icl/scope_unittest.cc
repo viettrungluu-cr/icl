@@ -12,6 +12,7 @@
 //#include "tools/gn/template.h"
 #include "icl/test_with_scope.h"
 
+namespace icl {
 namespace {
 
 bool HasStringValueEqualTo(const Scope* scope,
@@ -24,8 +25,6 @@ bool HasStringValueEqualTo(const Scope* scope,
     return false;
   return value->string_value() == expected_value;
 }
-
-}  // namespace
 
 /*
 TEST(Scope, NonRecursiveMergeTo) {
@@ -302,3 +301,6 @@ TEST(Scope, RemovePrivateIdentifiers) {
   EXPECT_TRUE(setup.scope()->GetValue("a"));
   EXPECT_FALSE(setup.scope()->GetValue("_b"));
 }
+
+}  // namespace
+}  // namespace icl

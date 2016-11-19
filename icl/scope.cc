@@ -10,6 +10,8 @@
 //FIXME
 //#include "tools/gn/template.h"
 
+namespace icl {
+
 namespace {
 
 // FLags set in the mode_flags_ of a scope. If a bit is set, it applies
@@ -541,3 +543,5 @@ bool Scope::RecordMapValuesEqual(const RecordMap& a, const RecordMap& b) {
   }
   return true;
 }
+
+}  // namespace icl

@@ -16,6 +16,8 @@
 #include "tools/gn/toolchain.h"
 */
 
+namespace icl {
+
 // Holds the settings for one toolchain invocation. There will be one
 // Settings object for each toolchain type, each referring to the same
 // BuildSettings object for shared stuff.
@@ -125,5 +127,7 @@ Settings() {}
   bool greedy_target_generation_;
 */
 };
+
+}  // namespace icl
 
 #endif  // ICL_SETTINGS_H_

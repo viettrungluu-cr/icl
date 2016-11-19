@@ -6,6 +6,9 @@
 #include "testing/gtest/include/gtest/gtest.h"
 #include "tools/gn/test_with_scope.h"
 
+namespace icl {
+namespace {
+
 TEST(Template, Basic) {
   TestWithScope setup;
   TestParseInput input(
@@ -91,3 +94,6 @@ TEST(Template, MemoryBlowUp) {
   input.parsed()->Execute(setup.scope(), &err);
   ASSERT_FALSE(input.has_error());
 }
+
+}  // namespace
+}  // namespace icl

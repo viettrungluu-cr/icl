@@ -7,6 +7,8 @@
 
 #include <string>
 
+namespace icl {
+
 class InputFile;
 
 // Represents a place in a source file. Used for error reporting.
@@ -56,5 +58,7 @@ class LocationRange {
   Location begin_;
   Location end_;
 };
+
+}  // namespace icl
 
 #endif  // ICL_LOCATION_H_

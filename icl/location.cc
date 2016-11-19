@@ -11,6 +11,8 @@
 #include "icl/input_file.h"
 #include "icl/string_number_conversions.h"
 
+namespace icl {
+
 Location::Location()
     : file_(nullptr),
       line_number_(-1),
@@ -73,3 +75,5 @@ LocationRange LocationRange::Union(const LocationRange& other) const {
       begin_ < other.begin_ ? begin_ : other.begin_,
       end_ < other.end_ ? other.end_ : end_);
 }
+
+}  // namespace icl

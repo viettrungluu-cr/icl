@@ -10,6 +10,9 @@
 //FIXME
 //#include "tools/gn/test_with_scope.h"
 
+namespace icl {
+namespace {
+
 TEST(Value, ToString) {
   Value strval(nullptr, "hi\" $me\\you\\$\\\"");
   EXPECT_EQ("hi\" $me\\you\\$\\\"", strval.ToString(false));
@@ -46,3 +49,6 @@ TEST(Value, ToString) {
   EXPECT_EQ("{\n  a = 42\n  b = \"hello, world\"\n}", scopeval.ToString(false));
 */
 }
+
+}  // namespace
+}  // namespace icl

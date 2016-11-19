@@ -14,6 +14,7 @@
 #include "tools/gn/token.h"
 #include "tools/gn/value.h"
 
+namespace icl {
 namespace {
 
 bool CheckExpansionCase(const char* input, const char* expected, bool success) {
@@ -55,8 +56,6 @@ bool CheckExpansionCase(const char* input, const char* expected, bool success) {
   printf("%s\n", result.string_value().c_str());
   return result.string_value() == expected;
 }
-
-}  // namespace
 
 TEST(StringUtils, ExpandStringLiteralIdentifier) {
   EXPECT_TRUE(CheckExpansionCase("", "", true));
@@ -153,3 +152,6 @@ TEST(StringUtils, SpellcheckString) {
   // barbados has an edit distance of 4 from bravado, so there's no suggestion.
   EXPECT_TRUE(SpellcheckString("barbados", words).empty());
 }
+
+}  // namespace
+}  // namespace icl

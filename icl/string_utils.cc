@@ -20,6 +20,8 @@
 #include "icl/tokenizer.h"
 */
 
+namespace icl {
+
 namespace {
 
 // Constructs an Err indicating a range inside a string. We assume that the
@@ -354,3 +356,5 @@ StringPiece SpellcheckString(const StringPiece& text,
   return result;
 }
 */
+
+}  // namespace icl

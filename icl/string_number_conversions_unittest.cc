@@ -9,8 +9,7 @@
 
 #include <limits>
 
-//FIXME
-//namespace icl {
+namespace icl {
 namespace {
 
 TEST(StringNumberConversionsTest, NumberToString_Basic) {
@@ -313,5 +312,4 @@ TEST(StringNumberConversionsTest, StringToNumber_Errors) {
 }
 
 }  // namespace
-//FIXME
-//}  // namespace icl
+}  // namespace icl
