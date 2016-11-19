@@ -73,6 +73,7 @@ Value RunActionForEach(Scope* scope,
                        const std::vector<Value>& args,
                        BlockNode* block,
                        Err* err);
+*/
 
 extern const char kAssert[];
 extern const char kAssert_HelpShort[];
@@ -82,6 +83,8 @@ Value RunAssert(Scope* scope,
                 const std::vector<Value>& args,
                 Err* err);
 
+//FIXME
+/*
 extern const char kBundleData[];
 extern const char kBundleData_HelpShort[];
 extern const char kBundleData_Help[];

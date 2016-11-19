@@ -190,8 +190,6 @@ bool NonNestableBlock::Enter(Err* err) {
 
 namespace functions {
 
-//FIXME
-#if 0
 // assert ----------------------------------------------------------------------
 
 const char kAssert[] = "assert";
@@ -258,6 +256,8 @@ Value RunAssert(Scope* scope,
   return Value();
 }
 
+//FIXME
+#if 0
 // config ----------------------------------------------------------------------
 
 const char kConfig[] = "config";
@@ -1021,8 +1021,11 @@ struct FunctionInfoInitializer {
     INSERT_FUNCTION(SourceSet, true)
     INSERT_FUNCTION(StaticLibrary, true)
     INSERT_FUNCTION(Target, true)
+*/
 
     INSERT_FUNCTION(Assert, false)
+//FIXME
+/*
     INSERT_FUNCTION(Config, false)
     INSERT_FUNCTION(DeclareArgs, false)
     INSERT_FUNCTION(Defined, false)
