@@ -51,6 +51,9 @@ source_set("icl") {
     "standard_out.h",
     "string_utils.cc",  #FIXME needs a ton of work
     "string_utils.h",
+#FIXME
+#    "template.cc",
+#    "template.h",
     "token.cc",
     "token.h",
     "tokenizer.cc",
@@ -94,7 +97,7 @@ test("operators_test") {
 }
 
 #FIXME: string_utils_unittest.cc functions_unittest.cc
-# function_foreach_unittest.cc
+# function_foreach_unittest.cc template_unittest.cc
 
 test("parse_tree_test") {
   sources = [
