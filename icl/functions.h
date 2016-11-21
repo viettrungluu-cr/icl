@@ -203,20 +203,16 @@ struct FunctionInfo {
   FunctionInfo();
   FunctionInfo(SelfEvaluatingArgsFunction seaf,
                const char* in_help_short,
-               const char* in_help,
-               bool in_is_target);
+               const char* in_help);
   FunctionInfo(GenericBlockFunction gbf,
                const char* in_help_short,
-               const char* in_help,
-               bool in_is_target);
+               const char* in_help);
   FunctionInfo(ExecutedBlockFunction ebf,
                const char* in_help_short,
-               const char* in_help,
-               bool in_is_target);
+               const char* in_help);
   FunctionInfo(NoBlockFunction nbf,
                const char* in_help_short,
-               const char* in_help,
-               bool in_is_target);
+               const char* in_help);
 
   SelfEvaluatingArgsFunction self_evaluating_args_runner;
   GenericBlockFunction generic_block_runner;
@@ -225,8 +221,6 @@ struct FunctionInfo {
 
   const char* help_short;
   const char* help;
-
-  bool is_target;
 };
 
 typedef std::map<StringPiece, FunctionInfo> FunctionInfoMap;

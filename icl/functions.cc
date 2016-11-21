@@ -752,60 +752,51 @@ FunctionInfo::FunctionInfo()
       executed_block_runner(nullptr),
       no_block_runner(nullptr),
       help_short(nullptr),
-      help(nullptr),
-      is_target(false) {
+      help(nullptr) {
 }
 
 FunctionInfo::FunctionInfo(SelfEvaluatingArgsFunction seaf,
                            const char* in_help_short,
-                           const char* in_help,
-                           bool in_is_target)
+                           const char* in_help)
     : self_evaluating_args_runner(seaf),
       generic_block_runner(nullptr),
       executed_block_runner(nullptr),
       no_block_runner(nullptr),
       help_short(in_help_short),
-      help(in_help),
-      is_target(in_is_target) {
+      help(in_help) {
 }
 
 FunctionInfo::FunctionInfo(GenericBlockFunction gbf,
                            const char* in_help_short,
-                           const char* in_help,
-                           bool in_is_target)
+                           const char* in_help)
     : self_evaluating_args_runner(nullptr),
       generic_block_runner(gbf),
       executed_block_runner(nullptr),
       no_block_runner(nullptr),
       help_short(in_help_short),
-      help(in_help),
-      is_target(in_is_target) {
+      help(in_help) {
 }
 
 FunctionInfo::FunctionInfo(ExecutedBlockFunction ebf,
                            const char* in_help_short,
-                           const char* in_help,
-                           bool in_is_target)
+                           const char* in_help)
     : self_evaluating_args_runner(nullptr),
       generic_block_runner(nullptr),
       executed_block_runner(ebf),
       no_block_runner(nullptr),
       help_short(in_help_short),
-      help(in_help),
-      is_target(in_is_target) {
+      help(in_help) {
 }
 
 FunctionInfo::FunctionInfo(NoBlockFunction nbf,
                            const char* in_help_short,
-                           const char* in_help,
-                           bool in_is_target)
+                           const char* in_help)
     : self_evaluating_args_runner(nullptr),
       generic_block_runner(nullptr),
       executed_block_runner(nullptr),
       no_block_runner(nbf),
       help_short(in_help_short),
-      help(in_help),
-      is_target(in_is_target) {
+      help(in_help) {
 }
 
 // Setup the function map via a static initializer. We use this because it
@@ -817,36 +808,35 @@ struct FunctionInfoInitializer {
   FunctionInfoMap map;
 
   FunctionInfoInitializer() {
-    #define INSERT_FUNCTION(command, is_target) \
+    #define INSERT_FUNCTION(command) \
         map[k##command] = FunctionInfo(&Run##command, \
                                        k##command##_HelpShort, \
-                                       k##command##_Help, \
-                                       is_target);
+                                       k##command##_Help);
 
-    INSERT_FUNCTION(Assert, false)
+    INSERT_FUNCTION(Assert)
 //FIXME
 /*
-    INSERT_FUNCTION(Config, false)
-    INSERT_FUNCTION(DeclareArgs, false)
+    INSERT_FUNCTION(Config)
+    INSERT_FUNCTION(DeclareArgs)
 */
-    INSERT_FUNCTION(Defined, false)
-    INSERT_FUNCTION(ForEach, false)
+    INSERT_FUNCTION(Defined)
+    INSERT_FUNCTION(ForEach)
 //FIXME
 /*
-    INSERT_FUNCTION(ForwardVariablesFrom, false)
-    INSERT_FUNCTION(GetEnv, false)
-    INSERT_FUNCTION(GetPathInfo, false)
-    INSERT_FUNCTION(Import, false)
+    INSERT_FUNCTION(ForwardVariablesFrom)
+    INSERT_FUNCTION(GetEnv)
+    INSERT_FUNCTION(GetPathInfo)
+    INSERT_FUNCTION(Import)
 */
-    INSERT_FUNCTION(Print, false)
+    INSERT_FUNCTION(Print)
 //FIXME
 /*
-    INSERT_FUNCTION(ProcessFileTemplate, false)
-    INSERT_FUNCTION(ReadFile, false)
-    INSERT_FUNCTION(RebasePath, false)
-    INSERT_FUNCTION(SplitList, false)
-    INSERT_FUNCTION(Template, false)
-    INSERT_FUNCTION(WriteFile, false)
+    INSERT_FUNCTION(ProcessFileTemplate)
+    INSERT_FUNCTION(ReadFile)
+    INSERT_FUNCTION(RebasePath)
+    INSERT_FUNCTION(SplitList)
+    INSERT_FUNCTION(Template)
+    INSERT_FUNCTION(WriteFile)
 */
 
     #undef INSERT_FUNCTION
