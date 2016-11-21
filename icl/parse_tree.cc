@@ -415,7 +415,7 @@ const FunctionCallNode* FunctionCallNode::AsFunctionCall() const {
 }
 
 Value FunctionCallNode::Execute(Scope* scope, Err* err) const {
-  return functions::RunFunction(scope, this, args_.get(), block_.get(), err);
+  return RunFunction(scope, this, args_.get(), block_.get(), err);
 }
 
 LocationRange FunctionCallNode::GetRange() const {

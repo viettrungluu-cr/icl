@@ -7,7 +7,6 @@
 
 #include <map>
 #include <string>
-#include <utility>
 #include <vector>
 
 #include "icl/string_piece.h"
@@ -26,39 +25,36 @@ class Value;
 
 // -----------------------------------------------------------------------------
 
-namespace functions {
-
-// TODO(vtl): Move these out of the |functions| namespace (and also into a
-// separate function_info.h).
+// TODO(vtl): Move these into a separate function_info.h.
 
 // This type of function invocation has no block and evaluates its arguments
 // itself rather than taking a pre-executed list. This allows us to implement
 // certain built-in functions.
-typedef Value (*SelfEvaluatingArgsFunction)(Scope* scope,
-                                            const FunctionCallNode* function,
-                                            const ListNode* args_list,
-                                            Err* err);
+using SelfEvaluatingArgsFunction = Value (*)(Scope* scope,
+                                             const FunctionCallNode* function,
+                                             const ListNode* args_list,
+                                             Err* err);
 
 // This type of function invocation takes a block node that it will execute.
-typedef Value (*GenericBlockFunction)(Scope* scope,
-                                      const FunctionCallNode* function,
-                                      const std::vector<Value>& args,
-                                      BlockNode* block,
-                                      Err* err);
+using GenericBlockFunction = Value (*)(Scope* scope,
+                                       const FunctionCallNode* function,
+                                       const std::vector<Value>& args,
+                                       BlockNode* block,
+                                       Err* err);
 
 // This type of function takes a block, but does not need to control execution
 // of it. The dispatch function will pre-execute the block and pass the
 // resulting block_scope to the function.
-typedef Value(*ExecutedBlockFunction)(const FunctionCallNode* function,
-                                      const std::vector<Value>& args,
-                                      Scope* block_scope,
-                                      Err* err);
+using ExecutedBlockFunction = Value (*)(const FunctionCallNode* function,
+                                        const std::vector<Value>& args,
+                                        Scope* block_scope,
+                                        Err* err);
 
 // This type of function does not take a block. It just has arguments.
-typedef Value (*NoBlockFunction)(Scope* scope,
-                                 const FunctionCallNode* function,
-                                 const std::vector<Value>& args,
-                                 Err* err);
+using NoBlockFunction = Value (*)(Scope* scope,
+                                  const FunctionCallNode* function,
+                                  const std::vector<Value>& args,
+                                  Err* err);
 
 // One function record. Only one of the given runner types will be non-null
 // which indicates the type of function it is.
@@ -76,8 +72,10 @@ struct FunctionInfo {
   NoBlockFunction no_block_runner = nullptr;
 };
 
-typedef std::map<StringPiece, FunctionInfo> FunctionInfoMap;
+using FunctionInfoMap = std::map<StringPiece, FunctionInfo>;
+using FunctionInfoMapEntry = FunctionInfoMap::value_type;
 
+// TODO(vtl): Delete this.
 // Returns the mapping of all built-in functions.
 const FunctionInfoMap& GetFunctions();
 
@@ -88,40 +86,31 @@ Value RunFunction(Scope* scope,
                   BlockNode* block,  // Optional.
                   Err* err);
 
-// -----------------------------------------------------------------------------
+namespace functions {
 
 Value RunAssert(Scope* scope,
                 const FunctionCallNode* function,
                 const std::vector<Value>& args,
                 Err* err);
-inline FunctionInfoMap::value_type AssertFn() {
-  return std::make_pair("assert", &RunAssert);
-}
+inline FunctionInfoMapEntry AssertFn() { return {"assert", &RunAssert}; }
 
 Value RunDefined(Scope* scope,
                  const FunctionCallNode* function,
                  const ListNode* args_list,
                  Err* err);
-inline FunctionInfoMap::value_type DefinedFn() {
-  return std::make_pair("defined", &RunDefined);
-}
+inline FunctionInfoMapEntry DefinedFn() { return {"defined", &RunDefined}; }
 
-extern const char kForEach[];
 Value RunForEach(Scope* scope,
                  const FunctionCallNode* function,
                  const ListNode* args_list,
                  Err* err);
-inline FunctionInfoMap::value_type ForEachFn() {
-  return std::make_pair("foreach", &RunForEach);
-}
+inline FunctionInfoMapEntry ForEachFn() { return {"foreach", &RunForEach}; }
 
 Value RunPrint(Scope* scope,
                const FunctionCallNode* function,
                const std::vector<Value>& args,
                Err* err);
-inline FunctionInfoMap::value_type PrintFn() {
-  return std::make_pair("print", &RunPrint);
-}
+inline FunctionInfoMapEntry PrintFn() { return {"print", &RunPrint}; }
 
 //FIXME
 /*

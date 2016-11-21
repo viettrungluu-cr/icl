@@ -172,21 +172,16 @@ bool NonNestableBlock::Enter(Err* err) {
   return true;
 }
 
-namespace functions {
-
 // Setup the function map via a static initializer. We use this because it
 // avoids race conditions without having to do some global setup function or
 // locking-heavy singleton checks at runtime. In practice, we always need this
 // before we can do anything interesting, so it's OK to wait for the
 // initializer.
 struct FunctionInfoInitializer {
-  FunctionInfoMap map = {AssertFn(), DefinedFn(), ForEachFn(), PrintFn()};
-
+  FunctionInfoMap map = {functions::AssertFn(), functions::DefinedFn(),
+                         functions::ForEachFn(), functions::PrintFn()};
+//FIXME
 /*
-  FunctionInfoInitializer() {
-    #define INSERT_FUNCTION(command) \
-        map.emplace(std::make_pair(k##command, &Run##command));
-
     INSERT_FUNCTION(Config)
     INSERT_FUNCTION(DeclareArgs)
     INSERT_FUNCTION(ForwardVariablesFrom)
@@ -199,9 +194,6 @@ struct FunctionInfoInitializer {
     INSERT_FUNCTION(SplitList)
     INSERT_FUNCTION(Template)
     INSERT_FUNCTION(WriteFile)
-
-    #undef INSERT_FUNCTION
-  }
 */
 };
 const FunctionInfoInitializer function_info;
@@ -243,7 +235,8 @@ Value RunFunction(Scope* scope,
     // Self evaluating args functions are special weird built-ins like foreach.
     // Rather than force them all to check that they have a block or no block
     // and risk bugs for new additions, check a whitelist here.
-    if (found_function->second.self_evaluating_args_runner != &RunForEach) {
+    if (found_function->second.self_evaluating_args_runner !=
+            &functions::RunForEach) {
       if (!VerifyNoBlockForFunctionCall(function, block, err))
         return Value();
     }
@@ -292,6 +285,8 @@ Value RunFunction(Scope* scope,
   return found_function->second.no_block_runner(scope, function,
                                                 args.list_value(), err);
 }
+
+namespace functions {
 
 // assert ----------------------------------------------------------------------
 
