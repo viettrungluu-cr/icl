@@ -56,27 +56,6 @@ typedef Value (*NoBlockFunction)(Scope* scope,
                                  const std::vector<Value>& args,
                                  Err* err);
 
-//FIXME delete probably
-/*
-extern const char kAction[];
-extern const char kAction_HelpShort[];
-extern const char kAction_Help[];
-Value RunAction(Scope* scope,
-                const FunctionCallNode* function,
-                const std::vector<Value>& args,
-                BlockNode* block,
-                Err* err);
-
-extern const char kActionForEach[];
-extern const char kActionForEach_HelpShort[];
-extern const char kActionForEach_Help[];
-Value RunActionForEach(Scope* scope,
-                       const FunctionCallNode* function,
-                       const std::vector<Value>& args,
-                       BlockNode* block,
-                       Err* err);
-*/
-
 extern const char kAssert[];
 extern const char kAssert_HelpShort[];
 extern const char kAssert_Help[];
@@ -87,24 +66,6 @@ Value RunAssert(Scope* scope,
 
 //FIXME
 /*
-extern const char kBundleData[];
-extern const char kBundleData_HelpShort[];
-extern const char kBundleData_Help[];
-Value RunBundleData(Scope* scope,
-                    const FunctionCallNode* function,
-                    const std::vector<Value>& args,
-                    BlockNode* block,
-                    Err* err);
-
-extern const char kCreateBundle[];
-extern const char kCreateBundle_HelpShort[];
-extern const char kCreateBundle_Help[];
-Value RunCreateBundle(Scope* scope,
-                      const FunctionCallNode* function,
-                      const std::vector<Value>& args,
-                      BlockNode* block,
-                      Err* err);
-
 extern const char kConfig[];
 extern const char kConfig_HelpShort[];
 extern const char kConfig_Help[];
@@ -112,14 +73,6 @@ Value RunConfig(const FunctionCallNode* function,
                 const std::vector<Value>& args,
                 Scope* block_scope,
                 Err* err);
-
-extern const char kCopy[];
-extern const char kCopy_HelpShort[];
-extern const char kCopy_Help[];
-Value RunCopy(const FunctionCallNode* function,
-              const std::vector<Value>& args,
-              Scope* block_scope,
-              Err* err);
 
 extern const char kDeclareArgs[];
 extern const char kDeclareArgs_HelpShort[];
@@ -138,26 +91,6 @@ Value RunDefined(Scope* scope,
                  const FunctionCallNode* function,
                  const ListNode* args_list,
                  Err* err);
-
-//FIXME
-/*
-extern const char kExecScript[];
-extern const char kExecScript_HelpShort[];
-extern const char kExecScript_Help[];
-Value RunExecScript(Scope* scope,
-                    const FunctionCallNode* function,
-                    const std::vector<Value>& args,
-                    Err* err);
-
-extern const char kExecutable[];
-extern const char kExecutable_HelpShort[];
-extern const char kExecutable_Help[];
-Value RunExecutable(Scope* scope,
-                    const FunctionCallNode* function,
-                    const std::vector<Value>& args,
-                    BlockNode* block,
-                    Err* err);
-*/
 
 extern const char kForEach[];
 extern const char kForEach_HelpShort[];
@@ -185,14 +118,6 @@ Value RunGetEnv(Scope* scope,
                 const std::vector<Value>& args,
                 Err* err);
 
-extern const char kGetLabelInfo[];
-extern const char kGetLabelInfo_HelpShort[];
-extern const char kGetLabelInfo_Help[];
-Value RunGetLabelInfo(Scope* scope,
-                      const FunctionCallNode* function,
-                      const std::vector<Value>& args,
-                      Err* err);
-
 extern const char kGetPathInfo[];
 extern const char kGetPathInfo_HelpShort[];
 extern const char kGetPathInfo_Help[];
@@ -201,23 +126,6 @@ Value RunGetPathInfo(Scope* scope,
                      const std::vector<Value>& args,
                      Err* err);
 
-extern const char kGetTargetOutputs[];
-extern const char kGetTargetOutputs_HelpShort[];
-extern const char kGetTargetOutputs_Help[];
-Value RunGetTargetOutputs(Scope* scope,
-                          const FunctionCallNode* function,
-                          const std::vector<Value>& args,
-                          Err* err);
-
-extern const char kGroup[];
-extern const char kGroup_HelpShort[];
-extern const char kGroup_Help[];
-Value RunGroup(Scope* scope,
-               const FunctionCallNode* function,
-               const std::vector<Value>& args,
-               BlockNode* block,
-               Err* err);
-
 extern const char kImport[];
 extern const char kImport_HelpShort[];
 extern const char kImport_Help[];
@@ -225,23 +133,6 @@ Value RunImport(Scope* scope,
                 const FunctionCallNode* function,
                 const std::vector<Value>& args,
                 Err* err);
-
-extern const char kLoadableModule[];
-extern const char kLoadableModule_HelpShort[];
-extern const char kLoadableModule_Help[];
-Value RunLoadableModule(Scope* scope,
-                        const FunctionCallNode* function,
-                        const std::vector<Value>& args,
-                        BlockNode* block,
-                        Err* err);
-
-extern const char kPool[];
-extern const char kPool_HelpShort[];
-extern const char kPool_Help[];
-Value RunPool(const FunctionCallNode* function,
-              const std::vector<Value>& args,
-              Scope* block_scope,
-              Err* err);
 */
 
 extern const char kPrint[];
@@ -278,49 +169,6 @@ Value RunRebasePath(Scope* scope,
                     const std::vector<Value>& args,
                     Err* err);
 
-extern const char kSetDefaults[];
-extern const char kSetDefaults_HelpShort[];
-extern const char kSetDefaults_Help[];
-Value RunSetDefaults(Scope* scope,
-                     const FunctionCallNode* function,
-                     const std::vector<Value>& args,
-                     BlockNode* block,
-                     Err* err);
-
-extern const char kSetDefaultToolchain[];
-extern const char kSetDefaultToolchain_HelpShort[];
-extern const char kSetDefaultToolchain_Help[];
-Value RunSetDefaultToolchain(Scope* scope,
-                             const FunctionCallNode* function,
-                             const std::vector<Value>& args,
-                             Err* err);
-
-extern const char kSetSourcesAssignmentFilter[];
-extern const char kSetSourcesAssignmentFilter_HelpShort[];
-extern const char kSetSourcesAssignmentFilter_Help[];
-Value RunSetSourcesAssignmentFilter(Scope* scope,
-                                    const FunctionCallNode* function,
-                                    const std::vector<Value>& args,
-                                    Err* err);
-
-extern const char kSharedLibrary[];
-extern const char kSharedLibrary_HelpShort[];
-extern const char kSharedLibrary_Help[];
-Value RunSharedLibrary(Scope* scope,
-                       const FunctionCallNode* function,
-                       const std::vector<Value>& args,
-                       BlockNode* block,
-                       Err* err);
-
-extern const char kSourceSet[];
-extern const char kSourceSet_HelpShort[];
-extern const char kSourceSet_Help[];
-Value RunSourceSet(Scope* scope,
-                   const FunctionCallNode* function,
-                   const std::vector<Value>& args,
-                   BlockNode* block,
-                   Err* err);
-
 extern const char kSplitList[];
 extern const char kSplitList_HelpShort[];
 extern const char kSplitList_Help[];
@@ -328,24 +176,6 @@ Value RunSplitList(Scope* scope,
                    const FunctionCallNode* function,
                    const ListNode* args_list,
                    Err* err);
-
-extern const char kStaticLibrary[];
-extern const char kStaticLibrary_HelpShort[];
-extern const char kStaticLibrary_Help[];
-Value RunStaticLibrary(Scope* scope,
-                       const FunctionCallNode* function,
-                       const std::vector<Value>& args,
-                       BlockNode* block,
-                       Err* err);
-
-extern const char kTarget[];
-extern const char kTarget_HelpShort[];
-extern const char kTarget_Help[];
-Value RunTarget(Scope* scope,
-                const FunctionCallNode* function,
-                const std::vector<Value>& args,
-                BlockNode* block,
-                Err* err);
 
 extern const char kTemplate[];
 extern const char kTemplate_HelpShort[];
@@ -355,24 +185,6 @@ Value RunTemplate(Scope* scope,
                   const std::vector<Value>& args,
                   BlockNode* block,
                   Err* err);
-
-extern const char kTool[];
-extern const char kTool_HelpShort[];
-extern const char kTool_Help[];
-Value RunTool(Scope* scope,
-              const FunctionCallNode* function,
-              const std::vector<Value>& args,
-              BlockNode* block,
-              Err* err);
-
-extern const char kToolchain[];
-extern const char kToolchain_HelpShort[];
-extern const char kToolchain_Help[];
-Value RunToolchain(Scope* scope,
-                   const FunctionCallNode* function,
-                   const std::vector<Value>& args,
-                   BlockNode* block,
-                   Err* err);
 
 extern const char kWriteFile[];
 extern const char kWriteFile_HelpShort[];
@@ -433,7 +245,7 @@ Value RunFunction(Scope* scope,
 
 // Helper functions -----------------------------------------------------------
 
-//FIXME delete probably
+//FIXME delete maybe
 /*
 // Verifies that the current scope is not processing an import. If it is, it
 // will set the error, blame the given parse node for it, and return false.
@@ -474,18 +286,6 @@ void FillNeedsBlockError(const FunctionCallNode* function, Err* err);
 bool EnsureSingleStringArg(const FunctionCallNode* function,
                            const std::vector<Value>& args,
                            Err* err);
-
-//FIXME delete probably
-/*
-// Returns the name of the toolchain for the given scope.
-const Label& ToolchainLabelForScope(const Scope* scope);
-
-// Generates a label for the given scope, using the current directory and
-// toolchain, and the given name.
-Label MakeLabelForScope(const Scope* scope,
-                        const FunctionCallNode* function,
-                        const std::string& name);
-*/
 
 // Some tyesp of blocks can't be nested inside other ones. For such cases,
 // instantiate this object upon entering the block and Enter() will fail if

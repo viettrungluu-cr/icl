@@ -139,21 +139,6 @@ bool EnsureSingleStringArg(const FunctionCallNode* function,
   return args[0].VerifyTypeIs(Value::STRING, err);
 }
 
-//FIXME delete probably
-/*
-const Label& ToolchainLabelForScope(const Scope* scope) {
-  return scope->settings()->toolchain_label();
-}
-
-Label MakeLabelForScope(const Scope* scope,
-                        const FunctionCallNode* function,
-                        const std::string& name) {
-  const Label& toolchain_label = ToolchainLabelForScope(scope);
-  return Label(scope->GetSourceDir(), name, toolchain_label.dir(),
-               toolchain_label.name());
-}
-*/
-
 // static
 const int NonNestableBlock::kKey = 0;
 
@@ -629,174 +614,6 @@ Value RunImport(Scope* scope,
   }
   return Value();
 }
-
-// set_sources_assignment_filter -----------------------------------------------
-
-const char kSetSourcesAssignmentFilter[] = "set_sources_assignment_filter";
-const char kSetSourcesAssignmentFilter_HelpShort[] =
-    "set_sources_assignment_filter: Set a pattern to filter source files.";
-const char kSetSourcesAssignmentFilter_Help[] =
-    R"(set_sources_assignment_filter: Set a pattern to filter source files.
-
-  The sources assignment filter is a list of patterns that remove files from
-  the list implicitly whenever the "sources" variable is assigned to. This will
-  do nothing for non-lists.
-
-  This is intended to be used to globally filter out files with
-  platform-specific naming schemes when they don't apply, for example you may
-  want to filter out all "*_win.cc" files on non-Windows platforms.
-
-  Typically this will be called once in the master build config script to set
-  up the filter for the current platform. Subsequent calls will overwrite the
-  previous values.
-
-  If you want to bypass the filter and add a file even if it might be filtered
-  out, call set_sources_assignment_filter([]) to clear the list of filters.
-  This will apply until the current scope exits
-
-How to use patterns
-
-  File patterns are VERY limited regular expressions. They must match the
-  entire input string to be counted as a match. In regular expression parlance,
-  there is an implicit "^...$" surrounding your input. If you want to match a
-  substring, you need to use wildcards at the beginning and end.
-
-  There are only two special tokens understood by the pattern matcher.
-  Everything else is a literal.
-
-   - "*" Matches zero or more of any character. It does not depend on the
-     preceding character (in regular expression parlance it is equivalent to
-     ".*").
-
-   - "\b" Matches a path boundary. This will match the beginning or end of a
-     string, or a slash.
-
-Pattern examples
-
-  "*asdf*"
-      Matches a string containing "asdf" anywhere.
-
-  "asdf"
-      Matches only the exact string "asdf".
-
-  "*.cc"
-      Matches strings ending in the literal ".cc".
-
-  "\bwin/*"
-      Matches "win/foo" and "foo/win/bar.cc" but not "iwin/foo".
-
-Sources assignment example
-
-  # Filter out all _win files.
-  set_sources_assignment_filter([ "*_win.cc", "*_win.h" ])
-  sources = [ "a.cc", "b_win.cc" ]
-  print(sources)
-  # Will print [ "a.cc" ]. b_win one was filtered out.
-)";
-
-Value RunSetSourcesAssignmentFilter(Scope* scope,
-                                    const FunctionCallNode* function,
-                                    const std::vector<Value>& args,
-                                    Err* err) {
-  if (args.size() != 1) {
-    *err = Err(function, "set_sources_assignment_filter takes one argument.");
-  } else {
-    std::unique_ptr<PatternList> f(new PatternList);
-    f->SetFromValue(args[0], err);
-    if (!err->has_error())
-      scope->set_sources_assignment_filter(std::move(f));
-  }
-  return Value();
-}
-
-// pool ------------------------------------------------------------------------
-
-const char kPool[] = "pool";
-const char kPool_HelpShort[] =
-    "pool: Defines a pool object.";
-const char kPool_Help[] =
-    R"*(pool: Defines a pool object.
-
-  Pool objects can be applied to a tool to limit the parallelism of the
-  build. This object has a single property "depth" corresponding to
-  the number of tasks that may run simultaneously.
-
-  As the file containing the pool definition may be executed in the
-  context of more than one toolchain it is recommended to specify an
-  explicit toolchain when defining and referencing a pool.
-
-  A pool is referenced by its label just like a target.
-
-Variables
-
-  depth*
-  * = required
-
-Example
-
-  if (current_toolchain == default_toolchain) {
-    pool("link_pool") {
-      depth = 1
-    }
-  }
-
-  toolchain("toolchain") {
-    tool("link") {
-      command = "..."
-      pool = ":link_pool($default_toolchain)")
-    }
-  }
-)*";
-
-const char kDepth[] = "depth";
-
-Value RunPool(const FunctionCallNode* function,
-              const std::vector<Value>& args,
-              Scope* scope,
-              Err* err) {
-  NonNestableBlock non_nestable(scope, function, "pool");
-  if (!non_nestable.Enter(err))
-    return Value();
-
-  if (!EnsureSingleStringArg(function, args, err) ||
-      !EnsureNotProcessingImport(function, scope, err))
-    return Value();
-
-  Label label(MakeLabelForScope(scope, function, args[0].string_value()));
-
-  if (g_scheduler->verbose_logging())
-    g_scheduler->Log("Defining pool", label.GetUserVisibleName(true));
-
-  // Get the pool depth. It is an error to define a pool without a depth,
-  // so check first for the presence of the value.
-  const Value* depth = scope->GetValue(kDepth, true);
-  if (!depth) {
-    *err = Err(function, "Can't define a pool without depth.");
-    return Value();
-  }
-
-  if (!depth->VerifyTypeIs(Value::INTEGER, err))
-    return Value();
-
-  if (depth->int_value() < 0) {
-    *err = Err(function, "depth must be positive or nul.");
-    return Value();
-  }
-
-  // Create the new pool.
-  std::unique_ptr<Pool> pool(new Pool(scope->settings(), label));
-  pool->set_depth(depth->int_value());
-
-  // Save the generated item.
-  Scope::ItemVector* collector = scope->GetItemCollector();
-  if (!collector) {
-    *err = Err(function, "Can't define a pool in this context.");
-    return Value();
-  }
-  collector->push_back(pool.release());
-
-  return Value();
-}
 #endif
 
 // print -----------------------------------------------------------------------
@@ -1006,22 +823,6 @@ struct FunctionInfoInitializer {
                                        k##command##_Help, \
                                        is_target);
 
-//FIXME
-/*
-    INSERT_FUNCTION(Action, true)
-    INSERT_FUNCTION(ActionForEach, true)
-    INSERT_FUNCTION(BundleData, true)
-    INSERT_FUNCTION(CreateBundle, true)
-    INSERT_FUNCTION(Copy, true)
-    INSERT_FUNCTION(Executable, true)
-    INSERT_FUNCTION(Group, true)
-    INSERT_FUNCTION(LoadableModule, true)
-    INSERT_FUNCTION(SharedLibrary, true)
-    INSERT_FUNCTION(SourceSet, true)
-    INSERT_FUNCTION(StaticLibrary, true)
-    INSERT_FUNCTION(Target, true)
-*/
-
     INSERT_FUNCTION(Assert, false)
 //FIXME
 /*
@@ -1029,20 +830,13 @@ struct FunctionInfoInitializer {
     INSERT_FUNCTION(DeclareArgs, false)
 */
     INSERT_FUNCTION(Defined, false)
-//FIXME
-/*
-    INSERT_FUNCTION(ExecScript, false)
-*/
     INSERT_FUNCTION(ForEach, false)
 //FIXME
 /*
     INSERT_FUNCTION(ForwardVariablesFrom, false)
     INSERT_FUNCTION(GetEnv, false)
-    INSERT_FUNCTION(GetLabelInfo, false)
     INSERT_FUNCTION(GetPathInfo, false)
-    INSERT_FUNCTION(GetTargetOutputs, false)
     INSERT_FUNCTION(Import, false)
-    INSERT_FUNCTION(Pool, false)
 */
     INSERT_FUNCTION(Print, false)
 //FIXME
@@ -1050,13 +844,8 @@ struct FunctionInfoInitializer {
     INSERT_FUNCTION(ProcessFileTemplate, false)
     INSERT_FUNCTION(ReadFile, false)
     INSERT_FUNCTION(RebasePath, false)
-    INSERT_FUNCTION(SetDefaults, false)
-    INSERT_FUNCTION(SetDefaultToolchain, false)
-    INSERT_FUNCTION(SetSourcesAssignmentFilter, false)
     INSERT_FUNCTION(SplitList, false)
     INSERT_FUNCTION(Template, false)
-    INSERT_FUNCTION(Tool, false)
-    INSERT_FUNCTION(Toolchain, false)
     INSERT_FUNCTION(WriteFile, false)
 */
 
