@@ -11,21 +11,18 @@
 #include <string>
 #include <utility>
 
-#include "icl/function_impls.h"
+#include "icl/delegate.h"
+#include "icl/function_impls.h"  //FIXME remove this dependency
 #include "icl/err.h"
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
 #include "icl/token.h"
 #include "icl/value.h"
 /*
-#include "base/environment.h"
-#include "base/strings/string_util.h"
 #include "tools/gn/config.h"
 #include "tools/gn/config_values_generator.h"
 #include "tools/gn/input_file.h"
 #include "tools/gn/parse_node_value_adapter.h"
-#include "tools/gn/pool.h"
-#include "tools/gn/scheduler.h"
 #include "tools/gn/template.h"
 #include "tools/gn/value_extractors.h"
 #include "tools/gn/variables.h"
@@ -162,38 +159,6 @@ bool NonNestableBlock::Enter(Err* err) {
   return true;
 }
 
-// Setup the function map via a static initializer. We use this because it
-// avoids race conditions without having to do some global setup function or
-// locking-heavy singleton checks at runtime. In practice, we always need this
-// before we can do anything interesting, so it's OK to wait for the
-// initializer.
-struct FunctionInfoInitializer {
-  FunctionInfoMap map = {function_impls::AssertFn(),
-                         function_impls::DefinedFn(),
-                         function_impls::ForEachFn(),
-                         function_impls::PrintFn()};
-//FIXME
-/*
-    INSERT_FUNCTION(Config)
-    INSERT_FUNCTION(DeclareArgs)
-    INSERT_FUNCTION(ForwardVariablesFrom)
-    INSERT_FUNCTION(GetEnv)
-    INSERT_FUNCTION(GetPathInfo)
-    INSERT_FUNCTION(Import)
-    INSERT_FUNCTION(ProcessFileTemplate)
-    INSERT_FUNCTION(ReadFile)
-    INSERT_FUNCTION(RebasePath)
-    INSERT_FUNCTION(SplitList)
-    INSERT_FUNCTION(Template)
-    INSERT_FUNCTION(WriteFile)
-*/
-};
-const FunctionInfoInitializer function_info;
-
-const FunctionInfoMap& GetFunctions() {
-  return function_info.map;
-}
-
 Value RunFunction(Scope* scope,
                   const FunctionCallNode* function,
                   const ListNode* args_list,
@@ -201,7 +166,7 @@ Value RunFunction(Scope* scope,
                   Err* err) {
   const Token& name = function->function();
 
-  const FunctionInfoMap& function_map = GetFunctions();
+  const FunctionInfoMap& function_map = scope->delegate()->GetFunctions();
   FunctionInfoMap::const_iterator found_function =
       function_map.find(name.value());
   if (found_function == function_map.end()) {

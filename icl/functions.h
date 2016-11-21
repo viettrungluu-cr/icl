@@ -22,10 +22,6 @@ class Scope;
 class Token;
 class Value;
 
-// -----------------------------------------------------------------------------
-
-// TODO(vtl): Move these into a separate function_info.h.
-
 // This type of function invocation has no block and evaluates its arguments
 // itself rather than taking a pre-executed list. This allows us to implement
 // certain built-in functions.

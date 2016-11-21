@@ -24,8 +24,6 @@
 #include "tools/gn/config_values_generator.h"
 #include "tools/gn/input_file.h"
 #include "tools/gn/parse_node_value_adapter.h"
-#include "tools/gn/pool.h"
-#include "tools/gn/scheduler.h"
 #include "tools/gn/template.h"
 #include "tools/gn/value_extractors.h"
 #include "tools/gn/variables.h"

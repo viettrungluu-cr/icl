@@ -6,6 +6,7 @@
 
 #include "icl/delegate.h"
 #include "icl/err.h"
+#include "icl/function_impls.h"
 #include "icl/input_file.h"
 #include "icl/parse_tree.h"
 #include "icl/parser.h"
@@ -29,11 +30,25 @@ class DelegateImpl : public icl::Delegate {
   DelegateImpl() = default;
   ~DelegateImpl() = default;
 
+  DelegateImpl(const DelegateImpl&) = delete;
+  DelegateImpl& operator=(const DelegateImpl&) = delete;
+
   // |icl::Delegate| methods:
   void Print(const std::string& s) override {
     fputs(s.c_str(), stdout);
   }
+  const icl::FunctionInfoMap& GetFunctions() const override {
+    return functions_;
+  }
+
+ private:
+  static const icl::FunctionInfoMap functions_;
 };
+
+// static
+const icl::FunctionInfoMap DelegateImpl::functions_ =
+    {icl::function_impls::AssertFn(), icl::function_impls::DefinedFn(),
+     icl::function_impls::ForEachFn(), icl::function_impls::PrintFn()};
 
 }  // namespace
 

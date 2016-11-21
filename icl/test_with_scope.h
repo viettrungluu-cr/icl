@@ -43,8 +43,11 @@ class TestWithScope : public Delegate {
 
   // |Delegate| methods:
   void Print(const std::string& s) override;
+  const FunctionInfoMap& GetFunctions() const override;
 
  private:
+  static const FunctionInfoMap functions_;
+
   Scope scope_;
   Scope::ItemVector items_;
 

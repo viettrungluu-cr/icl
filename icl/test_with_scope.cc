@@ -4,10 +4,17 @@
 
 #include "icl/test_with_scope.h"
 
+#include "icl/function_impls.h"
 #include "icl/parser.h"
 #include "icl/tokenizer.h"
 
 namespace icl {
+
+// static
+const FunctionInfoMap TestWithScope::functions_ = {function_impls::AssertFn(),
+                                                   function_impls::DefinedFn(),
+                                                   function_impls::ForEachFn(),
+                                                   function_impls::PrintFn()};
 
 TestWithScope::TestWithScope()
       : scope_(this) {
@@ -21,6 +28,10 @@ TestWithScope::~TestWithScope() {
 
 void TestWithScope::Print(const std::string& s) {
   print_output_.append(s);
+}
+
+const FunctionInfoMap& TestWithScope::GetFunctions() const {
+  return functions_;
 }
 
 TestParseInput::TestParseInput(const std::string& input)

@@ -7,6 +7,8 @@
 
 #include <string>
 
+#include "icl/functions.h"
+
 namespace icl {
 
 // Interface for the user to provide various required functionality/settings.
@@ -21,6 +23,8 @@ class Delegate {
  public:
   // TODO(vtl): Should this take a |StringPiece| instead?
   virtual void Print(const std::string& s) = 0;
+
+  virtual const FunctionInfoMap& GetFunctions() const = 0;
 
  protected:
   Delegate() = default;
