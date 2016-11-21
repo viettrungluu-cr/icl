@@ -29,7 +29,9 @@ source_set("icl") {
     "delegate.h",
     "err.cc",
     "err.h",
-    "function_foreach.cc",
+    "function_impls_foreach.cc",
+    "function_impls.cc",
+    "function_impls.h",
     "functions.cc",
     "functions.h",
     "input_file.cc",
@@ -88,7 +90,7 @@ source_set("icl_test_support") {
 
 test("functions_test") {
   sources = [
-    "function_foreach_unittest.cc",
+    "function_impls_foreach_unittest.cc",
     "functions_unittest.cc",
   ]
 

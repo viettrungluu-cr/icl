@@ -2,12 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+//FIXME split this file (functions/function_impls)
+
 #include "icl/functions.h"
 
 #include <gtest/gtest.h>
 
 #include <utility>
 
+#include "icl/function_impls.h"
 #include "icl/parse_tree.h"
 #include "icl/test_with_scope.h"
 #include "icl/value.h"
@@ -26,8 +29,9 @@ TEST(Functions, Defined) {
   ListNode args_list_identifier_undefined;
   args_list_identifier_undefined.append_item(
       std::unique_ptr<ParseNode>(new IdentifierNode(undefined_token)));
-  Value result = functions::RunDefined(setup.scope(), &function_call,
-                                       &args_list_identifier_undefined, &err);
+  Value result = function_impls::RunDefined(setup.scope(), &function_call,
+                                            &args_list_identifier_undefined,
+                                            &err);
   ASSERT_EQ(Value::BOOLEAN, result.type());
   EXPECT_FALSE(result.boolean_value());
 
@@ -42,8 +46,8 @@ TEST(Functions, Defined) {
   ListNode args_list_identifier_defined;
   args_list_identifier_defined.append_item(
       std::unique_ptr<ParseNode>(new IdentifierNode(defined_token)));
-  result = functions::RunDefined(setup.scope(), &function_call,
-                                 &args_list_identifier_defined, &err);
+  result = function_impls::RunDefined(setup.scope(), &function_call,
+                                      &args_list_identifier_defined, &err);
   ASSERT_EQ(Value::BOOLEAN, result.type());
   EXPECT_TRUE(result.boolean_value());
 
@@ -56,8 +60,8 @@ TEST(Functions, Defined) {
       std::unique_ptr<IdentifierNode>(new IdentifierNode((undefined_token))));
   ListNode args_list_accessor_defined;
   args_list_accessor_defined.append_item(std::move(undef_accessor));
-  result = functions::RunDefined(setup.scope(), &function_call,
-                                 &args_list_accessor_defined, &err);
+  result = function_impls::RunDefined(setup.scope(), &function_call,
+                                      &args_list_accessor_defined, &err);
   ASSERT_EQ(Value::BOOLEAN, result.type());
   EXPECT_FALSE(result.boolean_value());
 }

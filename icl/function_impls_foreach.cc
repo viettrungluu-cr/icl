@@ -3,13 +3,13 @@
 // found in the LICENSE file.
 
 #include "icl/err.h"
-#include "icl/functions.h"  // Where |RunForEach()| is declared.
+#include "icl/function_impls.h"  // Where |RunForEach()| is declared.
 #include "icl/parse_node_value_adapter.h"
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
 
 namespace icl {
-namespace functions {
+namespace function_impls {
 
 Value RunForEach(Scope* scope,
                  const FunctionCallNode* function,
@@ -72,5 +72,5 @@ Value RunForEach(Scope* scope,
   return Value();
 }
 
-}  // namespace functions
+}  // namespace function_impls
 }  // namespace icl
