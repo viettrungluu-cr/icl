@@ -2,30 +2,31 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "tools/gn/string_utils.h"
+#include "icl/string_utils.h"
 
+#include <gtest/gtest.h>
 #include <stdint.h>
+
+#include <memory>
 #include <utility>
 
-#include "testing/gtest/include/gtest/gtest.h"
-#include "tools/gn/err.h"
-#include "tools/gn/scope.h"
-#include "tools/gn/settings.h"
-#include "tools/gn/token.h"
-#include "tools/gn/value.h"
+#include "icl/err.h"
+#include "icl/scope.h"
+#include "icl/string_piece.h"
+#include "icl/token.h"
+#include "icl/value.h"
 
 namespace icl {
 namespace {
 
 bool CheckExpansionCase(const char* input, const char* expected, bool success) {
-  Scope scope(static_cast<const Settings*>(nullptr));
+  Scope scope(static_cast<Delegate*>(nullptr));
   int64_t one = 1;
   scope.SetValue("one", Value(nullptr, one), nullptr);
   scope.SetValue("onestring", Value(nullptr, "one"), nullptr);
 
   // Nested scope called "onescope" with a value "one" inside it.
-  std::unique_ptr<Scope> onescope(
-      new Scope(static_cast<const Settings*>(nullptr)));
+  std::unique_ptr<Scope> onescope(new Scope(static_cast<Delegate*>(nullptr)));
   onescope->SetValue("one", Value(nullptr, one), nullptr);
   scope.SetValue("onescope", Value(nullptr, std::move(onescope)), nullptr);
 
@@ -53,7 +54,6 @@ bool CheckExpansionCase(const char* input, const char* expected, bool success) {
 
   if (!success)
     return true;  // Don't check result on failure.
-  printf("%s\n", result.string_value().c_str());
   return result.string_value() == expected;
 }
 
@@ -112,6 +112,8 @@ TEST(StringUtils, ExpandStringLiteralExpression) {
   EXPECT_TRUE(CheckExpansionCase("${print(1)}", nullptr, false));
 }
 
+//FIXME
+/*
 TEST(StringUtils, EditDistance) {
   EXPECT_EQ(3u, EditDistance("doom melon", "dune melon", 100));
   EXPECT_EQ(2u, EditDistance("doom melon", "dune melon", 1));
@@ -139,7 +141,7 @@ TEST(StringUtils, EditDistance) {
 }
 
 TEST(StringUtils, SpellcheckString) {
-  std::vector<base::StringPiece> words;
+  std::vector<StringPiece> words;
   words.push_back("your");
   words.push_back("bravado");
   words.push_back("won\'t");
@@ -152,6 +154,7 @@ TEST(StringUtils, SpellcheckString) {
   // barbados has an edit distance of 4 from bravado, so there's no suggestion.
   EXPECT_TRUE(SpellcheckString("barbados", words).empty());
 }
+*/
 
 }  // namespace
 }  // namespace icl

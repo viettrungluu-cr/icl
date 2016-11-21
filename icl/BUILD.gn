@@ -11,6 +11,7 @@ group("tests") {
     ":parser_test",
     ":tokenizer_test",
     ":scope_test",
+    ":string_utils_test",
     ":value_test",
 
     # string_number_conversions:
@@ -140,6 +141,16 @@ test("scope_test") {
   deps = [
     ":icl",
     ":icl_test_support",
+  ]
+}
+
+test("string_utils_test") {
+  sources = [
+    "string_utils_unittest.cc",
+  ]
+
+  deps = [
+    ":icl",
   ]
 }
 

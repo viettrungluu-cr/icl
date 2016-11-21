@@ -239,8 +239,8 @@ bool AppendHexByte(Scope* scope,
         "Invalid hex character. Hex values must look like 0xFF.");
     return false;
   }
-  uint8_t value = static_cast<uint8_t>(HexDigitValue(input[*i + 2] * 16u +
-                                       HexDigitValue(input[*i + 3])));
+  uint8_t value = static_cast<uint8_t>(HexDigitValue(input[*i + 2]) * 16u +
+                                       HexDigitValue(input[*i + 3]));
   char value_as_char;
   memcpy(&value_as_char, &value, 1u);
   *i += 3;
