@@ -25,6 +25,7 @@ group("tests") {
 
 source_set("icl") {
   sources = [
+    "delegate.h",
     "err.cc",
     "err.h",
     "function_foreach.cc",

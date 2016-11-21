@@ -8,8 +8,7 @@
 #include <string>
 #include <vector>
 
-//FIXME
-//#include "tools/gn/build_settings.h"
+#include "icl/delegate.h"
 #include "icl/err.h"
 #include "icl/input_file.h"
 #include "icl/parse_tree.h"
@@ -25,7 +24,9 @@ namespace icl {
 
 // A helper class for setting up a Scope that a test can use. It makes a
 // toolchain and sets up all the build state.
-class TestWithScope {
+//
+// Note: This implements |Delegate| and is not thread-safe.
+class TestWithScope : public Delegate {
  public:
   TestWithScope();
   ~TestWithScope();
@@ -33,57 +34,30 @@ class TestWithScope {
   TestWithScope(const TestWithScope&) = delete;
   TestWithScope& operator=(const TestWithScope&) = delete;
 
-//FIXME
-//  BuildSettings* build_settings() { return &build_settings_; }
+//FIXME remove settings
   Settings* settings() { return &settings_; }
   const Settings* settings() const { return &settings_; }
-//FIXME
-//  Toolchain* toolchain() { return &toolchain_; }
-//  const Toolchain* toolchain() const { return &toolchain_; }
   Scope* scope() { return &scope_; }
   const Scope::ItemVector& items() { return items_; }
 
-//FIXME
-#if 0
   // This buffer accumulates output from any print() commands executed in the
   // context of this test. Note that the implementation of this is not
   // threadsafe so don't write tests that call print from multiple threads.
   std::string& print_output() { return print_output_; }
 
-  // Parse the given string into a label in the default toolchain. This will
-  // assert if the label isn't valid (this is intended for hardcoded labels).
-  Label ParseLabel(const std::string& str) const;
-
-  // Parses, evaluates, and resolves targets from the given snippet of code.
-  // All targets must be defined in dependency order (does not use a Builder,
-  // just blindly resolves all targets in order).
-  bool ExecuteSnippet(const std::string& str, Err* err);
-
-  // Fills in the tools for the given toolchain with reasonable default values.
-  // The toolchain in this object will be automatically set up with this
-  // function, it is exposed to allow tests to get the same functionality for
-  // other toolchains they make.
-  static void SetupToolchain(Toolchain* toolchain);
-
-  // Sets the given text command on the given tool, parsing it as a
-  // substitution pattern. This will assert if the input is malformed. This is
-  // designed to help setting up Tools for tests.
-  static void SetCommandForTool(const std::string& cmd, Tool* tool);
-#endif
+  // |Delegate| methods:
+  void Print(const std::string& s) override;
 
  private:
-//  void AppendPrintOutput(const std::string& str);
-
-//  BuildSettings build_settings_;
   Settings settings_;
-//  Toolchain toolchain_;
   Scope scope_;
   Scope::ItemVector items_;
 
   // Supplies the scope with built-in variables like root_out_dir.
+//FIXME
 //  ScopePerFileProvider scope_progammatic_provider_;
 
-//  std::string print_output_;
+  std::string print_output_;
 };
 
 // Helper class to treat some string input as a file.
