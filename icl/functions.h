@@ -16,7 +16,6 @@ namespace icl {
 class Err;
 class BlockNode;
 class FunctionCallNode;
-class Label;
 class ListNode;
 class ParseNode;
 class Scope;
@@ -193,19 +192,11 @@ Value RunWriteFile(Scope* scope,
 
 // Helper functions -----------------------------------------------------------
 
-//FIXME delete maybe
-/*
 // Verifies that the current scope is not processing an import. If it is, it
 // will set the error, blame the given parse node for it, and return false.
 bool EnsureNotProcessingImport(const ParseNode* node,
                                const Scope* scope,
                                Err* err);
-
-// Like EnsureNotProcessingImport but checks for running the build config.
-bool EnsureNotProcessingBuildConfig(const ParseNode* node,
-                                    const Scope* scope,
-                                    Err* err);
-*/
 
 // Sets up the |block_scope| for executing a target (or something like it).
 // The |scope| is the containing scope. It should have been already set as the
@@ -235,7 +226,7 @@ bool EnsureSingleStringArg(const FunctionCallNode* function,
                            const std::vector<Value>& args,
                            Err* err);
 
-// Some tyesp of blocks can't be nested inside other ones. For such cases,
+// Some types of blocks can't be nested inside other ones. For such cases,
 // instantiate this object upon entering the block and Enter() will fail if
 // there is already another non-nestable block on the stack.
 class NonNestableBlock {

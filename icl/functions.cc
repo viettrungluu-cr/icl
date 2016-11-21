@@ -52,7 +52,7 @@ bool VerifyNoBlockForFunctionCall(const FunctionCallNode* function,
 
 }  // namespace
 
-//FIXME delete maybe
+//FIXME
 /*
 bool EnsureNotProcessingImport(const ParseNode* node,
                                const Scope* scope,
@@ -62,18 +62,6 @@ bool EnsureNotProcessingImport(const ParseNode* node,
         "Imports are for defining defaults, variables, and rules. The\n"
         "appropriate place for this kind of thing is really in a normal\n"
         "BUILD file.");
-    return false;
-  }
-  return true;
-}
-
-bool EnsureNotProcessingBuildConfig(const ParseNode* node,
-                                    const Scope* scope,
-                                    Err* err) {
-  if (scope->IsProcessingBuildConfig()) {
-    *err = Err(node, "Not valid from the build config.",
-        "You can't do this kind of thing from the build config script, "
-        "silly!\nPut it in a regular BUILD file.");
     return false;
   }
   return true;
