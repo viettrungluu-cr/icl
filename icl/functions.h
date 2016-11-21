@@ -7,6 +7,7 @@
 
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "icl/string_piece.h"
@@ -26,6 +27,9 @@ class Value;
 // -----------------------------------------------------------------------------
 
 namespace functions {
+
+// TODO(vtl): Move these out of the |functions| namespace (and also into a
+// separate function_info.h).
 
 // This type of function invocation has no block and evaluates its arguments
 // itself rather than taking a pre-executed list. This allows us to implement
@@ -56,11 +60,68 @@ typedef Value (*NoBlockFunction)(Scope* scope,
                                  const std::vector<Value>& args,
                                  Err* err);
 
-extern const char kAssert[];
+// One function record. Only one of the given runner types will be non-null
+// which indicates the type of function it is.
+struct FunctionInfo {
+  // Allow implicit conversion, because we're bad people.
+  FunctionInfo(SelfEvaluatingArgsFunction seaf)
+      : self_evaluating_args_runner(seaf) {}
+  FunctionInfo(GenericBlockFunction gbf) : generic_block_runner(gbf) {}
+  FunctionInfo(ExecutedBlockFunction ebf) : executed_block_runner(ebf) {}
+  FunctionInfo(NoBlockFunction nbf) : no_block_runner(nbf) {}
+
+  SelfEvaluatingArgsFunction self_evaluating_args_runner = nullptr;
+  GenericBlockFunction generic_block_runner = nullptr;
+  ExecutedBlockFunction executed_block_runner = nullptr;
+  NoBlockFunction no_block_runner = nullptr;
+};
+
+typedef std::map<StringPiece, FunctionInfo> FunctionInfoMap;
+
+// Returns the mapping of all built-in functions.
+const FunctionInfoMap& GetFunctions();
+
+// Runs the given function.
+Value RunFunction(Scope* scope,
+                  const FunctionCallNode* function,
+                  const ListNode* args_list,
+                  BlockNode* block,  // Optional.
+                  Err* err);
+
+// -----------------------------------------------------------------------------
+
 Value RunAssert(Scope* scope,
                 const FunctionCallNode* function,
                 const std::vector<Value>& args,
                 Err* err);
+inline FunctionInfoMap::value_type AssertFn() {
+  return std::make_pair("assert", &RunAssert);
+}
+
+Value RunDefined(Scope* scope,
+                 const FunctionCallNode* function,
+                 const ListNode* args_list,
+                 Err* err);
+inline FunctionInfoMap::value_type DefinedFn() {
+  return std::make_pair("defined", &RunDefined);
+}
+
+extern const char kForEach[];
+Value RunForEach(Scope* scope,
+                 const FunctionCallNode* function,
+                 const ListNode* args_list,
+                 Err* err);
+inline FunctionInfoMap::value_type ForEachFn() {
+  return std::make_pair("foreach", &RunForEach);
+}
+
+Value RunPrint(Scope* scope,
+               const FunctionCallNode* function,
+               const std::vector<Value>& args,
+               Err* err);
+inline FunctionInfoMap::value_type PrintFn() {
+  return std::make_pair("print", &RunPrint);
+}
 
 //FIXME
 /*
@@ -76,22 +137,7 @@ Value RunDeclareArgs(Scope* scope,
                      const std::vector<Value>& args,
                      BlockNode* block,
                      Err* err);
-*/
 
-extern const char kDefined[];
-Value RunDefined(Scope* scope,
-                 const FunctionCallNode* function,
-                 const ListNode* args_list,
-                 Err* err);
-
-extern const char kForEach[];
-Value RunForEach(Scope* scope,
-                 const FunctionCallNode* function,
-                 const ListNode* args_list,
-                 Err* err);
-
-//FIXME delete probably
-/*
 extern const char kForwardVariablesFrom[];
 Value RunForwardVariablesFrom(Scope* scope,
                               const FunctionCallNode* function,
@@ -115,16 +161,7 @@ Value RunImport(Scope* scope,
                 const FunctionCallNode* function,
                 const std::vector<Value>& args,
                 Err* err);
-*/
 
-extern const char kPrint[];
-Value RunPrint(Scope* scope,
-               const FunctionCallNode* function,
-               const std::vector<Value>& args,
-               Err* err);
-
-//FIXME
-/*
 extern const char kProcessFileTemplate[];
 Value RunProcessFileTemplate(Scope* scope,
                              const FunctionCallNode* function,
@@ -162,35 +199,6 @@ Value RunWriteFile(Scope* scope,
                    const std::vector<Value>& args,
                    Err* err);
 */
-
-// -----------------------------------------------------------------------------
-
-// One function record. Only one of the given runner types will be non-null
-// which indicates the type of function it is.
-struct FunctionInfo {
-  FunctionInfo();
-  explicit FunctionInfo(SelfEvaluatingArgsFunction seaf);
-  explicit FunctionInfo(GenericBlockFunction gbf);
-  explicit FunctionInfo(ExecutedBlockFunction ebf);
-  explicit FunctionInfo(NoBlockFunction nbf);
-
-  SelfEvaluatingArgsFunction self_evaluating_args_runner;
-  GenericBlockFunction generic_block_runner;
-  ExecutedBlockFunction executed_block_runner;
-  NoBlockFunction no_block_runner;
-};
-
-typedef std::map<StringPiece, FunctionInfo> FunctionInfoMap;
-
-// Returns the mapping of all built-in functions.
-const FunctionInfoMap& GetFunctions();
-
-// Runs the given function.
-Value RunFunction(Scope* scope,
-                  const FunctionCallNode* function,
-                  const ListNode* args_list,
-                  BlockNode* block,  // Optional.
-                  Err* err);
 
 }  // namespace functions
 

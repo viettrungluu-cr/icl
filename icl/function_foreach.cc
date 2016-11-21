@@ -11,41 +11,6 @@
 namespace icl {
 namespace functions {
 
-const char kForEach[] = "foreach";
-const char kForEach_HelpShort[] =
-    "foreach: Iterate over a list.";
-const char kForEach_Help[] =
-    R"(foreach: Iterate over a list.
-
-    foreach(<loop_var>, <list>) {
-      <loop contents>
-    }
-
-  Executes the loop contents block over each item in the list, assigning the
-  loop_var to each item in sequence. The loop_var will be a copy so assigning
-  to it will not mutate the list.
-
-  The block does not introduce a new scope, so that variable assignments inside
-  the loop will be visible once the loop terminates.
-
-  The loop variable will temporarily shadow any existing variables with the
-  same name for the duration of the loop. After the loop terminates the loop
-  variable will no longer be in scope, and the previous value (if any) will be
-  restored.
-
-Example
-
-  mylist = [ "a", "b", "c" ]
-  foreach(i, mylist) {
-    print(i)
-  }
-
-  Prints:
-  a
-  b
-  c
-)";
-
 Value RunForEach(Scope* scope,
                  const FunctionCallNode* function,
                  const ListNode* args_list,
