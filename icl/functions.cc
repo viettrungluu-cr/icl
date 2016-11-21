@@ -180,22 +180,6 @@ namespace functions {
 // assert ----------------------------------------------------------------------
 
 const char kAssert[] = "assert";
-const char kAssert_HelpShort[] =
-    "assert: Assert an expression is true at generation time.";
-const char kAssert_Help[] =
-    R"(assert: Assert an expression is true at generation time.
-
-  assert(<condition> [, <error string>])
-
-  If the condition is false, the build will fail with an error. If the
-  optional second argument is provided, that string will be printed
-  with the error message.
-
-Examples
-
-  assert(is_win)
-  assert(defined(sources), "Sources must be defined");
-)";
 
 Value RunAssert(Scope* scope,
                 const FunctionCallNode* function,
@@ -248,50 +232,6 @@ Value RunAssert(Scope* scope,
 // config ----------------------------------------------------------------------
 
 const char kConfig[] = "config";
-const char kConfig_HelpShort[] =
-    "config: Defines a configuration object.";
-const char kConfig_Help[] =
-    R"(config: Defines a configuration object.
-
-  Configuration objects can be applied to targets and specify sets of compiler
-  flags, includes, defines, etc. They provide a way to conveniently group sets
-  of this configuration information.
-
-  A config is referenced by its label just like a target.
-
-  The values in a config are additive only. If you want to remove a flag you
-  need to remove the corresponding config that sets it. The final set of flags,
-  defines, etc. for a target is generated in this order:
-
-   1. The values specified directly on the target (rather than using a config.
-   2. The configs specified in the target's "configs" list, in order.
-   3. Public_configs from a breadth-first traversal of the dependency tree in
-      the order that the targets appear in "deps".
-   4. All dependent configs from a breadth-first traversal of the dependency
-      tree in the order that the targets appear in "deps".
-
-Variables valid in a config definition
-)"
-
-    CONFIG_VALUES_VARS_HELP
-
-R"(  Nested configs: configs
-
-Variables on a target used to apply configs
-
-  all_dependent_configs, configs, public_configs
-
-Example
-
-  config("myconfig") {
-    includes = [ "include/common" ]
-    defines = [ "ENABLE_DOOM_MELON" ]
-  }
-
-  executable("mything") {
-    configs = [ ":myconfig" ]
-  }
-)";
 
 Value RunConfig(const FunctionCallNode* function,
                 const std::vector<Value>& args,
@@ -347,67 +287,6 @@ Value RunConfig(const FunctionCallNode* function,
 // declare_args ----------------------------------------------------------------
 
 const char kDeclareArgs[] = "declare_args";
-const char kDeclareArgs_HelpShort[] =
-    "declare_args: Declare build arguments.";
-const char kDeclareArgs_Help[] =
-    R"(declare_args: Declare build arguments.
-
-  Introduces the given arguments into the current scope. If they are not
-  specified on the command line or in a toolchain's arguments, the default
-  values given in the declare_args block will be used. However, these defaults
-  will not override command-line values.
-
-  See also "gn help buildargs" for an overview.
-
-  The precise behavior of declare args is:
-
-   1. The declare_arg block executes. Any variables in the enclosing scope are
-      available for reading.
-
-   2. At the end of executing the block, any variables set within that scope
-      are saved globally as build arguments, with their current values being
-      saved as the "default value" for that argument.
-
-   3. User-defined overrides are applied. Anything set in "gn args" now
-      overrides any default values. The resulting set of variables is promoted
-      to be readable from the following code in the file.
-
-  This has some ramifications that may not be obvious:
-
-    - You should not perform difficult work inside a declare_args block since
-      this only sets a default value that may be discarded. In particular,
-      don't use the result of exec_script() to set the default value. If you
-      want to have a script-defined default, set some default "undefined" value
-      like [], "", or -1, and after the declare_args block, call exec_script if
-      the value is unset by the user.
-
-    - Any code inside of the declare_args block will see the default values of
-      previous variables defined in the block rather than the user-overridden
-      value. This can be surprising because you will be used to seeing the
-      overridden value. If you need to make the default value of one arg
-      dependent on the possibly-overridden value of another, write two separate
-      declare_args blocks:
-
-        declare_args() {
-          enable_foo = true
-        }
-        declare_args() {
-          # Bar defaults to same user-overridden state as foo.
-          enable_bar = enable_foo
-        }
-
-Example
-
-  declare_args() {
-    enable_teleporter = true
-    enable_doom_melon = false
-  }
-
-  If you want to override the (default disabled) Doom Melon:
-    gn --args="enable_doom_melon=true enable_teleporter=false"
-  This also sets the teleporter, but it's already defaulted to on so it will
-  have no effect.
-)";
 
 Value RunDeclareArgs(Scope* scope,
                      const FunctionCallNode* function,
@@ -437,40 +316,6 @@ Value RunDeclareArgs(Scope* scope,
 // defined ---------------------------------------------------------------------
 
 const char kDefined[] = "defined";
-const char kDefined_HelpShort[] =
-    "defined: Returns whether an identifier is defined.";
-const char kDefined_Help[] =
-    R"(defined: Returns whether an identifier is defined.
-
-  Returns true if the given argument is defined. This is most useful in
-  templates to assert that the caller set things up properly.
-
-  You can pass an identifier:
-    defined(foo)
-  which will return true or false depending on whether foo is defined in the
-  current scope.
-
-  You can also check a named scope:
-    defined(foo.bar)
-  which will return true or false depending on whether bar is defined in the
-  named scope foo. It will throw an error if foo is not defined or is not a
-  scope.
-
-Example
-
-  template("mytemplate") {
-    # To help users call this template properly...
-    assert(defined(invoker.sources), "Sources must be defined")
-
-    # If we want to accept an optional "values" argument, we don't
-    # want to dereference something that may not be defined.
-    if (defined(invoker.values)) {
-      values = invoker.values
-    } else {
-      values = "some default value"
-    }
-  }
-)";
 
 Value RunDefined(Scope* scope,
                  const FunctionCallNode* function,
@@ -522,26 +367,6 @@ Value RunDefined(Scope* scope,
 // getenv ----------------------------------------------------------------------
 
 const char kGetEnv[] = "getenv";
-const char kGetEnv_HelpShort[] =
-    "getenv: Get an environment variable.";
-const char kGetEnv_Help[] =
-    R"(getenv: Get an environment variable.
-
-  value = getenv(env_var_name)
-
-  Returns the value of the given enironment variable. If the value is not
-  found, it will try to look up the variable with the "opposite" case (based on
-  the case of the first letter of the variable), but is otherwise
-  case-sensitive.
-
-  If the environment variable is not found, the empty string will be returned.
-  Note: it might be nice to extend this if we had the concept of "none" in the
-  language to indicate lookup failure.
-
-Example
-
-  home_dir = getenv("HOME")
-)";
 
 Value RunGetEnv(Scope* scope,
                 const FunctionCallNode* function,
@@ -561,41 +386,6 @@ Value RunGetEnv(Scope* scope,
 // import ----------------------------------------------------------------------
 
 const char kImport[] = "import";
-const char kImport_HelpShort[] =
-    "import: Import a file into the current scope.";
-const char kImport_Help[] =
-    R"(import: Import a file into the current scope.
-
-  The import command loads the rules and variables resulting from executing the
-  given file into the current scope.
-
-  By convention, imported files are named with a .gni extension.
-
-  An import is different than a C++ "include". The imported file is executed in
-  a standalone environment from the caller of the import command. The results
-  of this execution are cached for other files that import the same .gni file.
-
-  Note that you can not import a BUILD.gn file that's otherwise used in the
-  build. Files must either be imported or implicitly loaded as a result of deps
-  rules, but not both.
-
-  The imported file's scope will be merged with the scope at the point import
-  was called. If there is a conflict (both the current scope and the imported
-  file define some variable or rule with the same name but different value), a
-  runtime error will be thrown. Therefore, it's good practice to minimize the
-  stuff that an imported file defines.
-
-  Variables and templates beginning with an underscore '_' are considered
-  private and will not be imported. Imported files can use such variables for
-  internal computation without affecting other files.
-
-Examples
-
-  import("//build/rules/idl_compilation_rule.gni")
-
-  # Looks in the current directory.
-  import("my_vars.gni")
-)";
 
 Value RunImport(Scope* scope,
                 const FunctionCallNode* function,
@@ -619,26 +409,6 @@ Value RunImport(Scope* scope,
 // print -----------------------------------------------------------------------
 
 const char kPrint[] = "print";
-const char kPrint_HelpShort[] =
-    "print: Prints to the console.";
-const char kPrint_Help[] =
-    R"(print: Prints to the console.
-
-  Prints all arguments to the console separated by spaces. A newline is
-  automatically appended to the end.
-
-  This function is intended for debugging. Note that build files are run in
-  parallel so you may get interleaved prints. A buildfile may also be executed
-  more than once in parallel in the context of different toolchains so the
-  prints from one file may be duplicated or
-  interleaved with itself.
-
-Examples
-
-  print("Hello world")
-
-  print(sources, deps)
-)";
 
 Value RunPrint(Scope* scope,
                const FunctionCallNode* function,
@@ -662,29 +432,7 @@ Value RunPrint(Scope* scope,
 // split_list ------------------------------------------------------------------
 
 const char kSplitList[] = "split_list";
-const char kSplitList_HelpShort[] =
-    "split_list: Splits a list into N different sub-lists.";
-const char kSplitList_Help[] =
-    R"(split_list: Splits a list into N different sub-lists.
 
-  result = split_list(input, n)
-
-  Given a list and a number N, splits the list into N sub-lists of
-  approximately equal size. The return value is a list of the sub-lists. The
-  result will always be a list of size N. If N is greater than the number of
-  elements in the input, it will be padded with empty lists.
-
-  The expected use is to divide source files into smaller uniform chunks.
-
-Example
-
-  The code:
-    mylist = [1, 2, 3, 4, 5, 6]
-    print(split_list(mylist, 3))
-
-  Will print:
-    [[1, 2], [3, 4], [5, 6]
-)";
 Value RunSplitList(Scope* scope,
                    const FunctionCallNode* function,
                    const ListNode* args_list,
@@ -750,53 +498,35 @@ FunctionInfo::FunctionInfo()
     : self_evaluating_args_runner(nullptr),
       generic_block_runner(nullptr),
       executed_block_runner(nullptr),
-      no_block_runner(nullptr),
-      help_short(nullptr),
-      help(nullptr) {
+      no_block_runner(nullptr) {
 }
 
-FunctionInfo::FunctionInfo(SelfEvaluatingArgsFunction seaf,
-                           const char* in_help_short,
-                           const char* in_help)
+FunctionInfo::FunctionInfo(SelfEvaluatingArgsFunction seaf)
     : self_evaluating_args_runner(seaf),
       generic_block_runner(nullptr),
       executed_block_runner(nullptr),
-      no_block_runner(nullptr),
-      help_short(in_help_short),
-      help(in_help) {
+      no_block_runner(nullptr) {
 }
 
-FunctionInfo::FunctionInfo(GenericBlockFunction gbf,
-                           const char* in_help_short,
-                           const char* in_help)
+FunctionInfo::FunctionInfo(GenericBlockFunction gbf)
     : self_evaluating_args_runner(nullptr),
       generic_block_runner(gbf),
       executed_block_runner(nullptr),
-      no_block_runner(nullptr),
-      help_short(in_help_short),
-      help(in_help) {
+      no_block_runner(nullptr) {
 }
 
-FunctionInfo::FunctionInfo(ExecutedBlockFunction ebf,
-                           const char* in_help_short,
-                           const char* in_help)
+FunctionInfo::FunctionInfo(ExecutedBlockFunction ebf)
     : self_evaluating_args_runner(nullptr),
       generic_block_runner(nullptr),
       executed_block_runner(ebf),
-      no_block_runner(nullptr),
-      help_short(in_help_short),
-      help(in_help) {
+      no_block_runner(nullptr) {
 }
 
-FunctionInfo::FunctionInfo(NoBlockFunction nbf,
-                           const char* in_help_short,
-                           const char* in_help)
+FunctionInfo::FunctionInfo(NoBlockFunction nbf)
     : self_evaluating_args_runner(nullptr),
       generic_block_runner(nullptr),
       executed_block_runner(nullptr),
-      no_block_runner(nbf),
-      help_short(in_help_short),
-      help(in_help) {
+      no_block_runner(nbf) {
 }
 
 // Setup the function map via a static initializer. We use this because it
@@ -809,9 +539,7 @@ struct FunctionInfoInitializer {
 
   FunctionInfoInitializer() {
     #define INSERT_FUNCTION(command) \
-        map[k##command] = FunctionInfo(&Run##command, \
-                                       k##command##_HelpShort, \
-                                       k##command##_Help);
+        map[k##command] = FunctionInfo(&Run##command);
 
     INSERT_FUNCTION(Assert)
 //FIXME

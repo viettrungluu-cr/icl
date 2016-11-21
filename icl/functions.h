@@ -57,8 +57,6 @@ typedef Value (*NoBlockFunction)(Scope* scope,
                                  Err* err);
 
 extern const char kAssert[];
-extern const char kAssert_HelpShort[];
-extern const char kAssert_Help[];
 Value RunAssert(Scope* scope,
                 const FunctionCallNode* function,
                 const std::vector<Value>& args,
@@ -67,16 +65,12 @@ Value RunAssert(Scope* scope,
 //FIXME
 /*
 extern const char kConfig[];
-extern const char kConfig_HelpShort[];
-extern const char kConfig_Help[];
 Value RunConfig(const FunctionCallNode* function,
                 const std::vector<Value>& args,
                 Scope* block_scope,
                 Err* err);
 
 extern const char kDeclareArgs[];
-extern const char kDeclareArgs_HelpShort[];
-extern const char kDeclareArgs_Help[];
 Value RunDeclareArgs(Scope* scope,
                      const FunctionCallNode* function,
                      const std::vector<Value>& args,
@@ -85,16 +79,12 @@ Value RunDeclareArgs(Scope* scope,
 */
 
 extern const char kDefined[];
-extern const char kDefined_HelpShort[];
-extern const char kDefined_Help[];
 Value RunDefined(Scope* scope,
                  const FunctionCallNode* function,
                  const ListNode* args_list,
                  Err* err);
 
 extern const char kForEach[];
-extern const char kForEach_HelpShort[];
-extern const char kForEach_Help[];
 Value RunForEach(Scope* scope,
                  const FunctionCallNode* function,
                  const ListNode* args_list,
@@ -103,32 +93,24 @@ Value RunForEach(Scope* scope,
 //FIXME delete probably
 /*
 extern const char kForwardVariablesFrom[];
-extern const char kForwardVariablesFrom_HelpShort[];
-extern const char kForwardVariablesFrom_Help[];
 Value RunForwardVariablesFrom(Scope* scope,
                               const FunctionCallNode* function,
                               const ListNode* args_list,
                               Err* err);
 
 extern const char kGetEnv[];
-extern const char kGetEnv_HelpShort[];
-extern const char kGetEnv_Help[];
 Value RunGetEnv(Scope* scope,
                 const FunctionCallNode* function,
                 const std::vector<Value>& args,
                 Err* err);
 
 extern const char kGetPathInfo[];
-extern const char kGetPathInfo_HelpShort[];
-extern const char kGetPathInfo_Help[];
 Value RunGetPathInfo(Scope* scope,
                      const FunctionCallNode* function,
                      const std::vector<Value>& args,
                      Err* err);
 
 extern const char kImport[];
-extern const char kImport_HelpShort[];
-extern const char kImport_Help[];
 Value RunImport(Scope* scope,
                 const FunctionCallNode* function,
                 const std::vector<Value>& args,
@@ -136,8 +118,6 @@ Value RunImport(Scope* scope,
 */
 
 extern const char kPrint[];
-extern const char kPrint_HelpShort[];
-extern const char kPrint_Help[];
 Value RunPrint(Scope* scope,
                const FunctionCallNode* function,
                const std::vector<Value>& args,
@@ -146,40 +126,30 @@ Value RunPrint(Scope* scope,
 //FIXME
 /*
 extern const char kProcessFileTemplate[];
-extern const char kProcessFileTemplate_HelpShort[];
-extern const char kProcessFileTemplate_Help[];
 Value RunProcessFileTemplate(Scope* scope,
                              const FunctionCallNode* function,
                              const std::vector<Value>& args,
                              Err* err);
 
 extern const char kReadFile[];
-extern const char kReadFile_HelpShort[];
-extern const char kReadFile_Help[];
 Value RunReadFile(Scope* scope,
                   const FunctionCallNode* function,
                   const std::vector<Value>& args,
                   Err* err);
 
 extern const char kRebasePath[];
-extern const char kRebasePath_HelpShort[];
-extern const char kRebasePath_Help[];
 Value RunRebasePath(Scope* scope,
                     const FunctionCallNode* function,
                     const std::vector<Value>& args,
                     Err* err);
 
 extern const char kSplitList[];
-extern const char kSplitList_HelpShort[];
-extern const char kSplitList_Help[];
 Value RunSplitList(Scope* scope,
                    const FunctionCallNode* function,
                    const ListNode* args_list,
                    Err* err);
 
 extern const char kTemplate[];
-extern const char kTemplate_HelpShort[];
-extern const char kTemplate_Help[];
 Value RunTemplate(Scope* scope,
                   const FunctionCallNode* function,
                   const std::vector<Value>& args,
@@ -187,8 +157,6 @@ Value RunTemplate(Scope* scope,
                   Err* err);
 
 extern const char kWriteFile[];
-extern const char kWriteFile_HelpShort[];
-extern const char kWriteFile_Help[];
 Value RunWriteFile(Scope* scope,
                    const FunctionCallNode* function,
                    const std::vector<Value>& args,
@@ -201,26 +169,15 @@ Value RunWriteFile(Scope* scope,
 // which indicates the type of function it is.
 struct FunctionInfo {
   FunctionInfo();
-  FunctionInfo(SelfEvaluatingArgsFunction seaf,
-               const char* in_help_short,
-               const char* in_help);
-  FunctionInfo(GenericBlockFunction gbf,
-               const char* in_help_short,
-               const char* in_help);
-  FunctionInfo(ExecutedBlockFunction ebf,
-               const char* in_help_short,
-               const char* in_help);
-  FunctionInfo(NoBlockFunction nbf,
-               const char* in_help_short,
-               const char* in_help);
+  explicit FunctionInfo(SelfEvaluatingArgsFunction seaf);
+  explicit FunctionInfo(GenericBlockFunction gbf);
+  explicit FunctionInfo(ExecutedBlockFunction ebf);
+  explicit FunctionInfo(NoBlockFunction nbf);
 
   SelfEvaluatingArgsFunction self_evaluating_args_runner;
   GenericBlockFunction generic_block_runner;
   ExecutedBlockFunction executed_block_runner;
   NoBlockFunction no_block_runner;
-
-  const char* help_short;
-  const char* help;
 };
 
 typedef std::map<StringPiece, FunctionInfo> FunctionInfoMap;
