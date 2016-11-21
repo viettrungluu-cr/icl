@@ -10,8 +10,8 @@
 namespace icl {
 
 TestWithScope::TestWithScope()
+      : scope_(this) {
 //FIXME
-      : scope_(&settings_) {
 //      scope_progammatic_provider_(&scope_, true) {
   scope_.set_item_collector(&items_);
 }

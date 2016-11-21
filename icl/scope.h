@@ -26,7 +26,7 @@ namespace icl {
 class FunctionCallNode;
 class ImportManager;
 class ParseNode;
-class Settings;
+class Delegate;
 class TargetManager;
 //FIXME
 //class Template;
@@ -104,7 +104,7 @@ class Scope {
   };
 
   // Creates an empty toplevel scope.
-  explicit Scope(const Settings* settings);
+  explicit Scope(Delegate* delegate);
 
   // Creates a dependent scope.
   explicit Scope(Scope* parent);
@@ -115,7 +115,7 @@ class Scope {
   Scope(const Scope&) = delete;
   Scope& operator=(const Scope&) = delete;
 
-  const Settings* settings() const { return settings_; }
+  Delegate* delegate() const { return delegate_; }
 
   // See the const_/mutable_containing_ var declaraions below. Yes, it's a
   // bit weird that we can have a const pointer to the "mutable" one.
@@ -350,7 +350,7 @@ class Scope {
   const Scope* const_containing_;
   Scope* mutable_containing_;
 
-  const Settings* settings_;
+  Delegate* const delegate_;
 
   // Bits set for different modes. See the flag definitions in the .cc file
   // for more.

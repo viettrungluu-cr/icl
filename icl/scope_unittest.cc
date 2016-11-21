@@ -26,6 +26,7 @@ bool HasStringValueEqualTo(const Scope* scope,
   return value->string_value() == expected_value;
 }
 
+//FIXME
 /*
 TEST(Scope, NonRecursiveMergeTo) {
   TestWithScope setup;
@@ -54,7 +55,7 @@ TEST(Scope, NonRecursiveMergeTo) {
 
   // Detect collisions of values' values.
   {
-    Scope new_scope(setup.settings());
+    Scope new_scope(&setup);
     Value new_value(&assignment, "goodbye");
     new_scope.SetValue("v", new_value, &assignment);
 
@@ -67,7 +68,7 @@ TEST(Scope, NonRecursiveMergeTo) {
 
   // Template name collisions.
   {
-    Scope new_scope(setup.settings());
+    Scope new_scope(&setup);
 
     scoped_refptr<Template> new_templ(
         new Template(&new_scope, &templ_definition));
@@ -81,7 +82,7 @@ TEST(Scope, NonRecursiveMergeTo) {
 
   // The clobber flag should just overwrite colliding values.
   {
-    Scope new_scope(setup.settings());
+    Scope new_scope(&setup);
     Value new_value(&assignment, "goodbye");
     new_scope.SetValue("v", new_value, &assignment);
 
@@ -99,7 +100,7 @@ TEST(Scope, NonRecursiveMergeTo) {
 
   // Clobber flag for templates.
   {
-    Scope new_scope(setup.settings());
+    Scope new_scope(&setup);
 
     scoped_refptr<Template> new_templ(
         new Template(&new_scope, &templ_definition));
@@ -119,7 +120,7 @@ TEST(Scope, NonRecursiveMergeTo) {
 
   // Don't flag values that technically collide but have the same value.
   {
-    Scope new_scope(setup.settings());
+    Scope new_scope(&setup);
     Value new_value(&assignment, "hello");
     new_scope.SetValue("v", new_value, &assignment);
 
@@ -131,7 +132,7 @@ TEST(Scope, NonRecursiveMergeTo) {
 
   // Templates that technically collide but are the same.
   {
-    Scope new_scope(setup.settings());
+    Scope new_scope(&setup);
 
     scoped_refptr<Template> new_templ(
         new Template(&new_scope, &templ_definition));
@@ -145,7 +146,7 @@ TEST(Scope, NonRecursiveMergeTo) {
 
   // Copy private values and templates.
   {
-    Scope new_scope(setup.settings());
+    Scope new_scope(&setup);
 
     Err err;
     EXPECT_TRUE(setup.scope()->NonRecursiveMergeTo(
@@ -157,7 +158,7 @@ TEST(Scope, NonRecursiveMergeTo) {
 
   // Skip private values and templates.
   {
-    Scope new_scope(setup.settings());
+    Scope new_scope(&setup);
 
     Err err;
     Scope::MergeOptions options;
@@ -171,7 +172,7 @@ TEST(Scope, NonRecursiveMergeTo) {
 
   // Don't mark used.
   {
-    Scope new_scope(setup.settings());
+    Scope new_scope(&setup);
 
     Err err;
     Scope::MergeOptions options;
@@ -184,7 +185,7 @@ TEST(Scope, NonRecursiveMergeTo) {
 
   // Mark dest used.
   {
-    Scope new_scope(setup.settings());
+    Scope new_scope(&setup);
 
     Err err;
     Scope::MergeOptions options;
@@ -252,7 +253,7 @@ TEST(Scope, GetMutableValue) {
   Value value(&assignment, "hello");
 
   // Create a root scope with one value.
-  Scope root_scope(setup.settings());
+  Scope root_scope(&setup);
   root_scope.SetValue(kOnConst, value, &assignment);
 
   // Create a first nested scope with a different value.

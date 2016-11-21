@@ -12,6 +12,7 @@
 #include <string>
 //#include <utility>
 
+#include "icl/delegate.h"
 #include "icl/err.h"
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
@@ -26,7 +27,6 @@
 #include "tools/gn/parse_node_value_adapter.h"
 #include "tools/gn/pool.h"
 #include "tools/gn/scheduler.h"
-#include "tools/gn/settings.h"
 #include "tools/gn/template.h"
 #include "tools/gn/value_extractors.h"
 #include "tools/gn/variables.h"
@@ -835,13 +835,7 @@ Value RunPrint(Scope* scope,
   }
   output.push_back('\n');
 
-//FIXME
-//  const BuildSettings::PrintCallback& cb =
-//      scope->settings()->build_settings()->print_callback();
-//  if (cb.is_null())
-    printf("%s", output.c_str());
-//  else
-//    cb.Run(output);
+  scope->delegate()->Print(output);
 
   return Value();
 }

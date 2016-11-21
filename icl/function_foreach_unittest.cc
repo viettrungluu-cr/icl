@@ -26,8 +26,7 @@ TEST(FunctionForeach, CollisionOnLoopVar) {
   input.parsed()->Execute(setup.scope(), &err);
   ASSERT_FALSE(err.has_error()) << err.message();
 
-//FIXME
-//  EXPECT_EQ("5 1\n6 2\n7 3\n8 6\n", setup.print_output());
+  EXPECT_EQ("5 1\n6 2\n7 3\n8 6\n", setup.print_output());
 }
 
 TEST(FunctionForeach, UniqueLoopVar) {
@@ -42,9 +41,8 @@ TEST(FunctionForeach, UniqueLoopVar) {
   input_good.parsed()->Execute(setup.scope(), &err);
   ASSERT_FALSE(err.has_error()) << err.message();
 
-//FIXME
-//  EXPECT_EQ("1\n2\n3\n", setup.print_output());
-//  setup.print_output().clear();
+  EXPECT_EQ("1\n2\n3\n", setup.print_output());
+  setup.print_output().clear();
 
   // Same thing but try to use the loop var after loop is done. It should be
   // undefined and throw an error.
@@ -73,9 +71,8 @@ TEST(FunctionForeach, MarksIdentAsUsed) {
   input_good.parsed()->Execute(setup.scope(), &err);
   ASSERT_FALSE(err.has_error()) << err.message();
 
-//FIXME
-//  EXPECT_EQ("1\n2\n", setup.print_output());
-//  setup.print_output().clear();
+  EXPECT_EQ("1\n2\n", setup.print_output());
+  setup.print_output().clear();
 
   // Check for unused vars.
   EXPECT_TRUE(setup.scope()->CheckForUnusedVars(&err));

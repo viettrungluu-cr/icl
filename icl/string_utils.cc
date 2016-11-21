@@ -5,24 +5,36 @@
 #include "icl/string_utils.h"
 
 #include <assert.h>
-#include <ctype.h>
 #include <stddef.h>
+#include <stdint.h>
+#include <stdlib.h>
+#include <string.h>
 
-#include "icl/value.h"
-//FIXME
-/*
 #include "icl/err.h"
 #include "icl/input_file.h"
 #include "icl/parser.h"
 #include "icl/scope.h"
-#include "icl/string_number_conversions.h"
 #include "icl/token.h"
 #include "icl/tokenizer.h"
-*/
+#include "icl/value.h"
 
 namespace icl {
 
 namespace {
+
+bool IsHexDigit(char c) {
+  return (c >= '0' && c <= '9') || (c >= 'A' && c <= 'F') ||
+         (c >= 'a' && c <= 'f');
+}
+
+unsigned HexDigitValue(char c) {
+  if (c >= '0' && c <= '9')
+    return static_cast<unsigned>(c - '0');
+  if (c >= 'A' && c <= 'F')
+    return static_cast<unsigned>(c - 'A' + 10);
+  assert(c >= 'a' && c <= 'f');
+  return static_cast<unsigned>(c - 'a' + 10);
+}
 
 // Constructs an Err indicating a range inside a string. We assume that the
 // token has quotes around it that are not counted by the offset.
@@ -44,8 +56,6 @@ Err ErrInsideStringToken(const Token& token, size_t offset, size_t size,
   return Err(LocationRange(begin_loc, end_loc), msg, help);
 }
 
-//FIXME
-/*
 // Notes about expression interpolation. This is based loosly on Dart but is
 // slightly less flexible. In Dart, seeing the ${ in a string is something
 // the toplevel parser knows about, and it will recurse into the block
@@ -71,8 +81,7 @@ bool AppendInterpolatedExpression(Scope* scope,
                                   size_t end_offset,
                                   std::string* output,
                                   Err* err) {
-  SourceFile empty_source_file;  // Prevent most vexing parse.
-  InputFile input_file(empty_source_file);
+  InputFile input_file("");
   input_file.SetContents(
       std::string(&input[begin_offset], end_offset - begin_offset));
 
@@ -223,24 +232,21 @@ bool AppendHexByte(Scope* scope,
                    Err* err) {
   size_t dollars_index = *i - 1;
   // "$0" is already known to exist.
-  if (*i + 3 >= size || input[*i + 1] != 'x' || !std::isxdigit(input[*i + 2]) ||
-      !std::isxdigit(input[*i + 3])) {
+  if (*i + 3 >= size || input[*i + 1] != 'x' || !IsHexDigit(input[*i + 2]) ||
+      !IsHexDigit(input[*i + 3])) {
     *err = ErrInsideStringToken(
         token, dollars_index, *i - dollars_index + 1,
         "Invalid hex character. Hex values must look like 0xFF.");
     return false;
   }
-  int value = 0;
-  if (!base::HexStringToInt(StringPiece(&input[*i + 2], 2), &value)) {
-    *err = ErrInsideStringToken(token, dollars_index, *i - dollars_index + 1,
-                                "Could not convert hex value.");
-    return false;
-  }
+  uint8_t value = static_cast<uint8_t>(HexDigitValue(input[*i + 2] * 16u +
+                                       HexDigitValue(input[*i + 3])));
+  char value_as_char;
+  memcpy(&value_as_char, &value, 1u);
   *i += 3;
-  output->push_back(value);
+  output->push_back(value_as_char);
   return true;
 }
-*/
 
 }  // namespace
 
@@ -280,14 +286,11 @@ bool ExpandStringLiteral(Scope* scope,
             "I was expecting an identifier, 0xFF, or {...} after the $.");
         return false;
       }
-//FIXME
-/*
       if (input[i] == '0') {
         if (!AppendHexByte(scope, literal, input, size, &i, &output, err))
           return false;
       } else if (!AppendStringInterpolation(scope, literal, input, size, &i,
                                      &output, err))
-*/
         return false;
     } else {
       output.push_back(input[i]);

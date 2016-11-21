@@ -42,10 +42,10 @@ Scope::ProgrammaticProvider::~ProgrammaticProvider() {
   scope_->RemoveProvider(this);
 }
 
-Scope::Scope(const Settings* settings)
+Scope::Scope(Delegate* delegate)
     : const_containing_(nullptr),
       mutable_containing_(nullptr),
-      settings_(settings),
+      delegate_(delegate),
       mode_flags_(0),
       item_collector_(nullptr) {
 }
@@ -53,7 +53,7 @@ Scope::Scope(const Settings* settings)
 Scope::Scope(Scope* parent)
     : const_containing_(nullptr),
       mutable_containing_(parent),
-      settings_(parent->settings()),
+      delegate_(parent->delegate()),
       mode_flags_(0),
       item_collector_(nullptr) {
 }
@@ -61,7 +61,7 @@ Scope::Scope(Scope* parent)
 Scope::Scope(const Scope* parent)
     : const_containing_(parent),
       mutable_containing_(nullptr),
-      settings_(parent->settings()),
+      delegate_(parent->delegate()),
       mode_flags_(0),
       item_collector_(nullptr) {
 }
@@ -324,7 +324,7 @@ bool Scope::NonRecursiveMergeTo(Scope* dest,
     }
 
     std::unique_ptr<Scope>& dest_scope = dest->target_defaults_[current_name];
-    dest_scope.reset(new Scope(settings_));
+    dest_scope.reset(new Scope(delegate_));
     pair.second->NonRecursiveMergeTo(dest_scope.get(), options, node_for_err,
                                      "<SHOULDN'T HAPPEN>", err);
   }
@@ -403,7 +403,7 @@ std::unique_ptr<Scope> Scope::MakeClosure() const {
     result = mutable_containing_->MakeClosure();
   } else {
     // This is a standalone scope, just copy it.
-    result.reset(new Scope(settings_));
+    result.reset(new Scope(delegate_));
   }
 
   // Want to clobber since we've flattened some nested scopes, and our parent
@@ -421,7 +421,7 @@ std::unique_ptr<Scope> Scope::MakeClosure() const {
 
 Scope* Scope::MakeTargetDefaults(const std::string& target_type) {
   std::unique_ptr<Scope>& dest = target_defaults_[target_type];
-  dest.reset(new Scope(settings_));
+  dest.reset(new Scope(delegate_));
   return dest.get();
 }
 

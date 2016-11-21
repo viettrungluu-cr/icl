@@ -14,7 +14,6 @@
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
 //#include "tools/gn/scope_per_file_provider.h"
-#include "icl/settings.h"
 //#include "tools/gn/target.h"
 #include "icl/token.h"
 //#include "tools/gn/toolchain.h"
@@ -34,9 +33,6 @@ class TestWithScope : public Delegate {
   TestWithScope(const TestWithScope&) = delete;
   TestWithScope& operator=(const TestWithScope&) = delete;
 
-//FIXME remove settings
-  Settings* settings() { return &settings_; }
-  const Settings* settings() const { return &settings_; }
   Scope* scope() { return &scope_; }
   const Scope::ItemVector& items() { return items_; }
 
@@ -49,7 +45,6 @@ class TestWithScope : public Delegate {
   void Print(const std::string& s) override;
 
  private:
-  Settings settings_;
   Scope scope_;
   Scope::ItemVector items_;
 
