@@ -2,15 +2,15 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "tools/gn/functions.h"
+#include "icl/functions.h"
+
+#include <gtest/gtest.h>
 
 #include <utility>
 
-#include "base/memory/ptr_util.h"
-#include "testing/gtest/include/gtest/gtest.h"
-#include "tools/gn/parse_tree.h"
-#include "tools/gn/test_with_scope.h"
-#include "tools/gn/value.h"
+#include "icl/parse_tree.h"
+#include "icl/test_with_scope.h"
+#include "icl/value.h"
 
 namespace icl {
 namespace {
@@ -51,7 +51,9 @@ TEST(Functions, Defined) {
   // "defined(def.foo)" to see if foo is defined on the def scope.
   std::unique_ptr<AccessorNode> undef_accessor(new AccessorNode);
   undef_accessor->set_base(defined_token);
-  undef_accessor->set_member(base::MakeUnique<IdentifierNode>(undefined_token));
+  // TODO(C++14): Use std::make_unique.
+  undef_accessor->set_member(
+      std::unique_ptr<IdentifierNode>(new IdentifierNode((undefined_token))));
   ListNode args_list_accessor_defined;
   args_list_accessor_defined.append_item(std::move(undef_accessor));
   result = functions::RunDefined(setup.scope(), &function_call,
@@ -93,6 +95,8 @@ TEST(Functions, FunctionsWithBlock) {
   EXPECT_TRUE(err.has_error());
 }
 
+//FIXME
+/*
 TEST(Functions, SplitList) {
   TestWithScope setup;
 
@@ -128,6 +132,7 @@ TEST(Functions, SplitList) {
       "rounding = [[1, 2], [3, 4], [5], [6]]\n",
       setup.print_output());
 }
+*/
 
 }  // namespace
 }  // namespace icl

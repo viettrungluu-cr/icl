@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef TOOLS_GN_PARSER_H_
-#define TOOLS_GN_PARSER_H_
+#ifndef ICL_PARSER_H_
+#define ICL_PARSER_H_
 
 #include <stddef.h>
 
@@ -140,4 +140,4 @@ class Parser {
 
 }  // namespace icl
 
-#endif  // TOOLS_GN_PARSER_H_
+#endif  // ICL_PARSER_H_

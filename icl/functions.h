@@ -129,6 +129,7 @@ Value RunDeclareArgs(Scope* scope,
                      const std::vector<Value>& args,
                      BlockNode* block,
                      Err* err);
+*/
 
 extern const char kDefined[];
 extern const char kDefined_HelpShort[];
@@ -138,6 +139,8 @@ Value RunDefined(Scope* scope,
                  const ListNode* args_list,
                  Err* err);
 
+//FIXME
+/*
 extern const char kExecScript[];
 extern const char kExecScript_HelpShort[];
 extern const char kExecScript_Help[];

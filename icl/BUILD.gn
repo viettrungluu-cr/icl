@@ -5,6 +5,7 @@ group("tests") {
 
   deps = [
     # icl:
+    ":functions_test",
     ":operators_test",
     ":parse_tree_test",
     ":parser_test",
@@ -85,6 +86,18 @@ source_set("icl_test_support") {
   ]
 }
 
+test("functions_test") {
+  sources = [
+    "function_foreach_unittest.cc",
+    "functions_unittest.cc",
+  ]
+
+  deps = [
+    ":icl",
+    ":icl_test_support",
+  ]
+}
+
 test("operators_test") {
   sources = [
     "operators_unittest.cc",
@@ -96,8 +109,7 @@ test("operators_test") {
   ]
 }
 
-#FIXME: string_utils_unittest.cc functions_unittest.cc
-# function_foreach_unittest.cc template_unittest.cc
+#FIXME: string_utils_unittest.cc template_unittest.cc
 
 test("parse_tree_test") {
   sources = [
@@ -149,6 +161,7 @@ test("value_test") {
 
   deps = [
     ":icl",
+    ":icl_test_support",
   ]
 }
 

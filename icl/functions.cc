@@ -447,6 +447,7 @@ Value RunDeclareArgs(Scope* scope,
       values, scope, err);
   return Value();
 }
+#endif
 
 // defined ---------------------------------------------------------------------
 
@@ -531,6 +532,8 @@ Value RunDefined(Scope* scope,
   return Value();
 }
 
+//FIXME
+#if 0
 // getenv ----------------------------------------------------------------------
 
 const char kGetEnv[] = "getenv";
@@ -1030,9 +1033,15 @@ struct FunctionInfoInitializer {
 /*
     INSERT_FUNCTION(Config, false)
     INSERT_FUNCTION(DeclareArgs, false)
+*/
     INSERT_FUNCTION(Defined, false)
+//FIXME
+/*
     INSERT_FUNCTION(ExecScript, false)
+*/
     INSERT_FUNCTION(ForEach, false)
+//FIXME
+/*
     INSERT_FUNCTION(ForwardVariablesFrom, false)
     INSERT_FUNCTION(GetEnv, false)
     INSERT_FUNCTION(GetLabelInfo, false)

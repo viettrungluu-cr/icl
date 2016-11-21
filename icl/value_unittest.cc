@@ -7,8 +7,7 @@
 #include <gtest/gtest.h>
 #include <stdint.h>
 
-//FIXME
-//#include "tools/gn/test_with_scope.h"
+#include "icl/test_with_scope.h"
 
 namespace icl {
 namespace {
@@ -36,8 +35,6 @@ TEST(Value, ToString) {
   EXPECT_EQ("[\"hi\\\"me\", true, false, 42]", listval.ToString(false));
   EXPECT_EQ("[\"hi\\\"me\", true, false, 42]", listval.ToString(true));
 
-//FIXME
-/*
   // Scopes.
   TestWithScope setup;
   Scope* scope = new Scope(setup.scope());
@@ -47,7 +44,6 @@ TEST(Value, ToString) {
   scope->SetValue("a", Value(nullptr, static_cast<int64_t>(42)), nullptr);
   scope->SetValue("b", Value(nullptr, "hello, world"), nullptr);
   EXPECT_EQ("{\n  a = 42\n  b = \"hello, world\"\n}", scopeval.ToString(false));
-*/
 }
 
 }  // namespace
