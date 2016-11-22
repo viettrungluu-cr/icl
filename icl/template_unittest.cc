@@ -12,9 +12,7 @@
 namespace icl {
 namespace {
 
-//FIXME need target_name, invoker
-TEST(Template, DISABLED_Basic) {
-//TEST(Template, Basic) {
+TEST(Template, Basic) {
   TestWithScope setup;
   TestParseInput input(
       "template(\"foo\") {\n"
@@ -23,7 +21,8 @@ TEST(Template, DISABLED_Basic) {
       "}\n"
       "foo(\"lala\") {\n"
       "  bar = 42\n"
-      "}");
+      "}"
+  );
   ASSERT_FALSE(input.has_error());
 
   Err err;
@@ -33,7 +32,6 @@ TEST(Template, DISABLED_Basic) {
   EXPECT_EQ("lala\n42\n", setup.print_output());
 }
 
-//FIXME need invoker; not sure why it doesn't fail
 TEST(Template, UnusedTargetNameShouldThrowError) {
   TestWithScope setup;
   TestParseInput input(
@@ -50,7 +48,6 @@ TEST(Template, UnusedTargetNameShouldThrowError) {
   EXPECT_TRUE(err.has_error());
 }
 
-//FIXME need target_name; not sure why it doesn't fail
 TEST(Template, UnusedInvokerShouldThrowError) {
   TestWithScope setup;
   TestParseInput input(
@@ -67,7 +64,6 @@ TEST(Template, UnusedInvokerShouldThrowError) {
   EXPECT_TRUE(err.has_error());
 }
 
-//FIXME need target_name, invoker; not sure why it doesn't fail
 TEST(Template, UnusedVarInInvokerShouldThrowError) {
   TestWithScope setup;
   TestParseInput input(

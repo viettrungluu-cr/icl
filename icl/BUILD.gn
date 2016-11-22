@@ -55,7 +55,7 @@ source_set("icl") {
     "parser.h",
     "scope.cc",
     "scope.h",
-    "string_utils.cc",  #FIXME needs a ton of work
+    "string_utils.cc",
     "string_utils.h",
     "template.cc",
     "template.h",
@@ -65,6 +65,8 @@ source_set("icl") {
     "tokenizer.h",
     "value.cc",
     "value.h",
+    "variables.cc",
+    "variables.h",
   ]
 
   deps = [
@@ -160,7 +162,7 @@ test("string_utils_test") {
 
 test("template_test") {
   sources = [
-#FIXME needs a shitload of work
+#FIXME needs a shitload of work, or not
     "template_unittest.cc",
   ]
 

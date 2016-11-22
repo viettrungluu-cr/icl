@@ -13,8 +13,7 @@
 //FIXME
 //#include "icl/scope_per_file_provider.h"
 #include "icl/value.h"
-//FIXME
-//#include "icl/variables.h"
+#include "icl/variables.h"
 
 namespace icl {
 
@@ -73,23 +72,18 @@ Value Template::Invoke(Scope* scope,
   // Scope.SetValue will copy the value which will in turn copy the scope, but
   // if we instead create a value and then set the scope on it, the copy can
   // be avoided.
-//FIXME
-/*
   template_scope.SetValue(variables::kInvoker,
                           Value(nullptr, std::unique_ptr<Scope>()), invocation);
   Value* invoker_value = template_scope.GetMutableValue(
       variables::kInvoker, Scope::SEARCH_NESTED, false);
   invoker_value->SetScopeValue(std::move(invocation_scope));
-  template_scope.set_source_dir(scope->GetSourceDir());
-*/
-
 //FIXME
-/*
-  const base::StringPiece target_name(variables::kTargetName);
+//  template_scope.set_source_dir(scope->GetSourceDir());
+
+  const StringPiece target_name(variables::kTargetName);
   template_scope.SetValue(target_name,
                           Value(invocation, args[0].string_value()),
                           invocation);
-*/
 
   // Actually run the template code.
   Value result =
@@ -109,15 +103,12 @@ Value Template::Invoke(Scope* scope,
   // to overwrite the value of "invoker" and free the Scope owned by the
   // value. So we need to look it up again and don't do anything if it doesn't
   // exist.
-//FIXME
-/*
   invoker_value = template_scope.GetMutableValue(
       variables::kInvoker, Scope::SEARCH_NESTED, false);
   if (invoker_value && invoker_value->type() == Value::SCOPE) {
     if (!invoker_value->scope_value()->CheckForUnusedVars(err))
       return Value();
   }
-*/
 
   // Check for unused variables in the template itself.
   if (!template_scope.CheckForUnusedVars(err))
