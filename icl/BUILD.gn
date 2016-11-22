@@ -19,6 +19,9 @@ group("tests") {
 
     # string_piece:
     ":string_piece_test",
+
+    # ref_counted:
+    ":ref_counted_test",
   ]
 }
 
@@ -210,5 +213,26 @@ test("string_piece_test") {
 
   deps = [
     ":string_piece",
+  ]
+}
+
+# ref_counted ------------------------------------------------------------------
+
+source_set("ref_counted") {
+  sources = [
+    "ref_counted.h",
+    "ref_counted_internal.h",
+    "ref_ptr.h",
+    "ref_ptr_internal.h",
+  ]
+}
+
+test("ref_counted_test") {
+  sources = [
+    "ref_counted_unittest.cc",
+  ]
+
+  deps = [
+    ":ref_counted",
   ]
 }
