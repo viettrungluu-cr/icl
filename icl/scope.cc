@@ -15,11 +15,6 @@ namespace icl {
 
 namespace {
 
-//FIXME replace mode_flags with a bool
-// Flags set in the mode_flags_ of a scope. If a bit is set, it applies
-// recursively to all dependent scopes.
-const unsigned kProcessingImportFlag = 1;
-
 // Returns true if this variable name should be considered private. Private
 // values start with an underscore, and are not imported from "gni" files
 // when processing an import.
@@ -47,7 +42,7 @@ Scope::Scope(Delegate* delegate)
     : const_containing_(nullptr),
       mutable_containing_(nullptr),
       delegate_(delegate),
-      mode_flags_(0),
+      is_processing_import_(false),
       item_collector_(nullptr) {
 }
 
@@ -55,7 +50,7 @@ Scope::Scope(Scope* parent)
     : const_containing_(nullptr),
       mutable_containing_(parent),
       delegate_(parent->delegate()),
-      mode_flags_(0),
+      is_processing_import_(false),
       item_collector_(nullptr) {
 }
 
@@ -63,12 +58,11 @@ Scope::Scope(const Scope* parent)
     : const_containing_(parent),
       mutable_containing_(nullptr),
       delegate_(parent->delegate()),
-      mode_flags_(0),
+      is_processing_import_(false),
       item_collector_(nullptr) {
 }
 
-Scope::~Scope() {
-}
+Scope::~Scope() = default;
 
 void Scope::DetachFromContaining() {
   const_containing_ = nullptr;
@@ -412,21 +406,18 @@ const Scope* Scope::GetTargetDefaults(const std::string& target_type) const {
 }
 
 void Scope::SetProcessingImport() {
-  assert((mode_flags_ & kProcessingImportFlag) == 0);
-  mode_flags_ |= kProcessingImportFlag;
+  assert(!is_processing_import_);
+  is_processing_import_ = true;
 }
 
 void Scope::ClearProcessingImport() {
-  assert(mode_flags_ & kProcessingImportFlag);
-  mode_flags_ &= ~(kProcessingImportFlag);
+  assert(is_processing_import_);
+  is_processing_import_ = false;
 }
 
 bool Scope::IsProcessingImport() const {
-  if (mode_flags_ & kProcessingImportFlag)
-    return true;
-  if (containing())
-    return containing()->IsProcessingImport();
-  return false;
+  return is_processing_import_ ||
+         (containing() && containing()->IsProcessingImport());
 }
 
 //FIXME

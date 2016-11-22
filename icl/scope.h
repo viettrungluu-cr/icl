@@ -326,9 +326,7 @@ class Scope {
 
   Delegate* const delegate_;
 
-  // Bits set for different modes. See the flag definitions in the .cc file
-  // for more.
-  unsigned mode_flags_;
+  bool is_processing_import_;
 
   RecordMap values_;
 
