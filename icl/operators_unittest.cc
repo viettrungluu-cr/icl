@@ -7,11 +7,11 @@
 #include <gtest/gtest.h>
 #include <stdint.h>
 
-#include <utility>
+#include <ostream>
+#include <memory>
+#include <string>
 
 #include "icl/parse_tree.h"
-//FIXME
-//#include "icl/pattern.h"
 #include "icl/test_with_scope.h"
 
 namespace icl {
@@ -33,21 +33,15 @@ bool IsValueStringEqualing(const Value& v, const char* s) {
 // Execute().
 class TestParseNode : public ParseNode {
  public:
-  TestParseNode(const Value& v) : value_(v) {
-  }
+  TestParseNode(const Value& v) : value_(v) {}
 
-  Value Execute(Scope* scope, Err* err) const override {
-    return value_;
-  }
-  LocationRange GetRange() const override {
-    return LocationRange();
-  }
+  Value Execute(Scope* scope, Err* err) const override { return value_; }
+  LocationRange GetRange() const override { return LocationRange(); }
   Err MakeErrorDescribing(const std::string& msg,
                           const std::string& help) const override {
     return Err(this, msg);
   }
-  void Print(std::ostream& out, int indent) const override {
-  }
+  void Print(std::ostream& out, int indent) const override {}
 
  private:
   Value value_;
@@ -100,58 +94,6 @@ class TestBinaryOpNode : public BinaryOpNode {
   // the identifier token.
   Token left_identifier_token_ownership_;
 };
-
-//FIXME
-/*
-TEST(Operators, SourcesAppend) {
-  Err err;
-  TestWithScope setup;
-
-  // Set up "sources" with an empty list.
-  const char sources[] = "sources";
-  setup.scope()->SetValue(sources, Value(nullptr, Value::LIST), nullptr);
-
-  // Set up the operator.
-  TestBinaryOpNode node(Token::PLUS_EQUALS, "+=");
-  node.SetLeftToIdentifier(sources);
-
-  // Set up the filter on the scope to remove everything ending with "rm"
-  std::unique_ptr<PatternList> pattern_list(new PatternList);
-  pattern_list->Append(Pattern("*rm"));
-  setup.scope()->set_sources_assignment_filter(std::move(pattern_list));
-
-  // Append an integer.
-  node.SetRightToListOfValue(Value(nullptr, static_cast<int64_t>(5)));
-  node.Execute(setup.scope(), &err);
-  EXPECT_FALSE(err.has_error());
-
-  // Append a string that doesn't match the pattern, it should get appended.
-  const char string1[] = "good";
-  node.SetRightToListOfValue(Value(nullptr, string1));
-  node.Execute(setup.scope(), &err);
-  EXPECT_FALSE(err.has_error());
-
-  // Append a string that does match the pattern, it should be a no-op.
-  const char string2[] = "foo-rm";
-  node.SetRightToListOfValue(Value(nullptr, string2));
-  node.Execute(setup.scope(), &err);
-  EXPECT_FALSE(err.has_error());
-
-  // Append a list with the two strings from above.
-  node.SetRightToListOfValue(Value(nullptr, string1), Value(nullptr, string2));
-  node.Execute(setup.scope(), &err);
-  EXPECT_FALSE(err.has_error());
-
-  // The sources variable in the scope should now have: [ 5, "good", "good" ]
-  const Value* value = setup.scope()->GetValue(sources);
-  ASSERT_TRUE(value);
-  ASSERT_EQ(Value::LIST, value->type());
-  ASSERT_EQ(3u, value->list_value().size());
-  EXPECT_TRUE(IsValueIntegerEqualing(value->list_value()[0], 5));
-  EXPECT_TRUE(IsValueStringEqualing(value->list_value()[1], "good"));
-  EXPECT_TRUE(IsValueStringEqualing(value->list_value()[2], "good"));
-}
-*/
 
 // Note that the SourcesAppend test above tests the basic list + list features,
 // this test handles the other cases.

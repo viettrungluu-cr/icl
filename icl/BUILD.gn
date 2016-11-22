@@ -162,7 +162,6 @@ test("string_utils_test") {
 
 test("template_test") {
   sources = [
-#FIXME needs a shitload of work, or not
     "template_unittest.cc",
   ]
 

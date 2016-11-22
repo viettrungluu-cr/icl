@@ -60,9 +60,7 @@ TEST(ParseTree, Accessor) {
   EXPECT_EQ(kBValue, result.int_value());
 }
 
-//FIXME
-TEST(ParseTree, DISABLED_BlockUnusedVars) {
-//TEST(ParseTree, BlockUnusedVars) {
+TEST(ParseTree, BlockUnusedVars) {
   TestWithScope setup;
 
   // Printing both values should be OK.

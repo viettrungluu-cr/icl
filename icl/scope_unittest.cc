@@ -8,8 +8,8 @@
 
 #include "icl/input_file.h"
 #include "icl/parse_tree.h"
-//FIXME
-//#include "tools/gn/template.h"
+#include "icl/ref_ptr.h"
+#include "icl/template.h"
 #include "icl/test_with_scope.h"
 
 namespace icl {
@@ -26,8 +26,6 @@ bool HasStringValueEqualTo(const Scope* scope,
   return value->string_value() == expected_value;
 }
 
-//FIXME
-/*
 TEST(Scope, NonRecursiveMergeTo) {
   TestWithScope setup;
 
@@ -42,16 +40,15 @@ TEST(Scope, NonRecursiveMergeTo) {
   // Add some values to the scope.
   Value old_value(&assignment, "hello");
   setup.scope()->SetValue("v", old_value, &assignment);
-  base::StringPiece private_var_name("_private");
+  StringPiece private_var_name("_private");
   setup.scope()->SetValue(private_var_name, old_value, &assignment);
 
   // Add some templates to the scope.
   FunctionCallNode templ_definition;
-  scoped_refptr<Template> templ(new Template(setup.scope(), &templ_definition));
-  setup.scope()->AddTemplate("templ", templ.get());
-  scoped_refptr<Template> private_templ(
-      new Template(setup.scope(), &templ_definition));
-  setup.scope()->AddTemplate("_templ", private_templ.get());
+  auto templ = MakeRefCounted<Template>(setup.scope(), &templ_definition);
+  setup.scope()->AddTemplate("templ", templ.Clone());
+  setup.scope()->AddTemplate(
+      "_templ", MakeRefCounted<Template>(setup.scope(), &templ_definition));
 
   // Detect collisions of values' values.
   {
@@ -70,9 +67,8 @@ TEST(Scope, NonRecursiveMergeTo) {
   {
     Scope new_scope(&setup);
 
-    scoped_refptr<Template> new_templ(
-        new Template(&new_scope, &templ_definition));
-    new_scope.AddTemplate("templ", new_templ.get());
+    new_scope.AddTemplate(
+        "templ", MakeRefCounted<Template>(&new_scope, &templ_definition));
 
     Err err;
     EXPECT_FALSE(setup.scope()->NonRecursiveMergeTo(
@@ -102,9 +98,8 @@ TEST(Scope, NonRecursiveMergeTo) {
   {
     Scope new_scope(&setup);
 
-    scoped_refptr<Template> new_templ(
-        new Template(&new_scope, &templ_definition));
-    new_scope.AddTemplate("templ", new_templ.get());
+    new_scope.AddTemplate(
+        "templ", MakeRefCounted<Template>(&new_scope, &templ_definition));
     Scope::MergeOptions options;
     options.clobber_existing = true;
 
@@ -134,9 +129,8 @@ TEST(Scope, NonRecursiveMergeTo) {
   {
     Scope new_scope(&setup);
 
-    scoped_refptr<Template> new_templ(
-        new Template(&new_scope, &templ_definition));
-    new_scope.AddTemplate("templ", templ.get());
+    new_scope.AddTemplate(
+        "templ", MakeRefCounted<Template>(&new_scope, &templ_definition));
 
     Err err;
     EXPECT_TRUE(setup.scope()->NonRecursiveMergeTo(
@@ -197,7 +191,6 @@ TEST(Scope, NonRecursiveMergeTo) {
     EXPECT_FALSE(err.has_error());
   }
 }
-*/
 
 TEST(Scope, MakeClosure) {
   // Create 3 nested scopes [const root from setup] <- nested1 <- nested2.
