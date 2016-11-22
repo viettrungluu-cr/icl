@@ -251,6 +251,7 @@ class Scope {
   // been set.
   const Scope* GetTargetDefaults(const std::string& target_type) const;
 
+//FIXME delete this shit
   // Indicates if we're currently processing the build configuration file.
   // This is true when processing the config file for any toolchain.
   //

@@ -51,12 +51,11 @@ bool VerifyNoBlockForFunctionCall(const FunctionCallNode* function,
 
 }  // namespace
 
-//FIXME
-/*
 bool EnsureNotProcessingImport(const ParseNode* node,
                                const Scope* scope,
                                Err* err) {
   if (scope->IsProcessingImport()) {
+//FIXME fix message
     *err = Err(node, "Not valid from an import.",
         "Imports are for defining defaults, variables, and rules. The\n"
         "appropriate place for this kind of thing is really in a normal\n"
@@ -65,10 +64,7 @@ bool EnsureNotProcessingImport(const ParseNode* node,
   }
   return true;
 }
-*/
 
-//FIXME
-/*
 bool FillTargetBlockScope(const Scope* scope,
                           const FunctionCallNode* function,
                           const std::string& target_type,
@@ -96,15 +92,17 @@ bool FillTargetBlockScope(const Scope* scope,
   if (!EnsureSingleStringArg(function, args, err))
     return false;
 
+//FIXME
+/*
   // Set the target name variable to the current target, and mark it used
   // because we don't want to issue an error if the script ignores it.
   const StringPiece target_name(variables::kTargetName);
   block_scope->SetValue(target_name, Value(function, args[0].string_value()),
                         function);
   block_scope->MarkUsed(target_name);
+*/
   return true;
 }
-*/
 
 void FillNeedsBlockError(const FunctionCallNode* function, Err* err) {
   *err = Err(function->function(), "This function call requires a block.",

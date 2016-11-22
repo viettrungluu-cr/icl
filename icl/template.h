@@ -8,7 +8,7 @@
 #include <memory>
 #include <vector>
 
-#include "base/memory/ref_counted.h"
+#include "icl/ref_counted.h"
 
 namespace icl {
 
@@ -26,14 +26,8 @@ class Value;
 // locking. Normally, this will be assocated with a .gni file and then a
 // reference will be taken by each .gn file that imports it. These files might
 // execute the template in parallel.
-class Template : public base::RefCountedThreadSafe<Template> {
+class Template : public RefCountedThreadSafe<Template> {
  public:
-  // Makes a new closure based on the given scope.
-  Template(const Scope* scope, const FunctionCallNode* def);
-
-  // Takes ownership of a previously-constructed closure.
-  Template(std::unique_ptr<Scope> closure, const FunctionCallNode* def);
-
   // Invoke the template. The values correspond to the state of the code
   // invoking the template. The template name needs to be supplied since the
   // template object itself doesn't know what name the calling code is using
@@ -49,10 +43,18 @@ class Template : public base::RefCountedThreadSafe<Template> {
   LocationRange GetDefinitionRange() const;
 
  private:
-  friend class base::RefCountedThreadSafe<Template>;
+  FRIEND_MAKE_REF_COUNTED(Template);
 
-  Template();
+  // Makes a new closure based on the given scope.
+  Template(const Scope* scope, const FunctionCallNode* def);
+
+  // Takes ownership of a previously-constructed closure.
+  Template(std::unique_ptr<Scope> closure, const FunctionCallNode* def);
+
   ~Template();
+
+  Template(const Template&) = delete;
+  Template& operator=(const Template&) = delete;
 
   std::unique_ptr<Scope> closure_;
   const FunctionCallNode* definition_;

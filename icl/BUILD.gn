@@ -55,9 +55,8 @@ source_set("icl") {
     "scope.h",
     "string_utils.cc",  #FIXME needs a ton of work
     "string_utils.h",
-#FIXME
-#    "template.cc",
-#    "template.h",
+    "template.cc",
+    "template.h",
     "token.cc",
     "token.h",
     "tokenizer.cc",
@@ -71,6 +70,7 @@ source_set("icl") {
   ]
 
   public_deps = [
+    ":ref_counted",
     ":string_piece",
   ]
 }
@@ -111,8 +111,6 @@ test("operators_test") {
     ":icl_test_support",
   ]
 }
-
-#FIXME: string_utils_unittest.cc template_unittest.cc
 
 test("parse_tree_test") {
   sources = [
@@ -156,6 +154,8 @@ test("string_utils_test") {
     ":icl",
   ]
 }
+
+#FIXME: template_unittest.cc
 
 test("tokenizer_test") {
   sources = [

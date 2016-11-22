@@ -2,30 +2,21 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "tools/gn/template.h"
+#include "icl/template.h"
 
 #include <utility>
 
-#include "tools/gn/err.h"
-#include "tools/gn/functions.h"
-#include "tools/gn/parse_tree.h"
-#include "tools/gn/scope.h"
-#include "tools/gn/scope_per_file_provider.h"
-#include "tools/gn/value.h"
-#include "tools/gn/variables.h"
+#include "icl/err.h"
+#include "icl/functions.h"
+#include "icl/parse_tree.h"
+#include "icl/scope.h"
+//FIXME
+//#include "icl/scope_per_file_provider.h"
+#include "icl/value.h"
+//FIXME
+//#include "icl/variables.h"
 
 namespace icl {
-
-Template::Template(const Scope* scope, const FunctionCallNode* def)
-    : closure_(scope->MakeClosure()),
-      definition_(def) {
-}
-
-Template::Template(std::unique_ptr<Scope> scope, const FunctionCallNode* def)
-    : closure_(std::move(scope)), definition_(def) {}
-
-Template::~Template() {
-}
 
 Value Template::Invoke(Scope* scope,
                        const FunctionCallNode* invocation,
@@ -66,9 +57,11 @@ Value Template::Invoke(Scope* scope,
   // people expect (otherwise its to easy to be putting generated files in the
   // gen dir corresponding to an imported file).
   Scope template_scope(closure_.get());
-  template_scope.set_source_dir(scope->GetSourceDir());
+//FIXME
+//  template_scope.set_source_dir(scope->GetSourceDir());
 
-  ScopePerFileProvider per_file_provider(&template_scope, true);
+//FIXME
+//  ScopePerFileProvider per_file_provider(&template_scope, true);
 
   // Targets defined in the template go in the collector for the invoking file.
   template_scope.set_item_collector(scope->GetItemCollector());
@@ -80,17 +73,23 @@ Value Template::Invoke(Scope* scope,
   // Scope.SetValue will copy the value which will in turn copy the scope, but
   // if we instead create a value and then set the scope on it, the copy can
   // be avoided.
+//FIXME
+/*
   template_scope.SetValue(variables::kInvoker,
                           Value(nullptr, std::unique_ptr<Scope>()), invocation);
   Value* invoker_value = template_scope.GetMutableValue(
       variables::kInvoker, Scope::SEARCH_NESTED, false);
   invoker_value->SetScopeValue(std::move(invocation_scope));
   template_scope.set_source_dir(scope->GetSourceDir());
+*/
 
+//FIXME
+/*
   const base::StringPiece target_name(variables::kTargetName);
   template_scope.SetValue(target_name,
                           Value(invocation, args[0].string_value()),
                           invocation);
+*/
 
   // Actually run the template code.
   Value result =
@@ -110,12 +109,15 @@ Value Template::Invoke(Scope* scope,
   // to overwrite the value of "invoker" and free the Scope owned by the
   // value. So we need to look it up again and don't do anything if it doesn't
   // exist.
+//FIXME
+/*
   invoker_value = template_scope.GetMutableValue(
       variables::kInvoker, Scope::SEARCH_NESTED, false);
   if (invoker_value && invoker_value->type() == Value::SCOPE) {
     if (!invoker_value->scope_value()->CheckForUnusedVars(err))
       return Value();
   }
+*/
 
   // Check for unused variables in the template itself.
   if (!template_scope.CheckForUnusedVars(err))
@@ -127,5 +129,15 @@ Value Template::Invoke(Scope* scope,
 LocationRange Template::GetDefinitionRange() const {
   return definition_->GetRange();
 }
+
+Template::Template(const Scope* scope, const FunctionCallNode* def)
+    : closure_(scope->MakeClosure()),
+      definition_(def) {
+}
+
+Template::Template(std::unique_ptr<Scope> scope, const FunctionCallNode* def)
+    : closure_(std::move(scope)), definition_(def) {}
+
+Template::~Template() = default;
 
 }  // namespace icl
