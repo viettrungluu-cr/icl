@@ -9,10 +9,9 @@
 #include <utility>
 
 #include "icl/err.h"
+#include "icl/filesystem_utils.h"
 #include "icl/source_file.h"
 #include "icl/value.h"
-//FIXME
-//#include "tools/gn/filesystem_utils.h"
 
 namespace icl {
 
@@ -42,6 +41,8 @@ SourceDir::SourceDir(std::string&& s)
 
 SourceDir::~SourceDir() = default;
 
+//FIXME
+/*
 SourceFile SourceDir::ResolveRelativeFile(
     const Value& p,
     Err* err,
@@ -69,16 +70,14 @@ SourceFile SourceDir::ResolveRelativeFile(
   if (str.size() >= 2 && str[0] == '/' && str[1] == '/') {
     // Source-relative.
     ret.value_.assign(str.data(), str.size());
-//FIXME
-//    NormalizePath(&ret.value_, source_root);
+    NormalizePath(&ret.value_, source_root);
     return ret;
   } else if (IsPathAbsolute(str)) {
     if (source_root.empty() ||
         !MakeAbsolutePathRelativeIfPossible(source_root, str, &ret.value_)) {
       ret.value_.append(str.data(), str.size());
     }
-//FIXME
-//    NormalizePath(&ret.value_);
+    NormalizePath(&ret.value_);
     return ret;
   }
 
@@ -86,8 +85,7 @@ SourceFile SourceDir::ResolveRelativeFile(
     std::string absolute =
         FilePathToUTF8(Resolve(UTF8ToFilePath(source_root)).AppendASCII(
             str).value());
-//FIXME
-//    NormalizePath(&absolute);
+    NormalizePath(&absolute);
     if (!MakeAbsolutePathRelativeIfPossible(source_root, absolute,
                                             &ret.value_)) {
       ret.value_.append(absolute.data(), absolute.size());
@@ -102,8 +100,7 @@ SourceFile SourceDir::ResolveRelativeFile(
   ret.value_.assign(value_);
   ret.value_.append(str.data(), str.size());
 
-//FIXME
-//  NormalizePath(&ret.value_);
+  NormalizePath(&ret.value_);
   return ret;
 }
 
@@ -132,16 +129,14 @@ SourceDir SourceDir::ResolveRelativeDir(const Value& blame_but_dont_use,
     // Source-relative.
     ret.value_.assign(str.data(), str.size());
     EnsureEndsWithSlash(&ret.value_);
-//FIXME
-//    NormalizePath(&ret.value_, source_root);
+    NormalizePath(&ret.value_, source_root);
     return ret;
   } else if (IsPathAbsolute(str)) {
     if (source_root.empty() ||
         !MakeAbsolutePathRelativeIfPossible(source_root, str, &ret.value_)) {
       ret.value_.append(str.data(), str.size());
     }
-//FIXME
-//    NormalizePath(&ret.value_);
+    NormalizePath(&ret.value_);
     EnsureEndsWithSlash(&ret.value_);
     return ret;
   }
@@ -150,8 +145,7 @@ SourceDir SourceDir::ResolveRelativeDir(const Value& blame_but_dont_use,
     std::string absolute =
         FilePathToUTF8(Resolve(UTF8ToFilePath(source_root)).AppendASCII(
             str.as_string()).value());
-//FIXME
-//    NormalizePath(&absolute);
+    NormalizePath(&absolute);
     if (!MakeAbsolutePathRelativeIfPossible(source_root, absolute,
                                             &ret.value_)) {
       ret.value_.append(absolute.data(), absolute.size());
@@ -164,15 +158,13 @@ SourceDir SourceDir::ResolveRelativeDir(const Value& blame_but_dont_use,
   ret.value_.assign(value_);
   ret.value_.append(str.data(), str.size());
 
-//FIXME
-//  NormalizePath(&ret.value_);
+  NormalizePath(&ret.value_);
   EnsureEndsWithSlash(&ret.value_);
   AssertValueSourceDirString(ret.value_);
 
   return ret;
 }
 
-/*
 base::FilePath SourceDir::Resolve(const base::FilePath& source_root) const {
   if (is_null())
     return base::FilePath();

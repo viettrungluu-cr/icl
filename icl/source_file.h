@@ -11,7 +11,9 @@
 #include <functional>
 #include <string>
 
+//FIXME
 //#include "base/files/file_path.h"
+#include "icl/source_dir.h"
 #include "icl/string_piece.h"
 
 namespace icl {
@@ -37,8 +39,7 @@ class SourceFile {
 
   // Returns everything after the last slash.
   std::string GetName() const;
-//FIXME
-//  SourceDir GetDir() const;
+  SourceDir GetDir() const;
 
   // Resolves this source file relative to some given source root. Returns
   // an empty file path on error.

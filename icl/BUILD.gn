@@ -59,9 +59,8 @@ source_set("icl") {
     "parser.h",
     "scope.cc",
     "scope.h",
-#FIXME
-#    "source_dir.cc",
-#    "source_dir.h",
+    "source_dir.cc",
+    "source_dir.h",
     "source_file.cc",
     "source_file.h",
     "string_utils.cc",

@@ -8,9 +8,8 @@
 
 #include <utility>
 
-//FIXME
-//#include "tools/gn/filesystem_utils.h"
-//#include "tools/gn/source_dir.h"
+#include "icl/filesystem_utils.h"
+#include "icl/source_dir.h"
 
 namespace icl {
 
@@ -20,8 +19,7 @@ SourceFile::SourceFile(std::string&& value) : value_(std::move(value)) {
   assert(!value_.empty());
   assert(value_.front() == '/');
   assert(value_.back() != '/');
-//FIXME
-//  NormalizePath(&value_);
+  NormalizePath(&value_);
 }
 
 SourceFile::~SourceFile() = default;
@@ -36,17 +34,14 @@ std::string SourceFile::GetName() const {
                      value_.size() - last_slash - 1);
 }
 
-//FIXME
-/*
 SourceDir SourceFile::GetDir() const {
   if (is_null())
     return SourceDir();
 
   assert(value_.find('/') != std::string::npos);
   size_t last_slash = value_.rfind('/');
-  return SourceDir(StringPiece(&value_.front(), last_slash + 1));
+  return SourceDir(value_.substr(0u, last_slash + 1));
 }
-*/
 
 //FIXME
 /*

@@ -45,6 +45,8 @@ class SourceDir {
   // If source_root is supplied, these functions will additionally handle the
   // case where the input is a system-absolute but still inside the source
   // tree. This is the case for some external tools.
+//FIXME
+/*
   SourceFile ResolveRelativeFile(
       const Value& p,
       Err* err,
@@ -65,8 +67,8 @@ class SourceDir {
 
   // Resolves this source file relative to some given source root. Returns
   // an empty file path on error.
-//FIXME
-//  base::FilePath Resolve(const base::FilePath& source_root) const;
+  base::FilePath Resolve(const base::FilePath& source_root) const;
+*/
 
   bool is_null() const { return value_.empty(); }
   const std::string& value() const { return value_; }
