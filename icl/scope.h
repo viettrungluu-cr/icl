@@ -16,7 +16,6 @@
 #include "icl/err.h"
 #include "icl/item.h"
 //FIXME
-//#include "tools/gn/pattern.h"
 //#include "tools/gn/source_dir.h"
 #include "icl/string_piece.h"
 #include "icl/value.h"
@@ -252,15 +251,6 @@ class Scope {
   // been set.
   const Scope* GetTargetDefaults(const std::string& target_type) const;
 
-  // Filter to apply when the sources variable is assigned. May return NULL.
-//FIXME
-/*
-  const PatternList* GetSourcesAssignmentFilter() const;
-  void set_sources_assignment_filter(std::unique_ptr<PatternList> f) {
-    sources_assignment_filter_ = std::move(f);
-  }
-*/
-
   // Indicates if we're currently processing the build configuration file.
   // This is true when processing the config file for any toolchain.
   //
@@ -362,11 +352,6 @@ class Scope {
   // Values which might be deallocated before this goes out of scope.
   typedef std::unordered_map<std::string, std::unique_ptr<Scope>> NamedScopeMap;
   NamedScopeMap target_defaults_;
-
-  // Null indicates not set and that we should fallback to the containing
-  // scope's filter.
-//FIXME
-//  std::unique_ptr<PatternList> sources_assignment_filter_;
 
   // Owning pointers, must be deleted.
 //FIXME

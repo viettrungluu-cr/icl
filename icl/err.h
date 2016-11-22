@@ -70,10 +70,14 @@ class Err {
 
   void AppendSubErr(const Err& err);
 
-  void PrintToStdout() const;
+  // Appends a human-readable error message to |*out|.
+  void AppendErrorMessage(std::string* out) const;
+
+  // Convenience form of |AppendErrorMessage()|.
+  std::string GetErrorMessage() const;
 
  private:
-  void InternalPrintToStdout(bool is_sub_err) const;
+  void AppendErrorMessageInternal(bool is_sub_err, std::string* out) const;
 
   bool has_error_;
   Location location_;

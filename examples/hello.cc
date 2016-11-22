@@ -1,6 +1,6 @@
-#include <stdio.h>
 #include <stdlib.h>
 
+#include <iostream>
 #include <memory>
 #include <vector>
 
@@ -18,9 +18,7 @@ namespace {
 
 void PanicOnError(const icl::Err& err, const char* msg) {
   if (err.has_error()) {
-    // TODO(vtl): Ugh.
-    err.PrintToStdout();
-    fprintf(stderr, "PANIC: %s\n", msg);
+    std::cerr << "PANIC: " << msg << std::endl << err.GetErrorMessage();
     abort();
   }
 }
@@ -35,7 +33,7 @@ class DelegateImpl : public icl::Delegate {
 
   // |icl::Delegate| methods:
   void Print(const std::string& s) override {
-    fputs(s.c_str(), stdout);
+    std::cout << s;
   }
   const icl::FunctionInfoMap& GetFunctions() const override {
     return functions_;

@@ -30,9 +30,7 @@ void DoParserPrintTest(const char* input, const char* expected) {
 
   Err err;
   std::unique_ptr<ParseNode> result = Parser::Parse(tokens, &err);
-  if (!result)
-    err.PrintToStdout();
-  ASSERT_TRUE(result);
+  ASSERT_TRUE(result) << err.GetErrorMessage();
 
   std::ostringstream collector;
   result->Print(collector, 0);

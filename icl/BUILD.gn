@@ -50,8 +50,6 @@ source_set("icl") {
     "parser.h",
     "scope.cc",
     "scope.h",
-    "standard_out.cc",
-    "standard_out.h",
     "string_utils.cc",  #FIXME needs a ton of work
     "string_utils.h",
 #FIXME

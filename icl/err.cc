@@ -12,7 +12,6 @@
 //#include "tools/gn/filesystem_utils.h"
 #include "icl/input_file.h"
 #include "icl/parse_tree.h"
-#include "icl/standard_out.h"
 #include "icl/tokenizer.h"
 #include "icl/value.h"
 
@@ -60,7 +59,8 @@ void FillRangeOnLine(const LocationRange& range, int line_number,
 // make if the error spans more than one line (like unterminated literals).
 void OutputHighlighedPosition(const Location& location,
                               const Err::RangeList& ranges,
-                              size_t line_length) {
+                              size_t line_length,
+                              std::string* out) {
   // Make a buffer of the line in spaces.
   std::string highlight;
   highlight.resize(line_length);
@@ -81,8 +81,8 @@ void OutputHighlighedPosition(const Location& location,
   while (!highlight.empty() && highlight[highlight.size() - 1] == ' ')
     highlight.resize(highlight.size() - 1);
 
-  highlight += "\n";
-  OutputString(highlight, DECORATION_BLUE);
+  out->append(highlight);
+  out->push_back('\n');
 }
 
 }  // namespace
@@ -151,23 +151,28 @@ Err::Err(const Err& other) = default;
 Err::~Err() {
 }
 
-void Err::PrintToStdout() const {
-  InternalPrintToStdout(false);
-}
-
 void Err::AppendSubErr(const Err& err) {
   sub_errs_.push_back(err);
 }
 
-void Err::InternalPrintToStdout(bool is_sub_err) const {
+void Err::AppendErrorMessage(std::string* out) const {
+  AppendErrorMessageInternal(false, out);
+}
+
+std::string Err::GetErrorMessage() const {
+  std::string rv;
+  AppendErrorMessage(&rv);
+  return rv;
+}
+
+void Err::AppendErrorMessageInternal(bool is_sub_err, std::string* out) const {
   assert(has_error_);
 
   if (!is_sub_err)
-    OutputString("ERROR ", DECORATION_RED);
+    out->append("ERROR ");
 
   // File name and location.
-//FIXME
-//  const InputFile* input_file = location_.file();
+  const InputFile* input_file = location_.file();
   std::string loc_str = location_.Describe(true);
   if (!loc_str.empty()) {
     if (is_sub_err)
@@ -176,28 +181,32 @@ void Err::InternalPrintToStdout(bool is_sub_err) const {
       loc_str.insert(0, "at ");
     loc_str.append(": ");
   }
-  OutputString(loc_str + message_ + "\n");
+  out->append(loc_str);
+  out->append(message_);
+  out->push_back('\n');
 
   // Quoted line.
-//FIXME
-/*
   if (input_file) {
     std::string line = GetNthLine(input_file->contents(),
                                   location_.line_number());
-    if (!base::ContainsOnlyChars(line, base::kWhitespaceASCII)) {
-      OutputString(line + "\n", DECORATION_DIM);
-      OutputHighlighedPosition(location_, ranges_, line.size());
+//FIXME
+    if (true) {
+//    if (!base::ContainsOnlyChars(line, base::kWhitespaceASCII)) {
+      out->append(line);
+      out->push_back('\n');
+      OutputHighlighedPosition(location_, ranges_, line.size(), out);
     }
   }
-*/
 
   // Optional help text.
-  if (!help_text_.empty())
-    OutputString(help_text_ + "\n");
+  if (!help_text_.empty()) {
+    out->append(help_text_);
+    out->push_back('\n');
+  }
 
   // Sub errors.
   for (const auto& sub_err : sub_errs_)
-    sub_err.InternalPrintToStdout(true);
+    sub_err.AppendErrorMessageInternal(true, out);
 }
 
 }  // namespace icl
