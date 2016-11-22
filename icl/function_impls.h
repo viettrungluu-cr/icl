@@ -22,17 +22,27 @@ Value RunDefined(Scope* scope,
                  Err* err);
 inline FunctionInfoMapEntry DefinedFn() { return {"defined", &RunDefined}; }
 
+Value RunPrint(Scope* scope,
+               const FunctionCallNode* function,
+               const std::vector<Value>& args,
+               Err* err);
+inline FunctionInfoMapEntry PrintFn() { return {"print", &RunPrint}; }
+
+// Implemented in function_impls_foreach.cc:
 Value RunForEach(Scope* scope,
                  const FunctionCallNode* function,
                  const ListNode* args_list,
                  Err* err);
 inline FunctionInfoMapEntry ForEachFn() { return {"foreach", &RunForEach}; }
 
-Value RunPrint(Scope* scope,
-               const FunctionCallNode* function,
-               const std::vector<Value>& args,
-               Err* err);
-inline FunctionInfoMapEntry PrintFn() { return {"print", &RunPrint}; }
+//
+/*
+Value RunTemplate(Scope* scope,
+                  const FunctionCallNode* function,
+                  const std::vector<Value>& args,
+                  BlockNode* block,
+                  Err* err);
+*/
 
 //FIXME
 /*
@@ -96,13 +106,6 @@ Value RunSplitList(Scope* scope,
                    const FunctionCallNode* function,
                    const ListNode* args_list,
                    Err* err);
-
-extern const char kTemplate[];
-Value RunTemplate(Scope* scope,
-                  const FunctionCallNode* function,
-                  const std::vector<Value>& args,
-                  BlockNode* block,
-                  Err* err);
 
 extern const char kWriteFile[];
 Value RunWriteFile(Scope* scope,

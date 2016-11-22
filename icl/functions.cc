@@ -16,6 +16,7 @@
 #include "icl/err.h"
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
+#include "icl/template.h"
 #include "icl/token.h"
 #include "icl/value.h"
 /*
@@ -23,7 +24,6 @@
 #include "tools/gn/config_values_generator.h"
 #include "tools/gn/input_file.h"
 #include "tools/gn/parse_node_value_adapter.h"
-#include "tools/gn/template.h"
 #include "tools/gn/value_extractors.h"
 #include "tools/gn/variables.h"
 */
@@ -169,8 +169,6 @@ Value RunFunction(Scope* scope,
       function_map.find(name.value());
   if (found_function == function_map.end()) {
     // No built-in function matching this, check for a template.
-//FIXME
-/*
     std::string template_name = function->function().value().as_string();
     const Template* templ = scope->GetTemplate(template_name);
     if (templ) {
@@ -180,7 +178,6 @@ Value RunFunction(Scope* scope,
       return templ->Invoke(scope, function, template_name, args.list_value(),
                            block, err);
     }
-*/
 
     *err = Err(name, "Unknown function.");
     return Value();

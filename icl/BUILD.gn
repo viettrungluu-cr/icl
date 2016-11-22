@@ -34,6 +34,8 @@ source_set("icl") {
     "err.cc",
     "err.h",
     "function_impls_foreach.cc",
+#FIXME
+#    "function_impls_template.cc",
     "function_impls.cc",
     "function_impls.h",
     "functions.cc",
@@ -93,6 +95,8 @@ source_set("icl_test_support") {
 test("functions_test") {
   sources = [
     "function_impls_foreach_unittest.cc",
+#FIXME
+#    "function_impls_template_unittest.cc",
     "functions_unittest.cc",
   ]
 
@@ -158,6 +162,7 @@ test("string_utils_test") {
 
 test("template_test") {
   sources = [
+#FIXME needs a shitload of work
     "template_unittest.cc",
   ]
 
