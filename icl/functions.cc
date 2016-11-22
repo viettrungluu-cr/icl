@@ -19,13 +19,13 @@
 #include "icl/template.h"
 #include "icl/token.h"
 #include "icl/value.h"
+#include "icl/variables.h"
 /*
 #include "tools/gn/config.h"
 #include "tools/gn/config_values_generator.h"
 #include "tools/gn/input_file.h"
 #include "tools/gn/parse_node_value_adapter.h"
 #include "tools/gn/value_extractors.h"
-#include "tools/gn/variables.h"
 */
 
 namespace icl {
@@ -92,15 +92,12 @@ bool FillTargetBlockScope(const Scope* scope,
   if (!EnsureSingleStringArg(function, args, err))
     return false;
 
-//FIXME
-/*
   // Set the target name variable to the current target, and mark it used
   // because we don't want to issue an error if the script ignores it.
   const StringPiece target_name(variables::kTargetName);
   block_scope->SetValue(target_name, Value(function, args[0].string_value()),
                         function);
   block_scope->MarkUsed(target_name);
-*/
   return true;
 }
 
