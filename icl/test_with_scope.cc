@@ -6,6 +6,7 @@
 
 #include "icl/function_impls.h"
 #include "icl/parser.h"
+#include "icl/source_file.h"
 #include "icl/tokenizer.h"
 
 namespace icl {
@@ -38,7 +39,7 @@ const FunctionInfoMap& TestWithScope::GetFunctions() const {
 }
 
 TestParseInput::TestParseInput(const std::string& input)
-    : input_file_("//test") {
+    : input_file_(SourceFile("//test")) {
   input_file_.SetContents(input);
 
   tokens_ = Tokenizer::Tokenize(&input_file_, &parse_err_);

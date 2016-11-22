@@ -10,6 +10,7 @@
 #include <sstream>
 
 #include "icl/input_file.h"
+#include "icl/source_file.h"
 #include "icl/tokenizer.h"
 
 namespace icl {
@@ -24,7 +25,7 @@ bool GetTokens(const InputFile* input, std::vector<Token>* result) {
 
 void DoParserPrintTest(const char* input, const char* expected) {
   std::vector<Token> tokens;
-  InputFile input_file("/test");
+  InputFile input_file(SourceFile("/test"));
   input_file.SetContents(input);
   ASSERT_TRUE(GetTokens(&input_file, &tokens));
 
@@ -40,7 +41,7 @@ void DoParserPrintTest(const char* input, const char* expected) {
 
 void DoExpressionPrintTest(const char* input, const char* expected) {
   std::vector<Token> tokens;
-  InputFile input_file("/test");
+  InputFile input_file(SourceFile("/test"));
   input_file.SetContents(input);
   ASSERT_TRUE(GetTokens(&input_file, &tokens));
 
@@ -57,7 +58,7 @@ void DoExpressionPrintTest(const char* input, const char* expected) {
 // Expects the tokenizer or parser to identify an error at the given line and
 // character.
 void DoParserErrorTest(const char* input, int err_line, int err_char) {
-  InputFile input_file("/test");
+  InputFile input_file(SourceFile("/test"));
   input_file.SetContents(input);
 
   Err err;
@@ -75,7 +76,7 @@ void DoParserErrorTest(const char* input, int err_line, int err_char) {
 // Expects the tokenizer or parser to identify an error at the given line and
 // character.
 void DoExpressionErrorTest(const char* input, int err_line, int err_char) {
-  InputFile input_file("/test");
+  InputFile input_file(SourceFile("/test"));
   input_file.SetContents(input);
 
   Err err;

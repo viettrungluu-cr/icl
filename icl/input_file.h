@@ -9,15 +9,16 @@
 
 #include <string>
 
+#include "icl/source_file.h"
+//FIXME
 //#include "base/files/file_path.h"
 //#include "tools/gn/source_dir.h"
-//#include "tools/gn/source_file.h"
 
 namespace icl {
 
 class InputFile {
  public:
-  explicit InputFile(std::string name);
+  explicit InputFile(const SourceFile& name);
 
   ~InputFile();
 
@@ -25,7 +26,7 @@ class InputFile {
   InputFile& operator=(const InputFile&) = delete;
 
   // The name passed into the constructor.
-  const std::string& name() const { return name_; }
+  const SourceFile& name() const { return name_; }
 
   // The directory is just a cached version of name()->GetDir() but we get this
   // a lot so computing it once up front saves a bunch of work.
@@ -52,7 +53,7 @@ class InputFile {
 //  bool Load(const base::FilePath& system_path);
 
  private:
-  std::string name_;
+  const SourceFile name_;
 //FIXME
 //  SourceDir dir_;
 

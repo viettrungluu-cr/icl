@@ -11,6 +11,7 @@
 #include "icl/parse_tree.h"
 #include "icl/parser.h"
 #include "icl/scope.h"
+#include "icl/source_file.h"
 #include "icl/token.h"
 #include "icl/tokenizer.h"
 
@@ -52,7 +53,7 @@ const icl::FunctionInfoMap DelegateImpl::functions_ =
 }  // namespace
 
 int main() {
-  icl::InputFile input("noname");
+  icl::InputFile input(icl::SourceFile("//noname"));
   input.SetContents("a = \"hello world\"\n"
                     "print(a)");
 

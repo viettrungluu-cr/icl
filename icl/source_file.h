@@ -24,8 +24,7 @@ class SourceFile {
  public:
   SourceFile();
 
-  // These take a known absolute source file. Always begins in a slash.
-  explicit SourceFile(const StringPiece& p);
+  // Takes a known absolute source file. Always begins in a slash.
   explicit SourceFile(std::string&& value);
 
   ~SourceFile();

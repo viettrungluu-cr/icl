@@ -49,7 +49,7 @@ std::string Location::Describe(bool include_column_number) const {
   if (!file_)
     return std::string();
 
-  std::string ret = file_->friendly_name().empty() ? file_->name()
+  std::string ret = file_->friendly_name().empty() ? file_->name().value()
                                                    : file_->friendly_name();
   ret += ":";
   ret += NumberToString<int>(line_number_);

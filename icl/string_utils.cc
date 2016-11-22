@@ -14,6 +14,7 @@
 #include "icl/input_file.h"
 #include "icl/parser.h"
 #include "icl/scope.h"
+#include "icl/source_file.h"
 #include "icl/token.h"
 #include "icl/tokenizer.h"
 #include "icl/value.h"
@@ -81,7 +82,7 @@ bool AppendInterpolatedExpression(Scope* scope,
                                   size_t end_offset,
                                   std::string* output,
                                   Err* err) {
-  InputFile input_file("");
+  InputFile input_file((SourceFile()));
   input_file.SetContents(
       std::string(&input[begin_offset], end_offset - begin_offset));
 

@@ -8,6 +8,7 @@
 #include <stddef.h>
 
 #include "icl/input_file.h"
+#include "icl/source_file.h"
 #include "icl/token.h"
 
 namespace icl {
@@ -20,7 +21,7 @@ struct TokenExpectation {
 
 template<size_t len>
 bool CheckTokenizer(const char* input, const TokenExpectation (&expect)[len]) {
-  InputFile input_file("/test");
+  InputFile input_file(SourceFile("/test"));
   input_file.SetContents(input);
 
   Err err;
@@ -38,14 +39,14 @@ bool CheckTokenizer(const char* input, const TokenExpectation (&expect)[len]) {
 }
 
 TEST(Tokenizer, Empty) {
-  InputFile empty_string_input("/test");
+  InputFile empty_string_input(SourceFile("/test"));
   empty_string_input.SetContents("");
 
   Err err;
   std::vector<Token> results = Tokenizer::Tokenize(&empty_string_input, &err);
   EXPECT_TRUE(results.empty());
 
-  InputFile whitespace_input("/test");
+  InputFile whitespace_input(SourceFile("/test"));
   whitespace_input.SetContents("  \r \n \r\n");
 
   results = Tokenizer::Tokenize(&whitespace_input, &err);
@@ -136,7 +137,7 @@ TEST(Tokenizer, FunctionCall) {
 }
 
 TEST(Tokenizer, Locations) {
-  InputFile input("/test");
+  InputFile input(SourceFile("/test"));
   input.SetContents("1 2 \"three\"\n  4");
   Err err;
   std::vector<Token> results = Tokenizer::Tokenize(&input, &err);

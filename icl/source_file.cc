@@ -14,29 +14,12 @@
 
 namespace icl {
 
-namespace {
-
-void AssertValueSourceFileString(const std::string& s) {
-  assert(!s.empty());
-  assert(s.front() == '/');
-  assert(s.back() != '/');
-}
-
-}  // namespace
-
 SourceFile::SourceFile() = default;
-
-SourceFile::SourceFile(const StringPiece& p)
-    : value_(p.data(), p.size()) {
-  assert(!value_.empty());
-  AssertValueSourceFileString(value_);
-//FIXME
-//  NormalizePath(&value_);
-}
 
 SourceFile::SourceFile(std::string&& value) : value_(std::move(value)) {
   assert(!value_.empty());
-  AssertValueSourceFileString(value_);
+  assert(value_.front() == '/');
+  assert(value_.back() != '/');
 //FIXME
 //  NormalizePath(&value_);
 }

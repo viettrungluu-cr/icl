@@ -9,6 +9,7 @@
 #include "icl/input_file.h"
 #include "icl/parse_tree.h"
 #include "icl/ref_ptr.h"
+#include "icl/source_file.h"
 #include "icl/template.h"
 #include "icl/test_with_scope.h"
 
@@ -31,7 +32,7 @@ TEST(Scope, NonRecursiveMergeTo) {
 
   // Make a pretend parse node with proper tracking that we can blame for the
   // given value.
-  InputFile input_file("//foo");
+  InputFile input_file(SourceFile("//foo"));
   Token assignment_token(Location(&input_file, 1, 1, 1), Token::STRING,
       "\"hello\"");
   LiteralNode assignment;
@@ -129,8 +130,11 @@ TEST(Scope, NonRecursiveMergeTo) {
   {
     Scope new_scope(&setup);
 
-    new_scope.AddTemplate(
-        "templ", MakeRefCounted<Template>(&new_scope, &templ_definition));
+//FIXME The original test made a new Template, but didn't use it; trying to use
+//it fails.
+    new_scope.AddTemplate("templ", templ.Clone());
+//    new_scope.AddTemplate(
+//        "templ", MakeRefCounted<Template>(&new_scope, &templ_definition));
 
     Err err;
     EXPECT_TRUE(setup.scope()->NonRecursiveMergeTo(
@@ -198,7 +202,7 @@ TEST(Scope, MakeClosure) {
 
   // Make a pretend parse node with proper tracking that we can blame for the
   // given value.
-  InputFile input_file("//foo");
+  InputFile input_file(SourceFile("//foo"));
   Token assignment_token(Location(&input_file, 1, 1, 1), Token::STRING,
       "\"hello\"");
   LiteralNode assignment;
@@ -233,7 +237,7 @@ TEST(Scope, GetMutableValue) {
 
   // Make a pretend parse node with proper tracking that we can blame for the
   // given value.
-  InputFile input_file("//foo");
+  InputFile input_file(SourceFile("//foo"));
   Token assignment_token(Location(&input_file, 1, 1, 1), Token::STRING,
       "\"hello\"");
   LiteralNode assignment;

@@ -4,15 +4,13 @@
 
 #include "icl/input_file.h"
 
-#include <utility>
-
 //FIXME
 //#include "base/files/file_util.h"
 
 namespace icl {
 
-InputFile::InputFile(std::string name)
-    : name_(std::move(name)) {
+InputFile::InputFile(const SourceFile& name)
+    : name_(name) {
 //FIXME
 //      dir_(name_.GetDir()) {
 }

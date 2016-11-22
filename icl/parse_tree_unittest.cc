@@ -11,6 +11,7 @@
 
 #include "icl/input_file.h"
 #include "icl/scope.h"
+#include "icl/source_file.h"
 #include "icl/test_with_scope.h"
 
 namespace icl {
@@ -21,7 +22,7 @@ TEST(ParseTree, Accessor) {
 
   // Make a pretend parse node with proper tracking that we can blame for the
   // given value.
-  InputFile input_file("//foo");
+  InputFile input_file(SourceFile("//foo"));
   Token base_token(Location(&input_file, 1, 1, 1), Token::IDENTIFIER, "a");
   Token member_token(Location(&input_file, 1, 1, 1), Token::IDENTIFIER, "b");
 
