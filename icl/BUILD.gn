@@ -5,6 +5,7 @@ group("tests") {
 
   deps = [
     # icl:
+    ":filesystem_utils_test",
     ":functions_test",
     ":operators_test",
     ":parse_tree_test",
@@ -12,10 +13,9 @@ group("tests") {
     ":template_test",
     ":tokenizer_test",
     ":scope_test",
+    ":source_dir_test",
     ":string_utils_test",
     ":value_test",
-#FIXME: source_dir_test (source_dir_unittest.cc)
-#FIXME: filesystem_utils_test (filesystem_utils_unittest.cc)
 
     # string_number_conversions:
     ":string_number_conversions_test",
@@ -101,6 +101,16 @@ source_set("icl_test_support") {
   ]
 }
 
+test("filesystem_utils_test") {
+  sources = [
+    "filesystem_utils_unittest.cc",
+  ]
+
+  deps = [
+    ":icl",
+  ]
+}
+
 test("functions_test") {
   sources = [
     "function_impls_foreach_unittest.cc",
@@ -155,6 +165,16 @@ test("scope_test") {
   deps = [
     ":icl",
     ":icl_test_support",
+  ]
+}
+
+test("source_dir_test") {
+  sources = [
+    "source_dir_unittest.cc",  #FIXME this is all commented out!
+  ]
+
+  deps = [
+    ":icl",
   ]
 }
 

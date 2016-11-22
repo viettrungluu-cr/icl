@@ -2,17 +2,28 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#include "icl/filesystem_utils.h"
+
+#include <gtest/gtest.h>
+
+#include <string>
+
+//FIXME
+/*
 #include "base/files/file_path.h"
 #include "base/files/file_util.h"
 #include "base/files/scoped_temp_dir.h"
 #include "base/strings/string_util.h"
 #include "base/strings/utf_string_conversions.h"
 #include "base/threading/platform_thread.h"
-#include "build/build_config.h"
-#include "testing/gtest/include/gtest/gtest.h"
-#include "tools/gn/filesystem_utils.h"
 #include "tools/gn/target.h"
+*/
 
+namespace icl {
+namespace {
+
+//FIXME
+/*
 TEST(FilesystemUtils, FileExtensionOffset) {
   EXPECT_EQ(std::string::npos, FindExtensionOffset(""));
   EXPECT_EQ(std::string::npos, FindExtensionOffset("foo/bar/baz"));
@@ -121,6 +132,7 @@ TEST(FilesystemUtils, EnsureStringIsInOutputDir) {
                                          nullptr, &err));
   EXPECT_TRUE(err.has_error());
 }
+*/
 
 TEST(FilesystemUtils, IsPathAbsolute) {
   EXPECT_TRUE(IsPathAbsolute("/foo/bar"));
@@ -128,36 +140,10 @@ TEST(FilesystemUtils, IsPathAbsolute) {
   EXPECT_FALSE(IsPathAbsolute(""));
   EXPECT_FALSE(IsPathAbsolute("//"));
   EXPECT_FALSE(IsPathAbsolute("//foo/bar"));
-
-#if defined(OS_WIN)
-  EXPECT_TRUE(IsPathAbsolute("C:/foo"));
-  EXPECT_TRUE(IsPathAbsolute("C:/"));
-  EXPECT_TRUE(IsPathAbsolute("C:\\foo"));
-  EXPECT_TRUE(IsPathAbsolute("C:\\"));
-  EXPECT_TRUE(IsPathAbsolute("/C:/foo"));
-  EXPECT_TRUE(IsPathAbsolute("/C:\\foo"));
-#endif
 }
 
 TEST(FilesystemUtils, MakeAbsolutePathRelativeIfPossible) {
   std::string dest;
-
-#if defined(OS_WIN)
-  EXPECT_TRUE(MakeAbsolutePathRelativeIfPossible("C:\\base", "C:\\base\\foo",
-                                                 &dest));
-  EXPECT_EQ("//foo", dest);
-  EXPECT_TRUE(MakeAbsolutePathRelativeIfPossible("C:\\base", "/C:/base/foo",
-                                                 &dest));
-  EXPECT_EQ("//foo", dest);
-  EXPECT_TRUE(MakeAbsolutePathRelativeIfPossible("c:\\base", "C:\\base\\foo\\",
-                                                 &dest));
-  EXPECT_EQ("//foo\\", dest);
-
-  EXPECT_FALSE(MakeAbsolutePathRelativeIfPossible("C:\\base", "C:\\ba", &dest));
-  EXPECT_FALSE(MakeAbsolutePathRelativeIfPossible("C:\\base",
-                                                  "C:\\/notbase/foo",
-                                                  &dest));
-#else
 
   EXPECT_TRUE(MakeAbsolutePathRelativeIfPossible("/base", "/base/foo/", &dest));
   EXPECT_EQ("//foo/", dest);
@@ -170,7 +156,6 @@ TEST(FilesystemUtils, MakeAbsolutePathRelativeIfPossible) {
   EXPECT_FALSE(MakeAbsolutePathRelativeIfPossible("/base", "/ba", &dest));
   EXPECT_FALSE(MakeAbsolutePathRelativeIfPossible("/base", "/notbase/foo",
                                                   &dest));
-#endif
 }
 
 TEST(FilesystemUtils, NormalizePath) {
@@ -235,86 +220,11 @@ TEST(FilesystemUtils, NormalizePath) {
   NormalizePath(&input);
   EXPECT_EQ("../", input);
 
-  // Backslash normalization.
-  input = "foo\\..\\..\\bar";
-  NormalizePath(&input);
-  EXPECT_EQ("../bar", input);
-
   // Trailing slashes should get preserved.
   input = "//foo/bar/";
   NormalizePath(&input);
   EXPECT_EQ("//foo/bar/", input);
 
-#if defined(OS_WIN)
-  // Go above and outside of the source root.
-  input = "//../foo";
-  NormalizePath(&input, "/C:/source/root");
-  EXPECT_EQ("/C:/source/foo", input);
-
-  input = "//../foo";
-  NormalizePath(&input, "C:\\source\\root");
-  EXPECT_EQ("/C:/source/foo", input);
-
-  input = "//../";
-  NormalizePath(&input, "/C:/source/root");
-  EXPECT_EQ("/C:/source/", input);
-
-  input = "//../foo.txt";
-  NormalizePath(&input, "/C:/source/root");
-  EXPECT_EQ("/C:/source/foo.txt", input);
-
-  input = "//../foo/bar/";
-  NormalizePath(&input, "/C:/source/root");
-  EXPECT_EQ("/C:/source/foo/bar/", input);
-
-  // Go above and back into the source root. This should return a system-
-  // absolute path. We could arguably return this as a source-absolute path,
-  // but that would require additional handling to account for a rare edge
-  // case.
-  input = "//../root/foo";
-  NormalizePath(&input, "/C:/source/root");
-  EXPECT_EQ("/C:/source/root/foo", input);
-
-  input = "//../root/foo/bar/";
-  NormalizePath(&input, "/C:/source/root");
-  EXPECT_EQ("/C:/source/root/foo/bar/", input);
-
-  // Stay inside the source root
-  input = "//foo/bar";
-  NormalizePath(&input, "/C:/source/root");
-  EXPECT_EQ("//foo/bar", input);
-
-  input = "//foo/bar/";
-  NormalizePath(&input, "/C:/source/root");
-  EXPECT_EQ("//foo/bar/", input);
-
-  // The path should not go above the system root. Note that on Windows, this
-  // will consume the drive (C:).
-  input = "//../../../../../foo/bar";
-  NormalizePath(&input, "/C:/source/root");
-  EXPECT_EQ("/foo/bar", input);
-
-  // Test when the source root is the letter drive.
-  input = "//../foo";
-  NormalizePath(&input, "/C:");
-  EXPECT_EQ("/foo", input);
-
-  input = "//../foo";
-  NormalizePath(&input, "C:");
-  EXPECT_EQ("/foo", input);
-
-  input = "//../foo";
-  NormalizePath(&input, "/");
-  EXPECT_EQ("/foo", input);
-
-  input = "//../";
-  NormalizePath(&input, "\\C:");
-  EXPECT_EQ("/", input);
-
-  input = "//../foo.txt";
-  NormalizePath(&input, "/C:");
-  EXPECT_EQ("/foo.txt", input);
-#else
   // Go above and outside of the source root.
   input = "//../foo";
   NormalizePath(&input, "/source/root");
@@ -370,12 +280,12 @@ TEST(FilesystemUtils, NormalizePath) {
   input = "//../foo.txt";
   NormalizePath(&input, "/");
   EXPECT_EQ("/foo.txt", input);
-
-#endif
 }
 
+//FIXME
+/*
 TEST(FilesystemUtils, RebasePath) {
-  base::StringPiece source_root("/source/root");
+  StringPiece source_root("/source/root");
 
   // Degenerate case.
   EXPECT_EQ(".", RebasePath("//", SourceDir("//"), source_root));
@@ -421,91 +331,72 @@ TEST(FilesystemUtils, RebasePath) {
 
   // Check when only |input| is system-absolute
   EXPECT_EQ("foo", RebasePath("/source/root/foo", SourceDir("//"),
-                              base::StringPiece("/source/root")));
+                              StringPiece("/source/root")));
   EXPECT_EQ("foo/", RebasePath("/source/root/foo/", SourceDir("//"),
-                               base::StringPiece("/source/root")));
+                               StringPiece("/source/root")));
   EXPECT_EQ("../../builddir/Out/Debug",
             RebasePath("/builddir/Out/Debug", SourceDir("//"),
-                       base::StringPiece("/source/root")));
+                       StringPiece("/source/root")));
   EXPECT_EQ("../../../builddir/Out/Debug",
             RebasePath("/builddir/Out/Debug", SourceDir("//"),
-                       base::StringPiece("/source/root/foo")));
+                       StringPiece("/source/root/foo")));
   EXPECT_EQ("../../../builddir/Out/Debug/",
             RebasePath("/builddir/Out/Debug/", SourceDir("//"),
-                       base::StringPiece("/source/root/foo")));
+                       StringPiece("/source/root/foo")));
   EXPECT_EQ("../../path/to/foo",
             RebasePath("/path/to/foo", SourceDir("//"),
-                       base::StringPiece("/source/root")));
+                       StringPiece("/source/root")));
   EXPECT_EQ("../../../path/to/foo",
             RebasePath("/path/to/foo", SourceDir("//a"),
-                       base::StringPiece("/source/root")));
+                       StringPiece("/source/root")));
   EXPECT_EQ("../../../../path/to/foo",
             RebasePath("/path/to/foo", SourceDir("//a/b"),
-                       base::StringPiece("/source/root")));
+                       StringPiece("/source/root")));
 
   // Check when only |dest_dir| is system-absolute.
   EXPECT_EQ(".",
             RebasePath("//", SourceDir("/source/root"),
-                       base::StringPiece("/source/root")));
+                       StringPiece("/source/root")));
   EXPECT_EQ("foo",
             RebasePath("//foo", SourceDir("/source/root"),
-                       base::StringPiece("/source/root")));
+                       StringPiece("/source/root")));
   EXPECT_EQ("../foo",
             RebasePath("//foo", SourceDir("/source/root/bar"),
-                       base::StringPiece("/source/root")));
+                       StringPiece("/source/root")));
   EXPECT_EQ("../../../source/root/foo",
             RebasePath("//foo", SourceDir("/other/source/root"),
-                       base::StringPiece("/source/root")));
+                       StringPiece("/source/root")));
   EXPECT_EQ("../../../../source/root/foo",
             RebasePath("//foo", SourceDir("/other/source/root/bar"),
-                       base::StringPiece("/source/root")));
+                       StringPiece("/source/root")));
 
   // Check when |input| and |dest_dir| are both system-absolute. Also,
   // in this case |source_root| is never used so set it to a dummy
   // value.
   EXPECT_EQ("foo",
             RebasePath("/source/root/foo", SourceDir("/source/root"),
-                       base::StringPiece("/x/y/z")));
+                       StringPiece("/x/y/z")));
   EXPECT_EQ("foo/",
             RebasePath("/source/root/foo/", SourceDir("/source/root"),
-                       base::StringPiece("/x/y/z")));
+                       StringPiece("/x/y/z")));
   EXPECT_EQ("../../builddir/Out/Debug",
             RebasePath("/builddir/Out/Debug",SourceDir("/source/root"),
-                       base::StringPiece("/x/y/z")));
+                       StringPiece("/x/y/z")));
   EXPECT_EQ("../../../builddir/Out/Debug",
             RebasePath("/builddir/Out/Debug", SourceDir("/source/root/foo"),
-                       base::StringPiece("/source/root/foo")));
+                       StringPiece("/source/root/foo")));
   EXPECT_EQ("../../../builddir/Out/Debug/",
             RebasePath("/builddir/Out/Debug/", SourceDir("/source/root/foo"),
-                       base::StringPiece("/source/root/foo")));
+                       StringPiece("/source/root/foo")));
   EXPECT_EQ("../../path/to/foo",
             RebasePath("/path/to/foo", SourceDir("/source/root"),
-                       base::StringPiece("/x/y/z")));
+                       StringPiece("/x/y/z")));
   EXPECT_EQ("../../../path/to/foo",
             RebasePath("/path/to/foo", SourceDir("/source/root/a"),
-                       base::StringPiece("/x/y/z")));
+                       StringPiece("/x/y/z")));
   EXPECT_EQ("../../../../path/to/foo",
             RebasePath("/path/to/foo", SourceDir("/source/root/a/b"),
-                       base::StringPiece("/x/y/z")));
-
-#if defined(OS_WIN)
-  // Test corrections while rebasing Windows-style absolute paths.
-  EXPECT_EQ("../../../../path/to/foo",
-            RebasePath("C:/path/to/foo", SourceDir("//a/b"),
-                       base::StringPiece("/C:/source/root")));
-  EXPECT_EQ("../../../../path/to/foo",
-            RebasePath("/C:/path/to/foo", SourceDir("//a/b"),
-                       base::StringPiece("C:/source/root")));
-  EXPECT_EQ("../../../../path/to/foo",
-            RebasePath("/C:/path/to/foo", SourceDir("//a/b"),
-                       base::StringPiece("/c:/source/root")));
-  EXPECT_EQ("../../../../path/to/foo",
-            RebasePath("/c:/path/to/foo", SourceDir("//a/b"),
-                       base::StringPiece("c:/source/root")));
-  EXPECT_EQ("../../../../path/to/foo",
-            RebasePath("/c:/path/to/foo", SourceDir("//a/b"),
-                       base::StringPiece("C:/source/root")));
-#endif
+                       StringPiece("/x/y/z")));
 }
 
 TEST(FilesystemUtils, DirectoryWithNoLastSlash) {
@@ -517,41 +408,6 @@ TEST(FilesystemUtils, DirectoryWithNoLastSlash) {
 }
 
 TEST(FilesystemUtils, SourceDirForPath) {
-#if defined(OS_WIN)
-  base::FilePath root(L"C:\\source\\foo\\");
-  EXPECT_EQ("/C:/foo/bar/", SourceDirForPath(root,
-            base::FilePath(L"C:\\foo\\bar")).value());
-  EXPECT_EQ("/", SourceDirForPath(root,
-            base::FilePath(L"/")).value());
-  EXPECT_EQ("//", SourceDirForPath(root,
-            base::FilePath(L"C:\\source\\foo")).value());
-  EXPECT_EQ("//bar/", SourceDirForPath(root,
-            base::FilePath(L"C:\\source\\foo\\bar\\")). value());
-  EXPECT_EQ("//bar/baz/", SourceDirForPath(root,
-            base::FilePath(L"C:\\source\\foo\\bar\\baz")).value());
-
-  // Should be case-and-slash-insensitive.
-  EXPECT_EQ("//baR/", SourceDirForPath(root,
-            base::FilePath(L"c:/SOURCE\\Foo/baR/")).value());
-
-  // Some "weird" Windows paths.
-  EXPECT_EQ("/foo/bar/", SourceDirForPath(root,
-            base::FilePath(L"/foo/bar/")).value());
-  EXPECT_EQ("/C:/foo/bar/", SourceDirForPath(root,
-            base::FilePath(L"C:foo/bar/")).value());
-
-  // Also allow absolute GN-style Windows paths.
-  EXPECT_EQ("/C:/foo/bar/", SourceDirForPath(root,
-            base::FilePath(L"/C:/foo/bar")).value());
-  EXPECT_EQ("//bar/", SourceDirForPath(root,
-            base::FilePath(L"/C:/source/foo/bar")).value());
-
-  // Empty source dir.
-  base::FilePath empty;
-  EXPECT_EQ(
-      "/C:/source/foo/",
-      SourceDirForPath(empty, base::FilePath(L"C:\\source\\foo")).value());
-#else
   base::FilePath root("/source/foo/");
   EXPECT_EQ("/foo/bar/", SourceDirForPath(root,
             base::FilePath("/foo/bar/")).value());
@@ -572,7 +428,6 @@ TEST(FilesystemUtils, SourceDirForPath) {
   base::FilePath empty;
   EXPECT_EQ("/source/foo/",
             SourceDirForPath(empty, base::FilePath("/source/foo")).value());
-#endif
 }
 
 TEST(FilesystemUtils, ContentsEqual) {
@@ -609,12 +464,7 @@ TEST(FilesystemUtils, WriteFileIfChanged) {
   ASSERT_TRUE(base::GetFileInfo(file_path, &file_info));
   base::Time last_modified = file_info.last_modified;
 
-#if defined(OS_MACOSX)
-  // Modification times are in seconds in HFS on Mac.
-  base::TimeDelta sleep_time = base::TimeDelta::FromSeconds(1);
-#else
   base::TimeDelta sleep_time = base::TimeDelta::FromMilliseconds(1);
-#endif
   base::PlatformThread::Sleep(sleep_time);
 
   // Don't write if contents is the same.
@@ -752,16 +602,6 @@ TEST(FilesystemUtils, GetSubBuildDir) {
   EXPECT_EQ("gen/ABS_PATH/abs/",
             GetSubBuildDirAsOutputFile(
                 default_context, SourceDir("/abs"), BuildDirType::GEN).value());
-#if defined(OS_WIN)
-  EXPECT_EQ("//out/Debug/obj/ABS_PATH/C/abs/",
-            GetSubBuildDirAsSourceDir(
-                default_context, SourceDir("/C:/abs"), BuildDirType::OBJ)
-                .value());
-  EXPECT_EQ("gen/ABS_PATH/C/abs/",
-            GetSubBuildDirAsOutputFile(
-                default_context, SourceDir("/C:/abs"), BuildDirType::GEN)
-                .value());
-#endif
 }
 
 TEST(FilesystemUtils, GetBuildDirForTarget) {
@@ -804,3 +644,7 @@ TEST(FilesystemUtils, GetDirForEmptyBuildDir) {
   EXPECT_EQ("obj/",
             GetBuildDirAsOutputFile(context, BuildDirType::OBJ).value());
 }
+*/
+
+}  // namespace
+}  // namespace icl
