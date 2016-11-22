@@ -43,6 +43,7 @@ class Template : public RefCountedThreadSafe<Template> {
   LocationRange GetDefinitionRange() const;
 
  private:
+  FRIEND_REF_COUNTED_THREAD_SAFE(Template);
   FRIEND_MAKE_REF_COUNTED(Template);
 
   // Makes a new closure based on the given scope.

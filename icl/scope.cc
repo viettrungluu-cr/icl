@@ -6,18 +6,19 @@
 
 #include <assert.h>
 
+#include <utility>
+
 #include "icl/parse_tree.h"
-//FIXME
-//#include "tools/gn/template.h"
+#include "icl/template.h"
 
 namespace icl {
 
 namespace {
 
-// FLags set in the mode_flags_ of a scope. If a bit is set, it applies
+//FIXME replace mode_flags with a bool
+// Flags set in the mode_flags_ of a scope. If a bit is set, it applies
 // recursively to all dependent scopes.
-const unsigned kProcessingBuildConfigFlag = 1;
-const unsigned kProcessingImportFlag = 2;
+const unsigned kProcessingImportFlag = 1;
 
 // Returns true if this variable name should be considered private. Private
 // values start with an underscore, and are not imported from "gni" files
@@ -171,12 +172,11 @@ void Scope::RemovePrivateIdentifiers() {
     values_.erase(cur);
 }
 
-//FIXME
-/*
-bool Scope::AddTemplate(const std::string& name, const Template* templ) {
+bool Scope::AddTemplate(const std::string& name,
+                        RefPtr<const Template>&& templ) {
   if (GetTemplate(name))
     return false;
-  templates_[name] = templ;
+  templates_[name] = std::move(templ);
   return true;
 }
 
@@ -188,7 +188,6 @@ const Template* Scope::GetTemplate(const std::string& name) const {
     return containing()->GetTemplate(name);
   return nullptr;
 }
-*/
 
 void Scope::MarkUsed(const StringPiece& ident) {
   RecordMap::iterator found = values_.find(ident);
@@ -330,8 +329,6 @@ bool Scope::NonRecursiveMergeTo(Scope* dest,
   }
 
   // Templates.
-//FIXME
-/*
   for (const auto& pair : templates_) {
     const std::string& current_name = pair.first;
     if (options.skip_private_vars && IsPrivateVar(current_name))
@@ -367,7 +364,6 @@ bool Scope::NonRecursiveMergeTo(Scope* dest,
     // Be careful to delete any pointer we're about to clobber.
     dest->templates_[current_name] = pair.second;
   }
-*/
 
   return true;
 }
@@ -413,24 +409,6 @@ const Scope* Scope::GetTargetDefaults(const std::string& target_type) const {
   if (containing())
     return containing()->GetTargetDefaults(target_type);
   return nullptr;
-}
-
-void Scope::SetProcessingBuildConfig() {
-  assert((mode_flags_ & kProcessingBuildConfigFlag) == 0);
-  mode_flags_ |= kProcessingBuildConfigFlag;
-}
-
-void Scope::ClearProcessingBuildConfig() {
-  assert(mode_flags_ & kProcessingBuildConfigFlag);
-  mode_flags_ &= ~(kProcessingBuildConfigFlag);
-}
-
-bool Scope::IsProcessingBuildConfig() const {
-  if (mode_flags_ & kProcessingBuildConfigFlag)
-    return true;
-  if (containing())
-    return containing()->IsProcessingBuildConfig();
-  return false;
 }
 
 void Scope::SetProcessingImport() {

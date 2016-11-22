@@ -9,6 +9,7 @@ group("tests") {
     ":operators_test",
     ":parse_tree_test",
     ":parser_test",
+    ":template_test",
     ":tokenizer_test",
     ":scope_test",
     ":string_utils_test",
@@ -155,7 +156,16 @@ test("string_utils_test") {
   ]
 }
 
-#FIXME: template_unittest.cc
+test("template_test") {
+  sources = [
+    "template_unittest.cc",
+  ]
+
+  deps = [
+    ":icl",
+    ":icl_test_support",
+  ]
+}
 
 test("tokenizer_test") {
   sources = [

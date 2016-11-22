@@ -11,10 +11,9 @@
 #include <unordered_map>
 #include <utility>
 
-//FIXME
-//#include "base/memory/ref_counted.h"
 #include "icl/err.h"
 #include "icl/item.h"
+#include "icl/ref_ptr.h"
 //FIXME
 //#include "tools/gn/source_dir.h"
 #include "icl/string_piece.h"
@@ -27,8 +26,7 @@ class ImportManager;
 class ParseNode;
 class Delegate;
 class TargetManager;
-//FIXME
-//class Template;
+class Template;
 
 // Scope for the script execution.
 //
@@ -191,15 +189,12 @@ class Scope {
   // private.
   void RemovePrivateIdentifiers();
 
-//FIXME
-/*
   // Templates associated with this scope. A template can only be set once, so
   // AddTemplate will fail and return false if a rule with that name already
   // exists. GetTemplate returns NULL if the rule doesn't exist, and it will
   // check all containing scoped rescursively.
-  bool AddTemplate(const std::string& name, const Template* templ);
+  bool AddTemplate(const std::string& name, RefPtr<const Template>&& templ);
   const Template* GetTemplate(const std::string& name) const;
-*/
 
   // Marks the given identifier as (un)used in the current scope.
   void MarkUsed(const StringPiece& ident);
@@ -250,18 +245,6 @@ class Scope {
   // Gets the scope associated with the given target name, or null if it hasn't
   // been set.
   const Scope* GetTargetDefaults(const std::string& target_type) const;
-
-//FIXME delete this shit
-  // Indicates if we're currently processing the build configuration file.
-  // This is true when processing the config file for any toolchain.
-  //
-  // To set or clear the flag, it must currently be in the opposite state in
-  // the current scope. Note that querying the state of the flag recursively
-  // checks all containing scopes until it reaches the top or finds the flag
-  // set.
-  void SetProcessingBuildConfig();
-  void ClearProcessingBuildConfig();
-  bool IsProcessingBuildConfig() const;
 
   // Indicates if we're currently processing an import file.
   //
@@ -355,11 +338,8 @@ class Scope {
   NamedScopeMap target_defaults_;
 
   // Owning pointers, must be deleted.
-//FIXME
-/*
-  typedef std::map<std::string, scoped_refptr<const Template> > TemplateMap;
+  typedef std::map<std::string, RefPtr<const Template>> TemplateMap;
   TemplateMap templates_;
-*/
 
   ItemVector* item_collector_;
 
