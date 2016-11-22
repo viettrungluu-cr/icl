@@ -14,6 +14,8 @@ group("tests") {
     ":scope_test",
     ":string_utils_test",
     ":value_test",
+#FIXME: source_dir_test (source_dir_unittest.cc)
+#FIXME: filesystem_utils_test (filesystem_utils_unittest.cc)
 
     # string_number_conversions:
     ":string_number_conversions_test",
@@ -33,6 +35,8 @@ source_set("icl") {
     "delegate.h",
     "err.cc",
     "err.h",
+    "filesystem_utils.cc",  #FIXME hilarious amount commented out
+    "filesystem_utils.h",
     "function_impls_foreach.cc",
     "function_impls_template.cc",
     "function_impls.cc",
@@ -55,6 +59,9 @@ source_set("icl") {
     "parser.h",
     "scope.cc",
     "scope.h",
+#FIXME
+#    "source_dir.cc",
+#    "source_dir.h",
     "source_file.cc",
     "source_file.h",
     "string_utils.cc",
