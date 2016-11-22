@@ -10,13 +10,11 @@
 namespace icl {
 
 InputFile::InputFile(const SourceFile& name)
-    : name_(name) {
-//FIXME
-//      dir_(name_.GetDir()) {
+    : name_(name),
+      dir_(name_.GetDir()) {
 }
 
-InputFile::~InputFile() {
-}
+InputFile::~InputFile() = default;
 
 void InputFile::SetContents(const std::string& c) {
   contents_loaded_ = true;

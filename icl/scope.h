@@ -14,8 +14,7 @@
 #include "icl/err.h"
 #include "icl/item.h"
 #include "icl/ref_ptr.h"
-//FIXME
-//#include "tools/gn/source_dir.h"
+#include "icl/source_dir.h"
 #include "icl/string_piece.h"
 #include "icl/value.h"
 
@@ -256,11 +255,8 @@ class Scope {
   // The source directory associated with this scope. This will check embedded
   // scopes until it finds a nonempty source directory. This will default to
   // an empty dir if no containing scope has a source dir set.
-//FIXME
-/*
   const SourceDir& GetSourceDir() const;
   void set_source_dir(const SourceDir& d) { source_dir_ = d; }
-*/
 
   // The item collector is where Items (Targets, Configs, etc.) go that have
   // been defined. If a scope can generate items, this non-owning pointer will
@@ -348,8 +344,7 @@ class Scope {
   typedef std::set<ProgrammaticProvider*> ProviderSet;
   ProviderSet programmatic_providers_;
 
-//FIXME
-//  SourceDir source_dir_;
+  SourceDir source_dir_;
 };
 
 }  // namespace icl

@@ -9,10 +9,10 @@
 
 #include <string>
 
+#include "icl/source_dir.h"
 #include "icl/source_file.h"
 //FIXME
 //#include "base/files/file_path.h"
-//#include "tools/gn/source_dir.h"
 
 namespace icl {
 
@@ -30,8 +30,7 @@ class InputFile {
 
   // The directory is just a cached version of name()->GetDir() but we get this
   // a lot so computing it once up front saves a bunch of work.
-//FIXME
-//  const SourceDir& dir() const { return dir_; }
+  const SourceDir& dir() const { return dir_; }
 
   // The friendly name can be set to override the name() in cases where there
   // is no name (like SetContents is used instead) or if the name doesn't
@@ -54,8 +53,7 @@ class InputFile {
 
  private:
   const SourceFile name_;
-//FIXME
-//  SourceDir dir_;
+  const SourceDir dir_;
 
 //FIXME
 //  base::FilePath physical_name_;

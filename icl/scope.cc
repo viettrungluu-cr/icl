@@ -420,8 +420,6 @@ bool Scope::IsProcessingImport() const {
          (containing() && containing()->IsProcessingImport());
 }
 
-//FIXME
-/*
 const SourceDir& Scope::GetSourceDir() const {
   if (!source_dir_.is_null())
     return source_dir_;
@@ -429,7 +427,6 @@ const SourceDir& Scope::GetSourceDir() const {
     return containing()->GetSourceDir();
   return source_dir_;
 }
-*/
 
 Scope::ItemVector* Scope::GetItemCollector() {
   if (item_collector_)

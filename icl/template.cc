@@ -56,8 +56,7 @@ Value Template::Invoke(Scope* scope,
   // people expect (otherwise its to easy to be putting generated files in the
   // gen dir corresponding to an imported file).
   Scope template_scope(closure_.get());
-//FIXME
-//  template_scope.set_source_dir(scope->GetSourceDir());
+  template_scope.set_source_dir(scope->GetSourceDir());
 
 //FIXME
 //  ScopePerFileProvider per_file_provider(&template_scope, true);
@@ -77,8 +76,7 @@ Value Template::Invoke(Scope* scope,
   Value* invoker_value = template_scope.GetMutableValue(
       variables::kInvoker, Scope::SEARCH_NESTED, false);
   invoker_value->SetScopeValue(std::move(invocation_scope));
-//FIXME
-//  template_scope.set_source_dir(scope->GetSourceDir());
+  template_scope.set_source_dir(scope->GetSourceDir());
 
   const StringPiece target_name(variables::kTargetName);
   template_scope.SetValue(target_name,
