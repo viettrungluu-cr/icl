@@ -11,10 +11,13 @@
 namespace icl {
 
 // static
-const FunctionInfoMap TestWithScope::functions_ = {function_impls::AssertFn(),
-                                                   function_impls::DefinedFn(),
-                                                   function_impls::ForEachFn(),
-                                                   function_impls::PrintFn()};
+const FunctionInfoMap TestWithScope::functions_ = {
+      function_impls::AssertFn(),
+      function_impls::DefinedFn(),
+      function_impls::PrintFn(),
+      function_impls::ForEachFn(),
+      function_impls::TemplateFn()
+    };
 
 TestWithScope::TestWithScope()
       : scope_(this) {

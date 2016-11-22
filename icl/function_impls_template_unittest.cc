@@ -2,8 +2,13 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#include "testing/gtest/include/gtest/gtest.h"
-#include "tools/gn/test_with_scope.h"
+#include <gtest/gtest.h>
+
+#include "icl/functions.h"
+#include "icl/test_with_scope.h"
+
+namespace icl {
+namespace {
 
 // Checks that variables used inside template definitions aren't reported
 // unused if they were declared above the template.
@@ -27,3 +32,6 @@ TEST(FunctionTemplate, MarkUsed) {
   setup.scope()->CheckForUnusedVars(&err);
   EXPECT_FALSE(err.has_error());
 }
+
+}  // namespace
+}  // namespace icl

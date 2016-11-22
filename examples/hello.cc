@@ -46,7 +46,8 @@ class DelegateImpl : public icl::Delegate {
 // static
 const icl::FunctionInfoMap DelegateImpl::functions_ =
     {icl::function_impls::AssertFn(), icl::function_impls::DefinedFn(),
-     icl::function_impls::ForEachFn(), icl::function_impls::PrintFn()};
+     icl::function_impls::PrintFn(), icl::function_impls::ForEachFn(),
+     icl::function_impls::TemplateFn()};
 
 }  // namespace
 

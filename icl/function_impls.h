@@ -35,14 +35,13 @@ Value RunForEach(Scope* scope,
                  Err* err);
 inline FunctionInfoMapEntry ForEachFn() { return {"foreach", &RunForEach}; }
 
-//
-/*
+// Implemented in function_impls_template.cc:
 Value RunTemplate(Scope* scope,
                   const FunctionCallNode* function,
                   const std::vector<Value>& args,
                   BlockNode* block,
                   Err* err);
-*/
+inline FunctionInfoMapEntry TemplateFn() { return {"template", &RunTemplate}; }
 
 //FIXME
 /*

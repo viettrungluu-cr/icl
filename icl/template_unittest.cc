@@ -6,14 +6,13 @@
 
 #include <gtest/gtest.h>
 
-//FIXME
-//#include "base/strings/string_number_conversions.h"
+#include "icl/string_number_conversions.h"
 #include "icl/test_with_scope.h"
 
 namespace icl {
 namespace {
 
-//FIXME harder
+//FIXME need target_name, invoker
 TEST(Template, DISABLED_Basic) {
 //TEST(Template, Basic) {
   TestWithScope setup;
@@ -34,8 +33,7 @@ TEST(Template, DISABLED_Basic) {
   EXPECT_EQ("lala\n42\n", setup.print_output());
 }
 
-//FIXME
-/*
+//FIXME need invoker; not sure why it doesn't fail
 TEST(Template, UnusedTargetNameShouldThrowError) {
   TestWithScope setup;
   TestParseInput input(
@@ -52,6 +50,7 @@ TEST(Template, UnusedTargetNameShouldThrowError) {
   EXPECT_TRUE(err.has_error());
 }
 
+//FIXME need target_name; not sure why it doesn't fail
 TEST(Template, UnusedInvokerShouldThrowError) {
   TestWithScope setup;
   TestParseInput input(
@@ -68,6 +67,7 @@ TEST(Template, UnusedInvokerShouldThrowError) {
   EXPECT_TRUE(err.has_error());
 }
 
+//FIXME need target_name, invoker; not sure why it doesn't fail
 TEST(Template, UnusedVarInInvokerShouldThrowError) {
   TestWithScope setup;
   TestParseInput input(
@@ -94,7 +94,7 @@ TEST(Template, MemoryBlowUp) {
   TestWithScope setup;
   std::string code;
   for (int i = 0; i < 100; i++)
-    code += "template(\"test" + base::IntToString(i) + "\") {}\n";
+    code += "template(\"test" + NumberToString(i) + "\") {}\n";
 
   TestParseInput input(code);
 
@@ -102,7 +102,6 @@ TEST(Template, MemoryBlowUp) {
   input.parsed()->Execute(setup.scope(), &err);
   ASSERT_FALSE(input.has_error());
 }
-*/
 
 }  // namespace
 }  // namespace icl
