@@ -55,6 +55,8 @@ source_set("icl") {
     "parser.h",
     "scope.cc",
     "scope.h",
+    "source_file.cc",
+    "source_file.h",
     "string_utils.cc",
     "string_utils.h",
     "template.cc",

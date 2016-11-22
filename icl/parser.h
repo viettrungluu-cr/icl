@@ -21,8 +21,6 @@ typedef std::unique_ptr<ParseNode> (Parser::*PrefixFunc)(const Token& token);
 typedef std::unique_ptr<ParseNode> (
     Parser::*InfixFunc)(std::unique_ptr<ParseNode> left, const Token& token);
 
-extern const char kGrammar_Help[];
-
 struct ParserHelper {
   PrefixFunc prefix;
   InfixFunc infix;
