@@ -16,13 +16,11 @@
 //#include "tools/gn/scope_per_file_provider.h"
 //#include "tools/gn/target.h"
 #include "icl/token.h"
-//#include "tools/gn/toolchain.h"
 #include "icl/value.h"
 
 namespace icl {
 
-// A helper class for setting up a Scope that a test can use. It makes a
-// toolchain and sets up all the build state.
+// A helper class for setting up a Scope that a test can use.
 //
 // Note: This implements |Delegate| and is not thread-safe.
 class TestWithScope : public Delegate {

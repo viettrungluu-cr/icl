@@ -13,12 +13,6 @@ Item::Item(const Settings* settings)
     : settings_(settings), defined_from_(nullptr) {
 }
 
-/*
-Item::Item(const Settings* settings, const Label& label)
-    : settings_(settings), label_(label), defined_from_(nullptr) {
-}
-*/
-
 Item::~Item() {
 }
 
@@ -29,22 +23,10 @@ Config* Item::AsConfig() {
 const Config* Item::AsConfig() const {
   return nullptr;
 }
-Pool* Item::AsPool() {
-  return nullptr;
-}
-const Pool* Item::AsPool() const {
-  return nullptr;
-}
 Target* Item::AsTarget() {
   return nullptr;
 }
 const Target* Item::AsTarget() const {
-  return nullptr;
-}
-Toolchain* Item::AsToolchain() {
-  return nullptr;
-}
-const Toolchain* Item::AsToolchain() const {
   return nullptr;
 }
 
@@ -53,10 +35,6 @@ std::string Item::GetItemTypeName() const {
     return "config";
   if (AsTarget())
     return "target";
-  if (AsToolchain())
-    return "toolchain";
-  if (AsPool())
-    return "pool";
   NOTREACHED();
   return "this thing that I have no idea what it is";
 }

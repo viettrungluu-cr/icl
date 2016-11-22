@@ -56,7 +56,6 @@ TestTarget::TestTarget(const TestWithScope& setup,
     : Target(setup.settings(), setup.ParseLabel(label_string)) {
   visibility().SetPublic();
   set_output_type(type);
-  SetToolchain(setup.toolchain());
 }
 
 TestTarget::~TestTarget() {
