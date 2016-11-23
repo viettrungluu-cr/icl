@@ -149,63 +149,36 @@ Value Function::GenericNoBlockFn(Scope* scope,
   return Value();
 }
 
-////////////////////////////
-//FIXME temp shims
+Value RunFunction(Scope* scope,
+                  const FunctionCallNode* function,
+                  const ListNode* args_list,
+                  BlockNode* block,
+                  Err* err) {
+  const Token& name = function->function();
 
-Function::Type FunctionInfo::GetType() const {
-  if (self_evaluating_args_runner) {
-//FIXME haha, very funny
-    if (self_evaluating_args_runner ==
-        static_cast<FunctionInfo*>(function_impls::ForEachFn().second.get())->self_evaluating_args_runner)
-      return Type::SELF_EVALUATING_ARGS_BLOCK;
-    return Type::SELF_EVALUATING_ARGS_NO_BLOCK;
+  const FunctionInfoMap& function_map = scope->delegate()->GetFunctions();
+  FunctionInfoMap::const_iterator found_function =
+      function_map.find(name.value());
+  if (found_function == function_map.end()) {
+    // No built-in function matching this, check for a template.
+    std::string template_name = function->function().value().as_string();
+    const Template* templ = scope->GetTemplate(template_name);
+    if (templ) {
+      Value args = args_list->Execute(scope, err);
+      if (err->has_error())
+        return Value();
+      return templ->Invoke(scope, function, template_name, args.list_value(),
+                           block, err);
+    }
+
+    *err = Err(name, "Unknown function.");
+    return Value();
   }
-  if (generic_block_runner)
-    return Type::GENERIC_BLOCK;
-  if (executed_block_runner)
-    return Type::EXECUTED_BLOCK;
-  assert(no_block_runner);
-  return Type::GENERIC_NO_BLOCK;
+
+  return found_function->second->Run(scope, function, args_list, block, err);
 }
 
-Value FunctionInfo::SelfEvaluatingArgsBlockFn(Scope* scope,
-                                              const FunctionCallNode* function,
-                                              const ListNode* args_list,
-                                              Err* err) const {
-  return self_evaluating_args_runner(scope, function, args_list, err);
-}
-
-Value FunctionInfo::SelfEvaluatingArgsNoBlockFn(
-    Scope* scope,
-    const FunctionCallNode* function,
-    const ListNode* args_list,
-    Err* err) const {
-  return self_evaluating_args_runner(scope, function, args_list, err);
-}
-
-Value FunctionInfo::GenericBlockFn(Scope* scope,
-                                   const FunctionCallNode* function,
-                                   const std::vector<Value>& args,
-                                   BlockNode* block,
-                                   Err* err) const {
-  return generic_block_runner(scope, function, args, block, err);
-}
-
-Value FunctionInfo::ExecutedBlockFn(const FunctionCallNode* function,
-                                    const std::vector<Value>& args,
-                                    Scope* block_scope,
-                                    Err* err) const {
-  return executed_block_runner(function, args, block_scope, err);
-}
-
-Value FunctionInfo::GenericNoBlockFn(Scope* scope,
-                                     const FunctionCallNode* function,
-                                     const std::vector<Value>& args,
-                                     Err* err) const {
-  return no_block_runner(scope, function, args, err);
-}
-
-////////////////////////////
+// Helper functions ------------------------------------------------------------
 
 bool EnsureNotProcessingImport(const ParseNode* node,
                                const Scope* scope,
@@ -308,35 +281,6 @@ bool NonNestableBlock::Enter(Err* err) {
   scope_->SetProperty(&kKey, this);
   key_added_ = true;
   return true;
-}
-
-Value RunFunction(Scope* scope,
-                  const FunctionCallNode* function,
-                  const ListNode* args_list,
-                  BlockNode* block,
-                  Err* err) {
-  const Token& name = function->function();
-
-  const FunctionInfoMap& function_map = scope->delegate()->GetFunctions();
-  FunctionInfoMap::const_iterator found_function =
-      function_map.find(name.value());
-  if (found_function == function_map.end()) {
-    // No built-in function matching this, check for a template.
-    std::string template_name = function->function().value().as_string();
-    const Template* templ = scope->GetTemplate(template_name);
-    if (templ) {
-      Value args = args_list->Execute(scope, err);
-      if (err->has_error())
-        return Value();
-      return templ->Invoke(scope, function, template_name, args.list_value(),
-                           block, err);
-    }
-
-    *err = Err(name, "Unknown function.");
-    return Value();
-  }
-
-  return found_function->second->Run(scope, function, args_list, block, err);
 }
 
 }  // namespace icl
