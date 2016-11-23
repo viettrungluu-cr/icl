@@ -51,11 +51,8 @@ class Function {
             BlockNode* block,  // Optional.
             Err* err);
 
- protected:
-  Function() = default;
-
-  Function(const Function&) = delete;
-  Function& operator=(const Function&) = delete;
+  // The following methods should be implemented/overridden by subclasses. They
+  // are left public (instead of being protected) to make testing easier.
 
   virtual Type GetType() const = 0;
 
@@ -82,6 +79,12 @@ class Function {
                                  const FunctionCallNode* function,
                                  const std::vector<Value>& args,
                                  Err* err) const;
+
+ protected:
+  Function() = default;
+
+  Function(const Function&) = delete;
+  Function& operator=(const Function&) = delete;
 };
 
 //////////////////////////////////////////
@@ -150,6 +153,7 @@ class FunctionInfo : public Function {
                          const std::vector<Value>& args,
                          Err* err) const override;
 
+ private:
   SelfEvaluatingArgsFunction self_evaluating_args_runner = nullptr;
   GenericBlockFunction generic_block_runner = nullptr;
   ExecutedBlockFunction executed_block_runner = nullptr;
