@@ -11,10 +11,10 @@
 namespace icl {
 namespace function_impls {
 
-Value RunForEach(Scope* scope,
-                 const FunctionCallNode* function,
-                 const ListNode* args_list,
-                 Err* err) {
+static Value RunForEach(Scope* scope,
+                        const FunctionCallNode* function,
+                        const ListNode* args_list,
+                        Err* err) {
   const auto& args_vector = args_list->contents();
   if (args_vector.size() != 2) {
     *err = Err(function, "Wrong number of arguments to foreach().",
@@ -70,6 +70,10 @@ Value RunForEach(Scope* scope,
   }
 
   return Value();
+}
+
+FunctionInfoMapEntry ForEachFn() {
+  return {"foreach", &RunForEach};
 }
 
 }  // namespace function_impls

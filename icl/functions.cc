@@ -184,9 +184,10 @@ Value RunFunction(Scope* scope,
     // Self evaluating args functions are special weird built-ins like foreach.
     // Rather than force them all to check that they have a block or no block
     // and risk bugs for new additions, check a whitelist here.
-//FIXME remove this special-casing
+//FIXME remove this special-casing (wow, this has gotten even uglier)
     if (found_function->second.self_evaluating_args_runner !=
-            &function_impls::RunForEach) {
+//            &function_impls::RunForEach) {
+              function_impls::ForEachFn().second.self_evaluating_args_runner) {
       if (!VerifyNoBlockForFunctionCall(function, block, err))
         return Value();
     }

@@ -14,11 +14,11 @@
 namespace icl {
 namespace function_impls {
 
-Value RunTemplate(Scope* scope,
-                  const FunctionCallNode* function,
-                  const std::vector<Value>& args,
-                  BlockNode* block,
-                  Err* err) {
+static Value RunTemplate(Scope* scope,
+                         const FunctionCallNode* function,
+                         const std::vector<Value>& args,
+                         BlockNode* block,
+                         Err* err) {
   // Of course you can have configs and targets in a template. But here, we're
   // not actually executing the block, only declaring it. Marking the template
   // declaration as non-nestable means that you can't put it inside a target,
@@ -68,6 +68,10 @@ Value RunTemplate(Scope* scope,
   scope->MarkAllUsed();
 
   return Value();
+}
+
+FunctionInfoMapEntry TemplateFn() {
+  return {"template", &RunTemplate};
 }
 
 }  // namespace function_impls
