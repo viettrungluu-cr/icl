@@ -73,7 +73,9 @@ static Value RunForEach(Scope* scope,
 }
 
 FunctionInfoMapEntry ForEachFn() {
-  return {"foreach", &RunForEach};
+  // TODO(C++14): Use std::make_unique.
+  return {"foreach",
+          std::unique_ptr<FunctionInfo>(new FunctionInfo(&RunForEach))};
 }
 
 }  // namespace function_impls

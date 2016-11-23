@@ -45,7 +45,7 @@ class TestWithScope : public Delegate {
   const FunctionInfoMap& GetFunctions() const override;
 
  private:
-  static const FunctionInfoMap functions_;
+  FunctionInfoMap functions_;  // Only modified in the constructor.
 
   Scope scope_;
   Scope::ItemVector items_;

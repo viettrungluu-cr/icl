@@ -20,7 +20,8 @@ namespace {
 
 TEST(Functions, Defined) {
 //FIXME
-  auto defined = function_impls::DefinedFn().second.self_evaluating_args_runner;
+  auto defined =
+      function_impls::DefinedFn().second->self_evaluating_args_runner;
 
   TestWithScope setup;
 

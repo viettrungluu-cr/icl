@@ -71,7 +71,9 @@ static Value RunTemplate(Scope* scope,
 }
 
 FunctionInfoMapEntry TemplateFn() {
-  return {"template", &RunTemplate};
+  // TODO(C++14): Use std::make_unique.
+  return {"template",
+          std::unique_ptr<FunctionInfo>(new FunctionInfo(&RunTemplate))};
 }
 
 }  // namespace function_impls

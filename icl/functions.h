@@ -6,6 +6,7 @@
 #define ICL_FUNCTIONS_H_
 
 #include <map>
+#include <memory>
 #include <string>
 #include <vector>
 
@@ -126,7 +127,7 @@ struct FunctionInfo {
   NoBlockFunction no_block_runner = nullptr;
 };
 
-using FunctionInfoMap = std::map<StringPiece, FunctionInfo>;
+using FunctionInfoMap = std::map<StringPiece, std::unique_ptr<FunctionInfo>>;
 using FunctionInfoMapEntry = FunctionInfoMap::value_type;
 
 // Runs the given function.

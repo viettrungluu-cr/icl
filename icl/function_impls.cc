@@ -80,7 +80,9 @@ static Value RunAssert(Scope* scope,
 }
 
 FunctionInfoMapEntry AssertFn() {
-  return {"assert", &RunAssert};
+  // TODO(C++14): Use std::make_unique.
+  return {"assert",
+          std::unique_ptr<FunctionInfo>(new FunctionInfo(&RunAssert))};
 }
 
 // defined ---------------------------------------------------------------------
@@ -131,7 +133,9 @@ static Value RunDefined(Scope* scope,
 }
 
 FunctionInfoMapEntry DefinedFn() {
-  return {"defined", &RunDefined};
+  // TODO(C++14): Use std::make_unique.
+  return {"defined",
+          std::unique_ptr<FunctionInfo>(new FunctionInfo(&RunDefined))};
 }
 
 // print -----------------------------------------------------------------------
@@ -154,7 +158,9 @@ static Value RunPrint(Scope* scope,
 }
 
 FunctionInfoMapEntry PrintFn() {
-  return {"print", &RunPrint};
+  // TODO(C++14): Use std::make_unique.
+  return {"print",
+          std::unique_ptr<FunctionInfo>(new FunctionInfo(&RunPrint))};
 }
 
 //FIXME
