@@ -57,6 +57,8 @@ source_set("icl") {
     "parse_tree.h",
     "parser.cc",
     "parser.h",
+    "runner.cc",
+    "runner.h",
     "scope.cc",
     "scope.h",
     "source_dir.cc",

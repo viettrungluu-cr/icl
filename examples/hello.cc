@@ -6,8 +6,6 @@
 #include <stdlib.h>
 
 #include <iostream>
-#include <memory>
-#include <vector>
 
 #include "icl/delegate.h"
 #include "icl/err.h"
@@ -17,7 +15,6 @@
 #include "icl/parser.h"
 #include "icl/scope.h"
 #include "icl/source_file.h"
-#include "icl/token.h"
 #include "icl/tokenizer.h"
 
 namespace {
@@ -69,10 +66,10 @@ int main() {
                     "print(a)");
 
   icl::Err err;
-  std::vector<icl::Token> tokens = icl::Tokenizer::Tokenize(&input, &err);
+  auto tokens = icl::Tokenizer::Tokenize(&input, &err);
   PanicOnError(err, "tokenization failed");
 
-  std::unique_ptr<icl::ParseNode> ast = icl::Parser::Parse(tokens, &err);
+  auto ast = icl::Parser::Parse(tokens, &err);
   PanicOnError(err, "parse failed");
 
   DelegateImpl delegate;
