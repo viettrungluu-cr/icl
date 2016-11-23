@@ -6,6 +6,8 @@
 
 #include <gtest/gtest.h>
 
+#include <utility>
+
 #include "icl/string_number_conversions.h"
 #include "icl/test_with_scope.h"
 
@@ -92,7 +94,7 @@ TEST(Template, MemoryBlowUp) {
   for (int i = 0; i < 100; i++)
     code += "template(\"test" + NumberToString(i) + "\") {}\n";
 
-  TestParseInput input(code);
+  TestParseInput input(std::move(code));
 
   Err err;
   input.parsed()->Execute(setup.scope(), &err);

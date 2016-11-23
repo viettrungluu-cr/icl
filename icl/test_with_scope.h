@@ -62,7 +62,7 @@ class TestWithScope : public Delegate {
 // then you can execute the ParseNode or whatever.
 class TestParseInput {
  public:
-  explicit TestParseInput(const std::string& input);
+  explicit TestParseInput(std::string&& input);
   ~TestParseInput();
 
   TestParseInput(const TestParseInput&) = delete;

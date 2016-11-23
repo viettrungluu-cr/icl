@@ -4,33 +4,21 @@
 
 #include "icl/input_file.h"
 
-//FIXME
-//#include "base/files/file_util.h"
+#include <assert.h>
+
+#include <utility>
 
 namespace icl {
 
 InputFile::InputFile(const SourceFile& name)
-    : name_(name),
-      dir_(name_.GetDir()) {
-}
+    : name_(name), dir_(name_.GetDir()) {}
 
 InputFile::~InputFile() = default;
 
-void InputFile::SetContents(const std::string& c) {
+void InputFile::SetContents(std::string&& c) {
+  assert(!contents_loaded_);
   contents_loaded_ = true;
-  contents_ = c;
+  contents_ = std::move(c);
 }
-
-//FIXME
-/*
-bool InputFile::Load(const base::FilePath& system_path) {
-  if (base::ReadFileToString(system_path, &contents_)) {
-    contents_loaded_ = true;
-    physical_name_ = system_path;
-    return true;
-  }
-  return false;
-}
-*/
 
 }  // namespace icl

@@ -11,8 +11,6 @@
 
 #include "icl/source_dir.h"
 #include "icl/source_file.h"
-//FIXME
-//#include "base/files/file_path.h"
 
 namespace icl {
 
@@ -43,20 +41,13 @@ class InputFile {
     return contents_;
   }
 
-  // For testing and in cases where this input doesn't actually refer to
-  // "a file".
-  void SetContents(const std::string& c);
-
-  // Loads the given file synchronously, returning true on success. This
-//FIXME
-//  bool Load(const base::FilePath& system_path);
+  // Sets the contents of the file; this may be called at most once.
+  void SetContents(std::string&& c);
 
  private:
   const SourceFile name_;
   const SourceDir dir_;
 
-//FIXME
-//  base::FilePath physical_name_;
   std::string friendly_name_;
 
   bool contents_loaded_ = false;

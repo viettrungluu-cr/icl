@@ -4,6 +4,8 @@
 
 #include "icl/test_with_scope.h"
 
+#include <utility>
+
 #include "icl/function_impls.h"
 #include "icl/parser.h"
 #include "icl/source_file.h"
@@ -38,9 +40,9 @@ const FunctionInfoMap& TestWithScope::GetFunctions() const {
   return functions_;
 }
 
-TestParseInput::TestParseInput(const std::string& input)
+TestParseInput::TestParseInput(std::string&& input)
     : input_file_(SourceFile("//test")) {
-  input_file_.SetContents(input);
+  input_file_.SetContents(std::move(input));
 
   tokens_ = Tokenizer::Tokenize(&input_file_, &parse_err_);
   if (!parse_err_.has_error())
