@@ -156,9 +156,8 @@ Value RunFunction(Scope* scope,
                   Err* err) {
   const Token& name = function->function();
 
-  const FunctionInfoMap& function_map = scope->delegate()->GetFunctions();
-  FunctionInfoMap::const_iterator found_function =
-      function_map.find(name.value());
+  const FunctionMap& function_map = scope->delegate()->GetFunctions();
+  FunctionMap::const_iterator found_function = function_map.find(name.value());
   if (found_function == function_map.end()) {
     // No built-in function matching this, check for a template.
     std::string template_name = function->function().value().as_string();

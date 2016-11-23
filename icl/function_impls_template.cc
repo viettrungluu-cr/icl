@@ -78,7 +78,7 @@ class TemplateImpl : public Function {
 
 }  // namespace
 
-FunctionInfoMapEntry TemplateFn() {
+FunctionMapEntry TemplateFn() {
   // TODO(C++14): Use std::make_unique.
   return {"template", std::unique_ptr<Function>(new TemplateImpl())};
 }

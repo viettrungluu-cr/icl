@@ -32,7 +32,7 @@ class Delegate {
   // TODO(vtl): Should this take a |StringPiece| instead?
   virtual void Print(const std::string& s) = 0;
 
-  virtual const FunctionInfoMap& GetFunctions() const = 0;
+  virtual const FunctionMap& GetFunctions() const = 0;
 
  protected:
   Delegate() = default;

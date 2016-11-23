@@ -38,7 +38,7 @@ bool TestWithScope::LoadFile(const SourceFile& name, std::string* contents) {
   return false;
 }
 
-const FunctionInfoMap& TestWithScope::GetFunctions() const {
+const FunctionMap& TestWithScope::GetFunctions() const {
   return functions_;
 }
 

@@ -38,12 +38,12 @@ class DelegateImpl : public icl::Delegate {
   void Print(const std::string& s) override {
     std::cout << s;
   }
-  const icl::FunctionInfoMap& GetFunctions() const override {
+  const icl::FunctionMap& GetFunctions() const override {
     return functions_;
   }
 
  private:
-  icl::FunctionInfoMap functions_;  // Only modified in the constructor.
+  icl::FunctionMap functions_;  // Only modified in the constructor.
 };
 
 }  // namespace

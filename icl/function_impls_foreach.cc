@@ -83,7 +83,7 @@ class ForEachImpl : public Function {
 
 }  // namespace
 
-FunctionInfoMapEntry ForEachFn() {
+FunctionMapEntry ForEachFn() {
   // TODO(C++14): Use std::make_unique.
   return {"foreach", std::unique_ptr<Function>(new ForEachImpl())};
 }

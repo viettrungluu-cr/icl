@@ -42,10 +42,10 @@ class TestWithScope : public Delegate {
   // |Delegate| methods:
   bool LoadFile(const SourceFile& name, std::string* contents) override;
   void Print(const std::string& s) override;
-  const FunctionInfoMap& GetFunctions() const override;
+  const FunctionMap& GetFunctions() const override;
 
  private:
-  FunctionInfoMap functions_;  // Only modified in the constructor.
+  FunctionMap functions_;  // Only modified in the constructor.
 
   Scope scope_;
   Scope::ItemVector items_;

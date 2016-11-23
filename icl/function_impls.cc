@@ -75,7 +75,7 @@ class AssertImpl : public Function {
 
 }  // namespace
 
-FunctionInfoMapEntry AssertFn() {
+FunctionMapEntry AssertFn() {
   // TODO(C++14): Use std::make_unique.
   return {"assert", std::unique_ptr<AssertImpl>(new AssertImpl())};
 }
@@ -137,7 +137,7 @@ class DefinedImpl : public Function {
 
 }  // namespace
 
-FunctionInfoMapEntry DefinedFn() {
+FunctionMapEntry DefinedFn() {
   // TODO(C++14): Use std::make_unique.
   return {"defined",
           std::unique_ptr<DefinedImpl>(new DefinedImpl())};
@@ -172,7 +172,7 @@ class PrintImpl : public Function {
 
 }  // namespace
 
-FunctionInfoMapEntry PrintFn() {
+FunctionMapEntry PrintFn() {
   // TODO(C++14): Use std::make_unique.
   return {"print",
           std::unique_ptr<PrintImpl>(new PrintImpl())};

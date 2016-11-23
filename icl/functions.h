@@ -87,9 +87,8 @@ class Function {
   Function& operator=(const Function&) = delete;
 };
 
-//FIXME rename to FunctionMap, etc.
-using FunctionInfoMap = std::map<StringPiece, std::unique_ptr<Function>>;
-using FunctionInfoMapEntry = FunctionInfoMap::value_type;
+using FunctionMap = std::map<StringPiece, std::unique_ptr<Function>>;
+using FunctionMapEntry = FunctionMap::value_type;
 
 // Runs the given function.
 Value RunFunction(Scope* scope,

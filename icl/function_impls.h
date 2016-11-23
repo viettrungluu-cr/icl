@@ -10,11 +10,11 @@
 namespace icl {
 namespace function_impls {
 
-FunctionInfoMapEntry AssertFn();    // "assert"
-FunctionInfoMapEntry DefinedFn();   // "defined"
-FunctionInfoMapEntry PrintFn();     // "print"
-FunctionInfoMapEntry ForEachFn();   // "foreach" (function_impls_foreach.cc)
-FunctionInfoMapEntry TemplateFn();  // "template" (function_impls_template.cc)
+FunctionMapEntry AssertFn();    // "assert"
+FunctionMapEntry DefinedFn();   // "defined"
+FunctionMapEntry PrintFn();     // "print"
+FunctionMapEntry ForEachFn();   // "foreach" (function_impls_foreach.cc)
+FunctionMapEntry TemplateFn();  // "template" (function_impls_template.cc)
 
 }  // namespace function_impls
 }  // namespace icl
