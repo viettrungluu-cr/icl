@@ -33,134 +33,163 @@ namespace function_impls {
 
 // assert ----------------------------------------------------------------------
 
-static Value RunAssert(Scope* scope,
-                       const FunctionCallNode* function,
-                       const std::vector<Value>& args,
-                       Err* err) {
-  if (args.size() != 1 && args.size() != 2) {
-    *err = Err(function->function(), "Wrong number of arguments.",
-               "assert() takes one or two argument, "
-               "were you expecting somethig else?");
-  } else if (args[0].type() != Value::BOOLEAN) {
-    *err = Err(function->function(), "Assertion value not a bool.");
-  } else if (!args[0].boolean_value()) {
-    if (args.size() == 2) {
-      // Optional string message.
-      if (args[1].type() != Value::STRING) {
-        *err = Err(function->function(), "Assertion failed.",
-            "<<<ERROR MESSAGE IS NOT A STRING>>>");
-      } else {
-        *err = Err(function->function(), "Assertion failed.",
-            args[1].string_value());
-      }
-    } else {
-      *err = Err(function->function(), "Assertion failed.");
-    }
+namespace {
 
-    if (args[0].origin()) {
-      // If you do "assert(foo)" we'd ideally like to show you where foo was
-      // set, and in this case the origin of the args will tell us that.
-      // However, if you do "assert(foo && bar)" the source of the value will
-      // be the assert like, which isn't so helpful.
-      //
-      // So we try to see if the args are from the same line or not. This will
-      // break if you do "assert(\nfoo && bar)" and we may show the second line
-      // as the source, oh well. The way around this is to check to see if the
-      // origin node is inside our function call block.
-      Location origin_location = args[0].origin()->GetRange().begin();
-      if (origin_location.file() != function->function().location().file() ||
-          origin_location.line_number() !=
-              function->function().location().line_number()) {
-        err->AppendSubErr(Err(args[0].origin()->GetRange(), "",
-                              "This is where it was set."));
+class AssertImpl : public Function {
+ public:
+  AssertImpl() = default;
+  ~AssertImpl() override = default;
+  Type GetType() const override { return Type::GENERIC_NO_BLOCK; }
+  Value GenericNoBlockFn(Scope* scope,
+                         const FunctionCallNode* function,
+                         const std::vector<Value>& args,
+                         Err* err) const override {
+    if (args.size() != 1 && args.size() != 2) {
+      *err = Err(function->function(), "Wrong number of arguments.",
+                 "assert() takes one or two argument, "
+                 "were you expecting somethig else?");
+    } else if (args[0].type() != Value::BOOLEAN) {
+      *err = Err(function->function(), "Assertion value not a bool.");
+    } else if (!args[0].boolean_value()) {
+      if (args.size() == 2) {
+        // Optional string message.
+        if (args[1].type() != Value::STRING) {
+          *err = Err(function->function(), "Assertion failed.",
+              "<<<ERROR MESSAGE IS NOT A STRING>>>");
+        } else {
+          *err = Err(function->function(), "Assertion failed.",
+              args[1].string_value());
+        }
+      } else {
+        *err = Err(function->function(), "Assertion failed.");
+      }
+
+      if (args[0].origin()) {
+        // If you do "assert(foo)" we'd ideally like to show you where foo was
+        // set, and in this case the origin of the args will tell us that.
+        // However, if you do "assert(foo && bar)" the source of the value will
+        // be the assert like, which isn't so helpful.
+        //
+        // So we try to see if the args are from the same line or not. This will
+        // break if you do "assert(\nfoo && bar)" and we may show the second
+        // line as the source, oh well. The way around this is to check to see
+        // if the origin node is inside our function call block.
+        Location origin_location = args[0].origin()->GetRange().begin();
+        if (origin_location.file() != function->function().location().file() ||
+            origin_location.line_number() !=
+                function->function().location().line_number()) {
+          err->AppendSubErr(Err(args[0].origin()->GetRange(), "",
+                                "This is where it was set."));
+        }
       }
     }
+    return Value();
   }
-  return Value();
-}
+};
+
+}  // namespace
 
 FunctionInfoMapEntry AssertFn() {
   // TODO(C++14): Use std::make_unique.
-  return {"assert",
-          std::unique_ptr<FunctionInfo>(new FunctionInfo(&RunAssert))};
+  return {"assert", std::unique_ptr<AssertImpl>(new AssertImpl())};
 }
 
 // defined ---------------------------------------------------------------------
 
-static Value RunDefined(Scope* scope,
-                        const FunctionCallNode* function,
-                        const ListNode* args_list,
-                        Err* err) {
-  const auto& args_vector = args_list->contents();
-  if (args_vector.size() != 1) {
-    *err = Err(function, "Wrong number of arguments to defined().",
-               "Expecting exactly one.");
-    return Value();
-  }
+namespace {
 
-  const IdentifierNode* identifier = args_vector[0]->AsIdentifier();
-  if (identifier) {
-    // Passed an identifier "defined(foo)".
-    if (scope->GetValue(identifier->value().value()))
-      return Value(function, true);
-    return Value(function, false);
-  }
+class DefinedImpl : public Function {
+ public:
+  DefinedImpl() = default;
+  ~DefinedImpl() override = default;
+  Type GetType() const override { return Type::SELF_EVALUATING_ARGS_NO_BLOCK; }
+  Value SelfEvaluatingArgsNoBlockFn(Scope* scope,
+                                    const FunctionCallNode* function,
+                                    const ListNode* args_list,
+                                    Err* err) const override {
+    const auto& args_vector = args_list->contents();
+    if (args_vector.size() != 1) {
+      *err = Err(function, "Wrong number of arguments to defined().",
+                 "Expecting exactly one.");
+      return Value();
+    }
 
-  const AccessorNode* accessor = args_vector[0]->AsAccessor();
-  if (accessor) {
-    // Passed an accessor "defined(foo.bar)".
-    if (accessor->member()) {
-      // The base of the accessor must be a scope if it's defined.
-      const Value* base = scope->GetValue(accessor->base().value());
-      if (!base) {
-        *err = Err(accessor, "Undefined identifier");
-        return Value();
-      }
-      if (!base->VerifyTypeIs(Value::SCOPE, err))
-        return Value();
-
-      // Check the member inside the scope to see if its defined.
-      if (base->scope_value()->GetValue(accessor->member()->value().value()))
+    const IdentifierNode* identifier = args_vector[0]->AsIdentifier();
+    if (identifier) {
+      // Passed an identifier "defined(foo)".
+      if (scope->GetValue(identifier->value().value()))
         return Value(function, true);
       return Value(function, false);
     }
-  }
 
-  // Argument is invalid.
-  *err = Err(function, "Bad thing passed to defined().",
-      "It should be of the form defined(foo) or defined(foo.bar).");
-  return Value();
-}
+    const AccessorNode* accessor = args_vector[0]->AsAccessor();
+    if (accessor) {
+      // Passed an accessor "defined(foo.bar)".
+      if (accessor->member()) {
+        // The base of the accessor must be a scope if it's defined.
+        const Value* base = scope->GetValue(accessor->base().value());
+        if (!base) {
+          *err = Err(accessor, "Undefined identifier");
+          return Value();
+        }
+        if (!base->VerifyTypeIs(Value::SCOPE, err))
+          return Value();
+
+        // Check the member inside the scope to see if its defined.
+        if (base->scope_value()->GetValue(accessor->member()->value().value()))
+          return Value(function, true);
+        return Value(function, false);
+      }
+    }
+
+    // Argument is invalid.
+    *err = Err(function, "Bad thing passed to defined().",
+        "It should be of the form defined(foo) or defined(foo.bar).");
+    return Value();
+  }
+};
+
+}  // namespace
 
 FunctionInfoMapEntry DefinedFn() {
   // TODO(C++14): Use std::make_unique.
   return {"defined",
-          std::unique_ptr<FunctionInfo>(new FunctionInfo(&RunDefined))};
+          std::unique_ptr<DefinedImpl>(new DefinedImpl())};
 }
 
 // print -----------------------------------------------------------------------
 
-static Value RunPrint(Scope* scope,
-                      const FunctionCallNode* function,
-                      const std::vector<Value>& args,
-                      Err* err) {
-  std::string output;
-  for (size_t i = 0; i < args.size(); i++) {
-    if (i != 0)
-      output.push_back(' ');
-    output.append(args[i].ToString(false));
+namespace {
+
+class PrintImpl : public Function {
+ public:
+  PrintImpl() = default;
+  ~PrintImpl() override = default;
+  Type GetType() const override { return Type::GENERIC_NO_BLOCK; }
+  Value GenericNoBlockFn(Scope* scope,
+                         const FunctionCallNode* function,
+                         const std::vector<Value>& args,
+                         Err* err) const override {
+    std::string output;
+    for (size_t i = 0; i < args.size(); i++) {
+      if (i != 0)
+        output.push_back(' ');
+      output.append(args[i].ToString(false));
+    }
+    output.push_back('\n');
+
+    scope->delegate()->Print(output);
+
+    return Value();
   }
-  output.push_back('\n');
+};
 
-  scope->delegate()->Print(output);
-
-  return Value();
-}
+}  // namespace
 
 FunctionInfoMapEntry PrintFn() {
   // TODO(C++14): Use std::make_unique.
   return {"print",
-          std::unique_ptr<FunctionInfo>(new FunctionInfo(&RunPrint))};
+          std::unique_ptr<PrintImpl>(new PrintImpl())};
 }
 
 //FIXME

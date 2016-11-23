@@ -160,7 +160,7 @@ class FunctionInfo : public Function {
   NoBlockFunction no_block_runner = nullptr;
 };
 
-using FunctionInfoMap = std::map<StringPiece, std::unique_ptr<FunctionInfo>>;
+using FunctionInfoMap = std::map<StringPiece, std::unique_ptr<Function>>;
 using FunctionInfoMapEntry = FunctionInfoMap::value_type;
 
 // Runs the given function.

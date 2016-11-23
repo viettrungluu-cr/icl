@@ -156,7 +156,7 @@ Function::Type FunctionInfo::GetType() const {
   if (self_evaluating_args_runner) {
 //FIXME haha, very funny
     if (self_evaluating_args_runner ==
-        function_impls::ForEachFn().second->self_evaluating_args_runner)
+        static_cast<FunctionInfo*>(function_impls::ForEachFn().second.get())->self_evaluating_args_runner)
       return Type::SELF_EVALUATING_ARGS_BLOCK;
     return Type::SELF_EVALUATING_ARGS_NO_BLOCK;
   }
