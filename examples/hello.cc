@@ -16,13 +16,7 @@ namespace {
 
 class DelegateImpl : public icl::Delegate {
  public:
-  DelegateImpl() {
-    functions_.insert(icl::function_impls::AssertFn());
-    functions_.insert(icl::function_impls::DefinedFn());
-    functions_.insert(icl::function_impls::PrintFn());
-    functions_.insert(icl::function_impls::ForEachFn());
-    functions_.insert(icl::function_impls::TemplateFn());
-  }
+  DelegateImpl() : functions_(icl::function_impls::GetStandardFunctions()) {}
   ~DelegateImpl() = default;
 
   DelegateImpl(const DelegateImpl&) = delete;
@@ -43,7 +37,7 @@ class DelegateImpl : public icl::Delegate {
   }
 
  private:
-  icl::FunctionMap functions_;  // Only modified in the constructor.
+  const icl::FunctionMap functions_;
 };
 
 }  // namespace

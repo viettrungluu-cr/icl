@@ -17,6 +17,20 @@
 namespace icl {
 namespace function_impls {
 
+void AddStandardFunctions(FunctionMap* functions) {
+  functions->insert(function_impls::AssertFn());
+  functions->insert(function_impls::DefinedFn());
+  functions->insert(function_impls::PrintFn());
+  functions->insert(function_impls::ForEachFn());
+  functions->insert(function_impls::TemplateFn());
+}
+
+FunctionMap GetStandardFunctions() {
+  FunctionMap functions;
+  AddStandardFunctions(&functions);
+  return functions;
+}
+
 // assert ----------------------------------------------------------------------
 
 namespace {

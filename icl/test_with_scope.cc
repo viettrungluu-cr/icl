@@ -14,15 +14,10 @@
 namespace icl {
 
 TestWithScope::TestWithScope()
-      : scope_(this) {
+    : functions_(icl::function_impls::GetStandardFunctions()),
+      scope_(this) {
 //FIXME
 //      scope_progammatic_provider_(&scope_, true) {
-  functions_.insert(function_impls::AssertFn());
-  functions_.insert(function_impls::DefinedFn());
-  functions_.insert(function_impls::PrintFn());
-  functions_.insert(function_impls::ForEachFn());
-  functions_.insert(function_impls::TemplateFn());
-
   scope_.set_item_collector(&items_);
 }
 

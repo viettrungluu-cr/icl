@@ -10,6 +10,15 @@
 namespace icl {
 namespace function_impls {
 
+// Adds entries for the standard functions (which must not be present already)
+// to |*functions|. (The standard functions are listed below.)
+void AddStandardFunctions(FunctionMap* functions);
+
+// Gets a |FunctionMap| with just the standard functions. (The standard
+// functions are listed below.)
+FunctionMap GetStandardFunctions();
+
+// Get entries for the standard functions.
 FunctionMapEntry AssertFn();    // "assert"
 FunctionMapEntry DefinedFn();   // "defined"
 FunctionMapEntry PrintFn();     // "print"
