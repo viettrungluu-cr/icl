@@ -36,6 +36,11 @@ void TestWithScope::Print(const std::string& s) {
   print_output_.append(s);
 }
 
+bool TestWithScope::LoadFile(const SourceFile& name, std::string* contents) {
+  assert(false);  // Not implemented!
+  return false;
+}
+
 const FunctionInfoMap& TestWithScope::GetFunctions() const {
   return functions_;
 }

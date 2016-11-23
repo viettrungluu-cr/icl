@@ -1,3 +1,8 @@
+// Copyright 2016 The Chromium Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style license that can be
+// found in the LICENSE file.
+
+#include <assert.h>
 #include <stdlib.h>
 
 #include <iostream>
@@ -33,6 +38,12 @@ class DelegateImpl : public icl::Delegate {
   DelegateImpl& operator=(const DelegateImpl&) = delete;
 
   // |icl::Delegate| methods:
+  bool LoadFile(const icl::SourceFile& name, std::string* contents) override {
+    assert(name.value() == "//noname");
+    *contents = "a = \"hello world\"\n"
+                "print(a)";
+    return true;
+  }
   void Print(const std::string& s) override {
     std::cout << s;
   }

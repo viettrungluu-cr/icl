@@ -11,6 +11,8 @@
 
 namespace icl {
 
+class SourceFile;
+
 // Interface for the user to provide various required functionality/settings.
 //
 // Lifetime: A delegate must outlive not just the |Scope| (and
@@ -21,6 +23,12 @@ namespace icl {
 // delegate must be thread-safe.
 class Delegate {
  public:
+  // Loads the contents of the file named |name| (which must be non-"null") to
+  // |*contents| (|contents| must be non-null and point to an empty string).
+  // Returns true on success or false on failure (in which case |*contents| is
+  // undefined).
+  virtual bool LoadFile(const SourceFile& name, std::string* contents) = 0;
+
   // TODO(vtl): Should this take a |StringPiece| instead?
   virtual void Print(const std::string& s) = 0;
 
