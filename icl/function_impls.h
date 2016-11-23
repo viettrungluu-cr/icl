@@ -10,23 +10,9 @@
 namespace icl {
 namespace function_impls {
 
-Value RunAssert(Scope* scope,
-                const FunctionCallNode* function,
-                const std::vector<Value>& args,
-                Err* err);
-inline FunctionInfoMapEntry AssertFn() { return {"assert", &RunAssert}; }
-
-Value RunDefined(Scope* scope,
-                 const FunctionCallNode* function,
-                 const ListNode* args_list,
-                 Err* err);
-inline FunctionInfoMapEntry DefinedFn() { return {"defined", &RunDefined}; }
-
-Value RunPrint(Scope* scope,
-               const FunctionCallNode* function,
-               const std::vector<Value>& args,
-               Err* err);
-inline FunctionInfoMapEntry PrintFn() { return {"print", &RunPrint}; }
+FunctionInfoMapEntry AssertFn();
+FunctionInfoMapEntry DefinedFn();
+FunctionInfoMapEntry PrintFn();
 
 // Implemented in function_impls_foreach.cc:
 Value RunForEach(Scope* scope,

@@ -22,6 +22,65 @@ class Scope;
 class Token;
 class Value;
 
+/*
+class Function {
+ public:
+  enum class Type {
+    // Self-evaluating args functions evaluate their arguments themselves rather
+    // than taking a pre-evaluated list of arguments. (They may or may not take
+    // a block, which is up to them to execute.) These are typically used for
+    // built-in functions.
+    SELF_EVALUATING_ARGS_BLOCK,
+    SELF_EVALUATING_ARGS_NO_BLOCK,
+    // Generic block functions take an evaluated list of arguments and a block
+    // which is up to them to execute.
+    GENERIC_BLOCK,
+    // Executed block functions take an evaluated list of arguments and a block
+    // that is already executed (passed as a |Scope| for the block).
+    EXECUTED_BLOCK,
+    // Generic no-block functions just take an evaluated list of arguments and
+    // no block.
+    GENERIC_NO_BLOCK,
+  };
+
+  virtual ~Function() = default;
+
+  virtual Type GetType() const = 0;
+
+  // Exactly one of the following should be overridden, depending on the |Type|
+  // (as returned by |GetType()|).
+  virtual Value SelfEvaluatingArgsBlockFn(Scope* scope,
+                                          const FunctionCallNode* function,
+                                          const ListNode* args_list,
+                                          Err* err) const;
+  virtual Value SelfEvaluatingArgsNoBlockFn(Scope* scope,
+                                            const FunctionCallNode* function,
+                                            const ListNode* args_list,
+                                            Err* err) const;
+  virtual Value GenericBlockFn(Scope* scope,
+                               const FunctionCallNode* function,
+                               const std::vector<Value>& args,
+                               BlockNode* block,
+                               Err* err) const;
+  virtual Value ExecutedBlockFn(const FunctionCallNode* function,
+                                const std::vector<Value>& args,
+                                Scope* block_scope,
+                                Err* err) const;
+  virtual Value GenericNoBlockFn(Scope* scope,
+                                 const FunctionCallNode* function,
+                                 const std::vector<Value>& args,
+                                 Err* err) const;
+
+ protected:
+  Function() = default;
+
+  Function(const Function&) = delete;
+  Function& operator=(const Function&) = delete;
+};
+*/
+
+//////////////////////////////////////////
+
 // This type of function invocation has no block and evaluates its arguments
 // itself rather than taking a pre-executed list. This allows us to implement
 // certain built-in functions.
@@ -69,10 +128,6 @@ struct FunctionInfo {
 
 using FunctionInfoMap = std::map<StringPiece, FunctionInfo>;
 using FunctionInfoMapEntry = FunctionInfoMap::value_type;
-
-// TODO(vtl): Delete this.
-// Returns the mapping of all built-in functions.
-const FunctionInfoMap& GetFunctions();
 
 // Runs the given function.
 Value RunFunction(Scope* scope,

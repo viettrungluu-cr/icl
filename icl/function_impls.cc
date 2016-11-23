@@ -33,10 +33,10 @@ namespace function_impls {
 
 // assert ----------------------------------------------------------------------
 
-Value RunAssert(Scope* scope,
-                const FunctionCallNode* function,
-                const std::vector<Value>& args,
-                Err* err) {
+static Value RunAssert(Scope* scope,
+                       const FunctionCallNode* function,
+                       const std::vector<Value>& args,
+                       Err* err) {
   if (args.size() != 1 && args.size() != 2) {
     *err = Err(function->function(), "Wrong number of arguments.",
                "assert() takes one or two argument, "
@@ -79,12 +79,16 @@ Value RunAssert(Scope* scope,
   return Value();
 }
 
+FunctionInfoMapEntry AssertFn() {
+  return {"assert", &RunAssert};
+}
+
 // defined ---------------------------------------------------------------------
 
-Value RunDefined(Scope* scope,
-                 const FunctionCallNode* function,
-                 const ListNode* args_list,
-                 Err* err) {
+static Value RunDefined(Scope* scope,
+                        const FunctionCallNode* function,
+                        const ListNode* args_list,
+                        Err* err) {
   const auto& args_vector = args_list->contents();
   if (args_vector.size() != 1) {
     *err = Err(function, "Wrong number of arguments to defined().",
@@ -126,12 +130,16 @@ Value RunDefined(Scope* scope,
   return Value();
 }
 
+FunctionInfoMapEntry DefinedFn() {
+  return {"defined", &RunDefined};
+}
+
 // print -----------------------------------------------------------------------
 
-Value RunPrint(Scope* scope,
-               const FunctionCallNode* function,
-               const std::vector<Value>& args,
-               Err* err) {
+static Value RunPrint(Scope* scope,
+                      const FunctionCallNode* function,
+                      const std::vector<Value>& args,
+                      Err* err) {
   std::string output;
   for (size_t i = 0; i < args.size(); i++) {
     if (i != 0)
@@ -143,6 +151,10 @@ Value RunPrint(Scope* scope,
   scope->delegate()->Print(output);
 
   return Value();
+}
+
+FunctionInfoMapEntry PrintFn() {
+  return {"print", &RunPrint};
 }
 
 //FIXME
