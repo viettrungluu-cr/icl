@@ -7,7 +7,7 @@
 #include <utility>
 
 #include "icl/err.h"
-#include "icl/functions.h"
+#include "icl/function.h"
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
 //FIXME

@@ -2,9 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-//FIXME split this file (functions/function_impls)
+//FIXME split this file (function/function_impls)
 
-#include "icl/functions.h"
+#include "icl/function.h"
 
 #include <gtest/gtest.h>
 
@@ -18,7 +18,7 @@
 namespace icl {
 namespace {
 
-TEST(Functions, Defined) {
+TEST(Function, Defined) {
   auto defined = function_impls::DefinedFn().second;
 
   TestWithScope setup;
@@ -69,7 +69,7 @@ TEST(Functions, Defined) {
 
 // Tests that an error is thrown when a {} is supplied to a function that
 // doesn't take one.
-TEST(Functions, FunctionsWithBlock) {
+TEST(Function, FunctionsWithBlock) {
   TestWithScope setup;
   Err err;
 
@@ -102,7 +102,7 @@ TEST(Functions, FunctionsWithBlock) {
 
 //FIXME
 /*
-TEST(Functions, SplitList) {
+TEST(Function, SplitList) {
   TestWithScope setup;
 
   TestParseInput input(

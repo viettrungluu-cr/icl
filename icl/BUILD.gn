@@ -6,7 +6,7 @@ group("tests") {
   deps = [
     # icl:
     ":filesystem_utils_test",
-    ":functions_test",
+    ":function_test",
     ":operators_test",
     ":parse_tree_test",
     ":parser_test",
@@ -37,12 +37,12 @@ source_set("icl") {
     "err.h",
     "filesystem_utils.cc",  #FIXME hilarious amount commented out
     "filesystem_utils.h",
+    "function.cc",
+    "function.h",
     "function_impls_foreach.cc",
     "function_impls_template.cc",
     "function_impls.cc",
     "function_impls.h",
-    "functions.cc",
-    "functions.h",
     "input_file.cc",
     "input_file.h",
     "item.cc",
@@ -113,11 +113,11 @@ test("filesystem_utils_test") {
   ]
 }
 
-test("functions_test") {
+test("function_test") {
   sources = [
     "function_impls_foreach_unittest.cc",
     "function_impls_template_unittest.cc",
-    "functions_unittest.cc",
+    "function_unittest.cc",
   ]
 
   deps = [

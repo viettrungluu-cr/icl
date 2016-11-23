@@ -5,7 +5,7 @@
 #ifndef ICL_FUNCTION_IMPLS_H_
 #define ICL_FUNCTION_IMPLS_H_
 
-#include "icl/functions.h"
+#include "icl/function.h"
 
 namespace icl {
 namespace function_impls {

@@ -7,7 +7,7 @@
 
 #include <string>
 
-#include "icl/functions.h"
+#include "icl/function.h"
 
 namespace icl {
 

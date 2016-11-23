@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-#include "icl/functions.h"
+#include "icl/function.h"
 #include "icl/test_with_scope.h"
 
 namespace icl {

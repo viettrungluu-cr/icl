@@ -8,7 +8,7 @@
 
 #include <utility>
 
-#include "icl/functions.h"
+#include "icl/function.h"
 #include "icl/operators.h"
 #include "icl/token.h"
 

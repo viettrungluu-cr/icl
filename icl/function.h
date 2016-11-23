@@ -2,8 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-#ifndef ICL_FUNCTIONS_H_
-#define ICL_FUNCTIONS_H_
+#ifndef ICL_FUNCTION_H_
+#define ICL_FUNCTION_H_
 
 #include <map>
 #include <memory>
@@ -163,4 +163,4 @@ class NonNestableBlock {
 
 }  // namespace icl
 
-#endif  // ICL_FUNCTIONS_H_
+#endif  // ICL_FUNCTION_H_

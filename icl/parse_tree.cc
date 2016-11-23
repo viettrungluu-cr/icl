@@ -10,7 +10,7 @@
 #include <algorithm>
 #include <string>
 
-#include "icl/functions.h"
+#include "icl/function.h"
 #include "icl/operators.h"
 #include "icl/scope.h"
 #include "icl/string_number_conversions.h"
