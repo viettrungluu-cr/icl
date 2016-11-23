@@ -23,7 +23,6 @@ class Scope;
 class Token;
 class Value;
 
-/*
 class Function {
  public:
   enum class Type {
@@ -45,6 +44,18 @@ class Function {
   };
 
   virtual ~Function() = default;
+
+  Value Run(Scope* scope,
+            const FunctionCallNode* function,
+            const ListNode* args_list,
+            BlockNode* block,  // Optional.
+            Err* err);
+
+ protected:
+  Function() = default;
+
+  Function(const Function&) = delete;
+  Function& operator=(const Function&) = delete;
 
   virtual Type GetType() const = 0;
 
@@ -71,14 +82,7 @@ class Function {
                                  const FunctionCallNode* function,
                                  const std::vector<Value>& args,
                                  Err* err) const;
-
- protected:
-  Function() = default;
-
-  Function(const Function&) = delete;
-  Function& operator=(const Function&) = delete;
 };
-*/
 
 //////////////////////////////////////////
 
@@ -113,33 +117,38 @@ using NoBlockFunction = Value (*)(Scope* scope,
 
 // One function record. Only one of the given runner types will be non-null
 // which indicates the type of function it is.
-struct FunctionInfo {
-  enum class Type {
-    // Self-evaluating args functions evaluate their arguments themselves rather
-    // than taking a pre-evaluated list of arguments. (They may or may not take
-    // a block, which is up to them to execute.) These are typically used for
-    // built-in functions.
-    SELF_EVALUATING_ARGS_BLOCK,
-    SELF_EVALUATING_ARGS_NO_BLOCK,
-    // Generic block functions take an evaluated list of arguments and a block
-    // which is up to them to execute.
-    GENERIC_BLOCK,
-    // Executed block functions take an evaluated list of arguments and a block
-    // that is already executed (passed as a |Scope| for the block).
-    EXECUTED_BLOCK,
-    // Generic no-block functions just take an evaluated list of arguments and
-    // no block.
-    GENERIC_NO_BLOCK,
-  };
-
+class FunctionInfo : public Function {
+ public:
   // Allow implicit conversion, because we're bad people.
   FunctionInfo(SelfEvaluatingArgsFunction seaf)
       : self_evaluating_args_runner(seaf) {}
   FunctionInfo(GenericBlockFunction gbf) : generic_block_runner(gbf) {}
   FunctionInfo(ExecutedBlockFunction ebf) : executed_block_runner(ebf) {}
   FunctionInfo(NoBlockFunction nbf) : no_block_runner(nbf) {}
+  ~FunctionInfo() override = default;
 
-  Type GetType() const;
+  Type GetType() const override;
+  Value SelfEvaluatingArgsBlockFn(Scope* scope,
+                                  const FunctionCallNode* function,
+                                  const ListNode* args_list,
+                                  Err* err) const override;
+  Value SelfEvaluatingArgsNoBlockFn(Scope* scope,
+                                    const FunctionCallNode* function,
+                                    const ListNode* args_list,
+                                    Err* err) const override;
+  Value GenericBlockFn(Scope* scope,
+                       const FunctionCallNode* function,
+                       const std::vector<Value>& args,
+                       BlockNode* block,
+                       Err* err) const override;
+  Value ExecutedBlockFn(const FunctionCallNode* function,
+                        const std::vector<Value>& args,
+                        Scope* block_scope,
+                        Err* err) const override;
+  Value GenericNoBlockFn(Scope* scope,
+                         const FunctionCallNode* function,
+                         const std::vector<Value>& args,
+                         Err* err) const override;
 
   SelfEvaluatingArgsFunction self_evaluating_args_runner = nullptr;
   GenericBlockFunction generic_block_runner = nullptr;

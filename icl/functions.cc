@@ -51,8 +51,108 @@ bool VerifyNoBlockForFunctionCall(const FunctionCallNode* function,
 
 }  // namespace
 
-//FIXME temp shim
-FunctionInfo::Type FunctionInfo::GetType() const {
+Value Function::Run(Scope* scope,
+                    const FunctionCallNode* function,
+                    const ListNode* args_list,
+                    BlockNode* block,  // Optional.
+                    Err* err) {
+  auto type = GetType();
+
+  if (type == Type::SELF_EVALUATING_ARGS_BLOCK)
+    return SelfEvaluatingArgsBlockFn(scope, function, args_list, err);
+
+  if (type == Type::SELF_EVALUATING_ARGS_NO_BLOCK) {
+    if (!VerifyNoBlockForFunctionCall(function, block, err))
+      return Value();
+    return SelfEvaluatingArgsNoBlockFn(scope, function, args_list, err);
+  }
+
+  // All other function types take a pre-executed set of args.
+  Value args = args_list->Execute(scope, err);
+  if (err->has_error())
+    return Value();
+
+  if (type == Type::GENERIC_BLOCK) {
+    if (!block) {
+      FillNeedsBlockError(function, err);
+      return Value();
+    }
+    return GenericBlockFn(scope, function, args.list_value(), block, err);
+  }
+
+  if (type == Type::EXECUTED_BLOCK) {
+    if (!block) {
+      FillNeedsBlockError(function, err);
+      return Value();
+    }
+
+    Scope block_scope(scope);
+    block->Execute(&block_scope, err);
+    if (err->has_error())
+      return Value();
+
+    Value result =
+        ExecutedBlockFn(function, args.list_value(), &block_scope, err);
+    if (err->has_error())
+      return Value();
+
+    if (!block_scope.CheckForUnusedVars(err))
+      return Value();
+    return result;
+  }
+
+  // Otherwise it's a no-block function.
+  assert(type == Type::GENERIC_NO_BLOCK);
+  if (!VerifyNoBlockForFunctionCall(function, block, err))
+    return Value();
+  return GenericNoBlockFn(scope, function, args.list_value(), err);
+}
+
+Value Function::SelfEvaluatingArgsBlockFn(Scope* scope,
+                                          const FunctionCallNode* function,
+                                          const ListNode* args_list,
+                                          Err* err) const {
+  assert(false);
+  return Value();
+}
+
+Value Function::SelfEvaluatingArgsNoBlockFn(Scope* scope,
+                                            const FunctionCallNode* function,
+                                            const ListNode* args_list,
+                                            Err* err) const {
+  assert(false);
+  return Value();
+}
+
+Value Function::GenericBlockFn(Scope* scope,
+                               const FunctionCallNode* function,
+                               const std::vector<Value>& args,
+                               BlockNode* block,
+                               Err* err) const {
+  assert(false);
+  return Value();
+}
+
+Value Function::ExecutedBlockFn(const FunctionCallNode* function,
+                                const std::vector<Value>& args,
+                                Scope* block_scope,
+                                Err* err) const {
+  assert(false);
+  return Value();
+}
+
+Value Function::GenericNoBlockFn(Scope* scope,
+                                 const FunctionCallNode* function,
+                                 const std::vector<Value>& args,
+                                 Err* err) const {
+  assert(false);
+  return Value();
+}
+
+////////////////////////////
+//FIXME temp shims
+
+Function::Type FunctionInfo::GetType() const {
   if (self_evaluating_args_runner) {
 //FIXME haha, very funny
     if (self_evaluating_args_runner ==
@@ -67,6 +167,45 @@ FunctionInfo::Type FunctionInfo::GetType() const {
   assert(no_block_runner);
   return Type::GENERIC_NO_BLOCK;
 }
+
+Value FunctionInfo::SelfEvaluatingArgsBlockFn(Scope* scope,
+                                              const FunctionCallNode* function,
+                                              const ListNode* args_list,
+                                              Err* err) const {
+  return self_evaluating_args_runner(scope, function, args_list, err);
+}
+
+Value FunctionInfo::SelfEvaluatingArgsNoBlockFn(
+    Scope* scope,
+    const FunctionCallNode* function,
+    const ListNode* args_list,
+    Err* err) const {
+  return self_evaluating_args_runner(scope, function, args_list, err);
+}
+
+Value FunctionInfo::GenericBlockFn(Scope* scope,
+                                   const FunctionCallNode* function,
+                                   const std::vector<Value>& args,
+                                   BlockNode* block,
+                                   Err* err) const {
+  return generic_block_runner(scope, function, args, block, err);
+}
+
+Value FunctionInfo::ExecutedBlockFn(const FunctionCallNode* function,
+                                    const std::vector<Value>& args,
+                                    Scope* block_scope,
+                                    Err* err) const {
+  return executed_block_runner(function, args, block_scope, err);
+}
+
+Value FunctionInfo::GenericNoBlockFn(Scope* scope,
+                                     const FunctionCallNode* function,
+                                     const std::vector<Value>& args,
+                                     Err* err) const {
+  return no_block_runner(scope, function, args, err);
+}
+
+////////////////////////////
 
 bool EnsureNotProcessingImport(const ParseNode* node,
                                const Scope* scope,
@@ -197,61 +336,7 @@ Value RunFunction(Scope* scope,
     return Value();
   }
 
-  auto type = found_function->second->GetType();
-
-  if (type == FunctionInfo::Type::SELF_EVALUATING_ARGS_BLOCK) {
-    return found_function->second->self_evaluating_args_runner(
-        scope, function, args_list, err);
-  }
-
-  if (type == FunctionInfo::Type::SELF_EVALUATING_ARGS_NO_BLOCK) {
-    if (!VerifyNoBlockForFunctionCall(function, block, err))
-      return Value();
-    return found_function->second->self_evaluating_args_runner(
-        scope, function, args_list, err);
-  }
-
-  // All other function types take a pre-executed set of args.
-  Value args = args_list->Execute(scope, err);
-  if (err->has_error())
-    return Value();
-
-  if (type == FunctionInfo::Type::GENERIC_BLOCK) {
-    if (!block) {
-      FillNeedsBlockError(function, err);
-      return Value();
-    }
-    return found_function->second->generic_block_runner(
-        scope, function, args.list_value(), block, err);
-  }
-
-  if (type == FunctionInfo::Type::EXECUTED_BLOCK) {
-    if (!block) {
-      FillNeedsBlockError(function, err);
-      return Value();
-    }
-
-    Scope block_scope(scope);
-    block->Execute(&block_scope, err);
-    if (err->has_error())
-      return Value();
-
-    Value result = found_function->second->executed_block_runner(
-        function, args.list_value(), &block_scope, err);
-    if (err->has_error())
-      return Value();
-
-    if (!block_scope.CheckForUnusedVars(err))
-      return Value();
-    return result;
-  }
-
-  // Otherwise it's a no-block function.
-  assert(type == FunctionInfo::Type::GENERIC_NO_BLOCK);
-  if (!VerifyNoBlockForFunctionCall(function, block, err))
-    return Value();
-  return found_function->second->no_block_runner(scope, function,
-                                                 args.list_value(), err);
+  return found_function->second->Run(scope, function, args_list, block, err);
 }
 
 }  // namespace icl
