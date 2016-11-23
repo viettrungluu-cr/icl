@@ -114,12 +114,32 @@ using NoBlockFunction = Value (*)(Scope* scope,
 // One function record. Only one of the given runner types will be non-null
 // which indicates the type of function it is.
 struct FunctionInfo {
+  enum class Type {
+    // Self-evaluating args functions evaluate their arguments themselves rather
+    // than taking a pre-evaluated list of arguments. (They may or may not take
+    // a block, which is up to them to execute.) These are typically used for
+    // built-in functions.
+    SELF_EVALUATING_ARGS_BLOCK,
+    SELF_EVALUATING_ARGS_NO_BLOCK,
+    // Generic block functions take an evaluated list of arguments and a block
+    // which is up to them to execute.
+    GENERIC_BLOCK,
+    // Executed block functions take an evaluated list of arguments and a block
+    // that is already executed (passed as a |Scope| for the block).
+    EXECUTED_BLOCK,
+    // Generic no-block functions just take an evaluated list of arguments and
+    // no block.
+    GENERIC_NO_BLOCK,
+  };
+
   // Allow implicit conversion, because we're bad people.
   FunctionInfo(SelfEvaluatingArgsFunction seaf)
       : self_evaluating_args_runner(seaf) {}
   FunctionInfo(GenericBlockFunction gbf) : generic_block_runner(gbf) {}
   FunctionInfo(ExecutedBlockFunction ebf) : executed_block_runner(ebf) {}
   FunctionInfo(NoBlockFunction nbf) : no_block_runner(nbf) {}
+
+  Type GetType() const;
 
   SelfEvaluatingArgsFunction self_evaluating_args_runner = nullptr;
   GenericBlockFunction generic_block_runner = nullptr;

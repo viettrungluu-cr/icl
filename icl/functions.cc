@@ -51,6 +51,23 @@ bool VerifyNoBlockForFunctionCall(const FunctionCallNode* function,
 
 }  // namespace
 
+//FIXME temp shim
+FunctionInfo::Type FunctionInfo::GetType() const {
+  if (self_evaluating_args_runner) {
+//FIXME haha, very funny
+    if (self_evaluating_args_runner ==
+        function_impls::ForEachFn().second->self_evaluating_args_runner)
+      return Type::SELF_EVALUATING_ARGS_BLOCK;
+    return Type::SELF_EVALUATING_ARGS_NO_BLOCK;
+  }
+  if (generic_block_runner)
+    return Type::GENERIC_BLOCK;
+  if (executed_block_runner)
+    return Type::EXECUTED_BLOCK;
+  assert(no_block_runner);
+  return Type::GENERIC_NO_BLOCK;
+}
+
 bool EnsureNotProcessingImport(const ParseNode* node,
                                const Scope* scope,
                                Err* err) {
@@ -180,17 +197,16 @@ Value RunFunction(Scope* scope,
     return Value();
   }
 
-  if (found_function->second->self_evaluating_args_runner) {
-    // Self evaluating args functions are special weird built-ins like foreach.
-    // Rather than force them all to check that they have a block or no block
-    // and risk bugs for new additions, check a whitelist here.
-//FIXME remove this special-casing (wow, this has gotten even uglier)
-    if (found_function->second->self_evaluating_args_runner !=
-//            &function_impls::RunForEach) {
-              function_impls::ForEachFn().second->self_evaluating_args_runner) {
-      if (!VerifyNoBlockForFunctionCall(function, block, err))
-        return Value();
-    }
+  auto type = found_function->second->GetType();
+
+  if (type == FunctionInfo::Type::SELF_EVALUATING_ARGS_BLOCK) {
+    return found_function->second->self_evaluating_args_runner(
+        scope, function, args_list, err);
+  }
+
+  if (type == FunctionInfo::Type::SELF_EVALUATING_ARGS_NO_BLOCK) {
+    if (!VerifyNoBlockForFunctionCall(function, block, err))
+      return Value();
     return found_function->second->self_evaluating_args_runner(
         scope, function, args_list, err);
   }
@@ -200,7 +216,7 @@ Value RunFunction(Scope* scope,
   if (err->has_error())
     return Value();
 
-  if (found_function->second->generic_block_runner) {
+  if (type == FunctionInfo::Type::GENERIC_BLOCK) {
     if (!block) {
       FillNeedsBlockError(function, err);
       return Value();
@@ -209,7 +225,7 @@ Value RunFunction(Scope* scope,
         scope, function, args.list_value(), block, err);
   }
 
-  if (found_function->second->executed_block_runner) {
+  if (type == FunctionInfo::Type::EXECUTED_BLOCK) {
     if (!block) {
       FillNeedsBlockError(function, err);
       return Value();
@@ -231,6 +247,7 @@ Value RunFunction(Scope* scope,
   }
 
   // Otherwise it's a no-block function.
+  assert(type == FunctionInfo::Type::GENERIC_NO_BLOCK);
   if (!VerifyNoBlockForFunctionCall(function, block, err))
     return Value();
   return found_function->second->no_block_runner(scope, function,
