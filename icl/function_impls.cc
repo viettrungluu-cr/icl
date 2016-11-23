@@ -4,29 +4,15 @@
 
 #include "icl/function_impls.h"
 
-//FIXME clean up includes
-
 #include <stddef.h>
 
 #include <string>
-#include <utility>
 
 #include "icl/delegate.h"
 #include "icl/err.h"
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
-#include "icl/token.h"
 #include "icl/value.h"
-/*
-#include "base/environment.h"
-#include "base/strings/string_util.h"
-#include "tools/gn/config.h"
-#include "tools/gn/config_values_generator.h"
-#include "tools/gn/input_file.h"
-#include "tools/gn/parse_node_value_adapter.h"
-#include "tools/gn/value_extractors.h"
-#include "tools/gn/variables.h"
-*/
 
 namespace icl {
 namespace function_impls {
