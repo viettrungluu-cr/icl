@@ -64,7 +64,7 @@ Runner::RunResult Runner::Run(const SourceFile& source_file) {
     return result;
   }
 
-  result.succeeded_ = true;
+  result.is_success_ = true;
   result.scope_ = std::move(scope);
   return result;
 }

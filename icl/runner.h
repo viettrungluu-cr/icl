@@ -28,13 +28,13 @@ class Runner {
     RunResult(const RunResult&) = delete;
     RunResult& operator=(const RunResult&) = delete;
 
-    bool succeeded() const { return succeeded_; }
+    bool is_success() const { return is_success_; }
     const std::string& error_message() const { return error_message_; }
 
    private:
     friend class Runner;
 
-    bool succeeded_ = false;
+    bool is_success_ = false;
     std::string error_message_;
 
     std::unique_ptr<Scope> scope_;
