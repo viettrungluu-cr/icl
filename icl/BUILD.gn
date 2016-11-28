@@ -43,6 +43,8 @@ source_set("icl") {
     "function_impls_template.cc",
     "function_impls.cc",
     "function_impls.h",
+    "import_manager.cc",
+    "import_manager.h",
     "input_file.cc",
     "input_file.h",
     "item.cc",
