@@ -10,6 +10,7 @@
 #include "icl/delegate.h"
 #include "icl/err.h"
 #include "icl/input_file.h"
+#include "icl/load_file.h"
 #include "icl/parse_tree.h"
 #include "icl/parser.h"
 #include "icl/scope.h"
@@ -18,7 +19,7 @@
 
 namespace icl {
 
-Runner::RunResult::RunResult() = default;
+Runner::RunResult::RunResult(const SourceFile& name) : file_(name) {}
 Runner::RunResult::RunResult(RunResult&&) = default;
 Runner::RunResult::~RunResult() = default;
 Runner::RunResult& Runner::RunResult::operator=(RunResult&&) = default;
@@ -28,37 +29,19 @@ Runner::Runner(Delegate* delegate) : delegate_(delegate) {}
 Runner::~Runner() = default;
 
 Runner::RunResult Runner::Run(const SourceFile& source_file) {
-  RunResult result;
+  RunResult result(source_file);
 
-  std::string source_file_contents;
-  if (!delegate_->LoadFile(source_file, &source_file_contents)) {
-    result.error_message_ =
-        "ERROR " + source_file.value() + ": Failed to load file.";
-    return result;
-  }
-
-  InputFile input_file(source_file);
-  input_file.SetContents(std::move(source_file_contents));
-
-  // |err| may refer to things in |*scope|, so it's safer to create it before
-  // |err|.
-  auto scope = std::unique_ptr<Scope>(new Scope(delegate_));
+  LocationRange no_origin;
   Err err;
-
-  auto tokens = Tokenizer::Tokenize(&input_file, &err);
-  if (err.has_error()) {
-    result.error_message_ = err.GetErrorMessage();
-    return result;
-  }
-
-  auto ast = Parser::Parse(tokens, &err);
-  if (err.has_error()) {
+  if (!LoadFile(no_origin, delegate_, source_file, &result.file_, &err)) {
     result.error_message_ = err.GetErrorMessage();
     return result;
   }
 
   // TODO(C++14): Use std::make_unique.
-  ast->Execute(scope.get(), &err);
+  auto scope = std::unique_ptr<Scope>(new Scope(delegate_));
+
+  result.file_.root_parse_node()->Execute(scope.get(), &err);
   if (err.has_error()) {
     result.error_message_ = err.GetErrorMessage();
     return result;

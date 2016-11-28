@@ -47,6 +47,8 @@ source_set("icl") {
     "input_file.h",
     "item.cc",
     "item.h",
+    "load_file.cc",
+    "load_file.h",
     "location.cc",
     "location.h",
     "operators.cc",

@@ -7,19 +7,28 @@
 
 #include <assert.h>
 
+#include <memory>
 #include <string>
+#include <vector>
 
 #include "icl/source_dir.h"
 #include "icl/source_file.h"
+#include "icl/token.h"
 
 namespace icl {
+
+class ParseNode;
 
 class InputFile {
  public:
   explicit InputFile(const SourceFile& name);
+  InputFile(InputFile&&);
 
   ~InputFile();
 
+  InputFile& operator=(InputFile&&);
+
+  // Copy construction/assignment disallowed (but move allowed).
   InputFile(const InputFile&) = delete;
   InputFile& operator=(const InputFile&) = delete;
 
@@ -42,16 +51,40 @@ class InputFile {
   }
 
   // Sets the contents of the file; this may be called at most once.
-  void SetContents(std::string&& c);
+  void SetContents(std::string&& contents);
+
+  const std::vector<Token>& tokens() const {
+    assert(tokens_set_);
+    return tokens_;
+  }
+
+  // Sets the tokens; this may be called at most once.
+  void SetTokens(std::vector<Token>&& tokens);
+
+  const ParseNode* root_parse_node() const {
+    assert(root_parse_node_set_);
+    return root_parse_node_.get();
+  }
+
+  // Sets the root parse node; this may be called at most once.
+  void SetRootParseNode(std::unique_ptr<ParseNode> root_parse_node);
 
  private:
-  const SourceFile name_;
-  const SourceDir dir_;
+  SourceFile name_;
+  SourceDir dir_;
 
   std::string friendly_name_;
 
+  // Note: |contents_| must outlive |tokens_| which in turn must outlive
+  // |root_parse_node_|.
   bool contents_loaded_ = false;
   std::string contents_;
+
+  bool tokens_set_ = false;
+  std::vector<Token> tokens_;
+
+  bool root_parse_node_set_ = false;
+  std::unique_ptr<ParseNode> root_parse_node_;
 };
 
 }  // namespace icl

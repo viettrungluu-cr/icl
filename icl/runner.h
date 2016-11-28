@@ -8,6 +8,8 @@
 #include <memory>
 #include <string>
 
+#include "icl/input_file.h"
+
 namespace icl {
 
 class Delegate;
@@ -18,7 +20,7 @@ class Runner {
  public:
   class RunResult {
    public:
-    RunResult();
+    explicit RunResult(const SourceFile& name);
     RunResult(RunResult&&);
     ~RunResult();
 
@@ -37,6 +39,7 @@ class Runner {
     bool is_success_ = false;
     std::string error_message_;
 
+    InputFile file_;
     std::unique_ptr<Scope> scope_;
   };
 
