@@ -61,8 +61,8 @@ class AssertImpl : public Function {
       *err = Err(function->function(), "Wrong number of arguments.",
                  "assert() takes one or two argument, "
                  "were you expecting somethig else?");
-    } else if (args[0].type() != Value::BOOLEAN) {
-      *err = Err(function->function(), "Assertion value not a bool.");
+    } else if (!args[0].VerifyTypeIs(Value::BOOLEAN, err)) {
+      // Nothing to do here.
     } else if (!args[0].boolean_value()) {
       if (args.size() == 2) {
         // Optional string message.

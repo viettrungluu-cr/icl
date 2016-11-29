@@ -102,23 +102,21 @@ TEST(ParseTree, BlockUnusedVars) {
   EXPECT_EQ(7, err.location().column_number());
 }
 
-//FIXME
-TEST(ParseTree, DISABLED_OriginForDereference) {
-//TEST(ParseTree, OriginForDereference) {
+TEST(ParseTree, OriginForDereference) {
   TestWithScope setup;
   TestParseInput input(
       "a = 6\n"
-      "get_target_outputs(a)");
+      "assert(a)");
   EXPECT_FALSE(input.has_error());
 
   Err err;
   input.parsed()->Execute(setup.scope(), &err);
   EXPECT_TRUE(err.has_error());
 
-  // The origin for the "not a string" error message should be where the value
-  // was dereferenced (the "a" on the second line).
+  // The origin for the "not a bool" error message should be where the value was
+  // dereferenced (the "a" on the second line).
   EXPECT_EQ(2, err.location().line_number());
-  EXPECT_EQ(20, err.location().column_number());
+  EXPECT_EQ(8, err.location().column_number());
 }
 
 TEST(ParseTree, SortRangeExtraction) {
