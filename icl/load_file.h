@@ -5,15 +5,18 @@
 #ifndef ICL_LOAD_FILE_H_
 #define ICL_LOAD_FILE_H_
 
+#include <functional>
+
 namespace icl {
 
-class Delegate;
 class InputFile;
 class LocationRange;
 class SourceFile;
 
-bool LoadFile(const LocationRange& origin,
-              Delegate* delegate,
+using ReadFileFunction = std::function<bool(const SourceFile&, std::string*)>;
+
+bool LoadFile(ReadFileFunction read_file_function,
+              const LocationRange& origin,
               const SourceFile& name,
               InputFile* file);
 

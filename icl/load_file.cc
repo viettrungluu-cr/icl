@@ -8,7 +8,6 @@
 #include <utility>
 #include <vector>
 
-#include "icl/delegate.h"
 #include "icl/err.h"
 #include "icl/input_file.h"
 #include "icl/location.h"
@@ -19,13 +18,13 @@
 
 namespace icl {
 
-bool LoadFile(const LocationRange& origin,
-              Delegate* delegate,
+bool LoadFile(ReadFileFunction read_file_function,
+              const LocationRange& origin,
               const SourceFile& name,
               InputFile* file) {
   {
     std::string contents;
-    if (!delegate->LoadFile(name, &contents)) {
+    if (!read_file_function(name, &contents)) {
       file->set_err(Err(origin, "Unable to load \"" + name.value() + "\"."));
       return false;
     }

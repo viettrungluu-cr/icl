@@ -10,6 +10,7 @@
 #include <memory>
 #include <mutex>
 
+#include "icl/delegate.h"  // FIXME remove
 #include "icl/err.h"
 #include "icl/input_file.h"
 #include "icl/load_file.h"
@@ -29,7 +30,10 @@ std::unique_ptr<Scope> UncachedImport(Delegate* delegate,
                                       Err* err) {
 //FIXME this is totally wrong; the InputFile has to be persisted!
   InputFile file(name);
-  if (!LoadFile(node_for_err->GetRange(), delegate, name, &file)) {
+  if (!LoadFile(
+          [delegate](const SourceFile& name, std::string* contents) -> bool {
+            return delegate->LoadFile(name, contents);
+          }, node_for_err->GetRange(), name, &file)) {
     assert(file.err().has_error());
     *err = file.err();
     return nullptr;

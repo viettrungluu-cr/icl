@@ -34,7 +34,9 @@ Runner::RunResult Runner::Run(const SourceFile& source_file) {
   RunResult result(source_file);
 
   LocationRange no_origin;
-  if (!LoadFile(no_origin, delegate_, source_file, &result.file_)) {
+  if (!LoadFile([this](const SourceFile& name, std::string* contents) -> bool {
+                  return delegate_->LoadFile(name, contents);
+                }, no_origin, source_file, &result.file_)) {
     assert(result.file_.err().has_error());
     result.error_message_ = result.file_.err().GetErrorMessage();
     return result;
