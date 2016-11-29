@@ -23,6 +23,14 @@ class DelegateImpl : public icl::Delegate {
   DelegateImpl& operator=(const DelegateImpl&) = delete;
 
   // |icl::Delegate| methods:
+  bool GetInputFile(const icl::SourceFile& name,
+                    icl::InputFile** file,
+                    icl::Err* err) override {
+//FIXME
+    assert(false);  // Not implemented!
+    return false;
+  }
+
   bool LoadFile(const icl::SourceFile& name, std::string* contents) override {
     assert(name.value() == "//noname");
     *contents = "a = \"hello world\"\n"

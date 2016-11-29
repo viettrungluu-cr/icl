@@ -11,6 +11,7 @@
 #include <string>
 #include <vector>
 
+#include "icl/err.h"
 #include "icl/source_dir.h"
 #include "icl/source_file.h"
 #include "icl/token.h"
@@ -45,6 +46,11 @@ class InputFile {
   const std::string& friendly_name() const { return friendly_name_; }
   void set_friendly_name(const std::string& f) { friendly_name_ = f; }
 
+  // Loading an input file may fail at various stages. If it has failed, |err()|
+  // will report an error.
+  const Err& err() const { return err_; }
+  void set_err(const Err& err) { err_ = err; }
+
   const std::string& contents() const {
     assert(contents_loaded_);
     return contents_;
@@ -74,6 +80,8 @@ class InputFile {
   SourceDir dir_;
 
   std::string friendly_name_;
+
+  Err err_;
 
   // Note: |contents_| must outlive |tokens_| which in turn must outlive
   // |root_parse_node_|.

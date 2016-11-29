@@ -7,6 +7,7 @@
 #include <assert.h>
 
 #include <algorithm>
+#include <memory>
 #include <mutex>
 
 #include "icl/err.h"
@@ -28,8 +29,11 @@ std::unique_ptr<Scope> UncachedImport(Delegate* delegate,
                                       Err* err) {
 //FIXME this is totally wrong; the InputFile has to be persisted!
   InputFile file(name);
-  if (!LoadFile(node_for_err->GetRange(), delegate, name, &file, err))
+  if (!LoadFile(node_for_err->GetRange(), delegate, name, &file)) {
+    assert(file.err().has_error());
+    *err = file.err();
     return nullptr;
+  }
   assert(file.root_parse_node());
 
   std::unique_ptr<Scope> scope(new Scope(delegate));

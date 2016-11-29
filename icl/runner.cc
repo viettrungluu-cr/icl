@@ -4,6 +4,8 @@
 
 #include "icl/runner.h"
 
+#include <assert.h>
+
 #include <memory>
 #include <utility>
 
@@ -32,14 +34,15 @@ Runner::RunResult Runner::Run(const SourceFile& source_file) {
   RunResult result(source_file);
 
   LocationRange no_origin;
-  Err err;
-  if (!LoadFile(no_origin, delegate_, source_file, &result.file_, &err)) {
-    result.error_message_ = err.GetErrorMessage();
+  if (!LoadFile(no_origin, delegate_, source_file, &result.file_)) {
+    assert(result.file_.err().has_error());
+    result.error_message_ = result.file_.err().GetErrorMessage();
     return result;
   }
 
   // TODO(C++14): Use std::make_unique.
   auto scope = std::unique_ptr<Scope>(new Scope(delegate_));
+  Err err;
 
   result.file_.root_parse_node()->Execute(scope.get(), &err);
   if (err.has_error()) {

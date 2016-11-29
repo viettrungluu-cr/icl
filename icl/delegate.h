@@ -11,6 +11,8 @@
 
 namespace icl {
 
+class Err;
+class InputFile;
 class SourceFile;
 
 // Interface for the user to provide various required functionality/settings.
@@ -23,6 +25,12 @@ class SourceFile;
 // delegate must be thread-safe.
 class Delegate {
  public:
+//FIXME docs
+  virtual bool GetInputFile(const SourceFile& name,
+                            InputFile** file,
+                            Err* err) = 0;
+
+//FIXME probably get rid of this
   // Loads the contents of the file named |name| (which must be non-"null") to
   // |*contents| (|contents| must be non-null and point to an empty string).
   // Returns true on success or false on failure (in which case |*contents| is

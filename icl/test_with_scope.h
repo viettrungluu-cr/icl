@@ -40,6 +40,9 @@ class TestWithScope : public Delegate {
   std::string& print_output() { return print_output_; }
 
   // |Delegate| methods:
+  bool GetInputFile(const SourceFile& name,
+                    InputFile** file,
+                    Err* err) override;
   bool LoadFile(const SourceFile& name, std::string* contents) override;
   void Print(const std::string& s) override;
   const FunctionMap& GetFunctions() const override;

@@ -28,6 +28,13 @@ void TestWithScope::Print(const std::string& s) {
   print_output_.append(s);
 }
 
+bool TestWithScope::GetInputFile(const SourceFile& name,
+                                 InputFile** file,
+                                 Err* err) {
+  assert(false);  // Not implemented!
+  return false;
+}
+
 bool TestWithScope::LoadFile(const SourceFile& name, std::string* contents) {
   assert(false);  // Not implemented!
   return false;

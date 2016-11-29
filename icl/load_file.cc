@@ -22,12 +22,11 @@ namespace icl {
 bool LoadFile(const LocationRange& origin,
               Delegate* delegate,
               const SourceFile& name,
-              InputFile* file,
-              Err* err) {
+              InputFile* file) {
   {
     std::string contents;
     if (!delegate->LoadFile(name, &contents)) {
-      *err = Err(origin, "Unable to load \"" + name.value() + "\".");
+      file->set_err(Err(origin, "Unable to load \"" + name.value() + "\"."));
       return false;
     }
     assert(file->name() == name);
@@ -35,17 +34,23 @@ bool LoadFile(const LocationRange& origin,
   }
 
   {
-    std::vector<Token> tokens = Tokenizer::Tokenize(file, err);
-    if (err->has_error())
+    Err err;
+    std::vector<Token> tokens = Tokenizer::Tokenize(file, &err);
+    if (err.has_error()) {
+      file->set_err(err);
       return false;
+    }
     file->SetTokens(std::move(tokens));
   }
 
   {
+    Err err;
     std::unique_ptr<ParseNode> root_parse_node =
-        Parser::Parse(file->tokens(), err);
-    if (err->has_error())
+        Parser::Parse(file->tokens(), &err);
+    if (err.has_error()) {
+      file->set_err(err);
       return false;
+    }
     file->SetRootParseNode(std::move(root_parse_node));
   }
 

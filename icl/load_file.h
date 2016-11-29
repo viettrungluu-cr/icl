@@ -8,7 +8,6 @@
 namespace icl {
 
 class Delegate;
-class Err;
 class InputFile;
 class LocationRange;
 class SourceFile;
@@ -16,8 +15,7 @@ class SourceFile;
 bool LoadFile(const LocationRange& origin,
               Delegate* delegate,
               const SourceFile& name,
-              InputFile* file,
-              Err* err);
+              InputFile* file);
 
 }  // namespace icl
 
