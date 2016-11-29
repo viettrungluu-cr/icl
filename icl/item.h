@@ -9,43 +9,34 @@
 
 namespace icl {
 
-//class Config;
+class Delegate;
 class ParseNode;
-class Settings;
-//class Target;
 
-// A named item (target, config, etc.) that participates in the dependency
-// graph.
+// A named item (target, config, etc.) defined in an input file.
 class Item {
  public:
-  explicit Item(const Settings* settings);
-  virtual ~Item();
+  virtual ~Item() = default;
 
-  const Settings* settings() const { return settings_; }
+  const char* type() const { return type_; }
+  const Delegate* delegate() const { return delegate_; }
 
   const ParseNode* defined_from() const { return defined_from_; }
   void set_defined_from(const ParseNode* df) { defined_from_ = df; }
 
-/*
-  // Manual RTTI.
-  virtual Config* AsConfig();
-  virtual const Config* AsConfig() const;
-  virtual Target* AsTarget();
-  virtual const Target* AsTarget() const;
+ protected:
+  // Note: |type| (the pointer value, not just the string value!) should
+  // uniquely identify the implementing subclass, since it may be used for
+  // manually RTTI purposes (by comparing pointer values!).
+  Item(const char* type, Delegate* delegate)
+      : type_(type), delegate_(delegate) {}
 
-  // Returns a name like "target" or "config" for the type of item this is, to
-  // be used in logging and error messages.
-  std::string GetItemTypeName() const;
-
-  // Called when this item is resolved, meaning it and all of its dependents
-  // have no unresolved deps. Returns true on success. Sets the error and
-  // returns false on failure.
-  virtual bool OnResolved(Err* err);
-*/
+  Item(const Item&) = delete;
+  Item& operator=(const Item&) = delete;
 
  private:
-  const Settings* settings_;
-  const ParseNode* defined_from_;
+  const char* const type_;
+  Delegate* const delegate_;
+  const ParseNode* defined_from_ = nullptr;
 };
 
 }  // namespace icl
