@@ -10,8 +10,10 @@
 
 #include "icl/delegate.h"
 #include "icl/err.h"
+#include "icl/import_manager.h"
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
+#include "icl/source_file.h"
 #include "icl/value.h"
 
 namespace icl {
@@ -23,6 +25,10 @@ void AddStandardFunctions(FunctionMap* functions) {
   functions->insert(function_impls::PrintFn());
   functions->insert(function_impls::ForEachFn());
   functions->insert(function_impls::TemplateFn());
+}
+
+void AddImportFunction(FunctionMap* functions) {
+  functions->insert(function_impls::ImportFn());
 }
 
 FunctionMap GetStandardFunctions() {
@@ -153,8 +159,44 @@ class DefinedImpl : public Function {
 
 FunctionMapEntry DefinedFn() {
   // TODO(C++14): Use std::make_unique.
-  return {"defined",
-          std::unique_ptr<DefinedImpl>(new DefinedImpl())};
+  return {"defined", std::unique_ptr<DefinedImpl>(new DefinedImpl())};
+}
+
+// import ----------------------------------------------------------------------
+
+namespace {
+
+class ImportImpl : public Function {
+ public:
+  ImportImpl() = default;
+  ~ImportImpl() override = default;
+  Type GetType() const override { return Type::GENERIC_NO_BLOCK; }
+  Value GenericNoBlockFn(Scope* scope,
+                         const FunctionCallNode* function,
+                         const std::vector<Value>& args,
+                         Err* err) {
+    if (!EnsureSingleStringArg(function, args, err))
+      return Value();
+
+//FIXME
+    SourceFile import_file((std::string(args[0].string_value())));
+//    const SourceDir& input_dir = scope->GetSourceDir();
+//    SourceFile import_file =
+//        input_dir.ResolveRelativeFile(args[0], err,
+//            scope->settings()->build_settings()->root_path_utf8());
+    if (!err->has_error()) {
+      scope->delegate()->GetImportManager()->DoImport(import_file, function,
+                                                      scope, err);
+    }
+    return Value();
+  }
+};
+
+}  // namespace
+
+FunctionMapEntry ImportFn() {
+  // TODO(C++14): Use std::make_unique.
+  return {"import", std::unique_ptr<ImportImpl>(new ImportImpl())};
 }
 
 // print -----------------------------------------------------------------------
@@ -188,8 +230,7 @@ class PrintImpl : public Function {
 
 FunctionMapEntry PrintFn() {
   // TODO(C++14): Use std::make_unique.
-  return {"print",
-          std::unique_ptr<PrintImpl>(new PrintImpl())};
+  return {"print", std::unique_ptr<PrintImpl>(new PrintImpl())};
 }
 
 //FIXME
@@ -294,28 +335,6 @@ Value RunGetEnv(Scope* scope,
   if (!env->GetVar(args[0].string_value().c_str(), &result))
     return Value(function, "");  // Not found, return empty string.
   return Value(function, result);
-}
-
-// import ----------------------------------------------------------------------
-
-const char kImport[] = "import";
-
-Value RunImport(Scope* scope,
-                const FunctionCallNode* function,
-                const std::vector<Value>& args,
-                Err* err) {
-  if (!EnsureSingleStringArg(function, args, err))
-    return Value();
-
-  const SourceDir& input_dir = scope->GetSourceDir();
-  SourceFile import_file =
-      input_dir.ResolveRelativeFile(args[0], err,
-          scope->settings()->build_settings()->root_path_utf8());
-  if (!err->has_error()) {
-    scope->settings()->import_manager().DoImport(import_file, function,
-                                                 scope, err);
-  }
-  return Value();
 }
 
 // split_list ------------------------------------------------------------------

@@ -12,6 +12,7 @@
 namespace icl {
 
 class Err;
+class ImportManager;
 class InputFile;
 class LocationRange;
 class SourceFile;
@@ -41,6 +42,10 @@ class Delegate {
   virtual void Print(const std::string& s) = 0;
 
   virtual const FunctionMap& GetFunctions() const = 0;
+
+  // Gets the import manager (typically just a member). Must return non-null if
+  // import statements are supported.
+  virtual ImportManager* GetImportManager() = 0;
 
  protected:
   Delegate() = default;

@@ -36,6 +36,10 @@ class DelegateImpl : public icl::Delegate {
   const icl::FunctionMap& GetFunctions() const override {
     return functions_;
   }
+  icl::ImportManager* GetImportManager() override {
+    assert(false);
+    return nullptr;
+  }
 
  private:
   static bool ReadFile(const icl::SourceFile& name, std::string* contents) {

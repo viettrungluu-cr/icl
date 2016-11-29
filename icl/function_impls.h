@@ -10,20 +10,25 @@
 namespace icl {
 namespace function_impls {
 
-// Adds entries for the standard functions (which must not be present already)
+// Adds entries for the standard functions (which must not already be present)
 // to |*functions|. (The standard functions are listed below.)
 void AddStandardFunctions(FunctionMap* functions);
+
+// Adds an entry for the import function (which must not already be present) to
+// |*functions|.
+void AddImportFunction(FunctionMap* functions);
 
 // Gets a |FunctionMap| with just the standard functions. (The standard
 // functions are listed below.)
 FunctionMap GetStandardFunctions();
 
-// Get entries for the standard functions.
-FunctionMapEntry AssertFn();    // "assert"
-FunctionMapEntry DefinedFn();   // "defined"
-FunctionMapEntry PrintFn();     // "print"
-FunctionMapEntry ForEachFn();   // "foreach" (function_impls_foreach.cc)
-FunctionMapEntry TemplateFn();  // "template" (function_impls_template.cc)
+// Get entries for build-in functions. Standard functions are indicated by *.
+FunctionMapEntry AssertFn();    // * "assert"
+FunctionMapEntry DefinedFn();   // * "defined"
+FunctionMapEntry ImportFn();   // * "defined"
+FunctionMapEntry PrintFn();     // * "print"
+FunctionMapEntry ForEachFn();   // * "foreach" (function_impls_foreach.cc)
+FunctionMapEntry TemplateFn();  // * "template" (function_impls_template.cc)
 
 }  // namespace function_impls
 }  // namespace icl

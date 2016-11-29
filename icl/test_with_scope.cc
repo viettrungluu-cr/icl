@@ -39,6 +39,11 @@ const FunctionMap& TestWithScope::GetFunctions() const {
   return functions_;
 }
 
+ImportManager* TestWithScope::GetImportManager() {
+  assert(false);  // Not implemented! Import statements not supported.
+  return nullptr;
+}
+
 TestParseInput::TestParseInput(std::string&& input)
     : input_file_(SourceFile("//test")) {
   input_file_.SetContents(std::move(input));
@@ -48,8 +53,7 @@ TestParseInput::TestParseInput(std::string&& input)
     parsed_ = Parser::Parse(tokens_, &parse_err_);
 }
 
-TestParseInput::~TestParseInput() {
-}
+TestParseInput::~TestParseInput() = default;
 
 /*
 TestTarget::TestTarget(const TestWithScope& setup,

@@ -45,6 +45,7 @@ class TestWithScope : public Delegate {
                     const InputFile** file) override;
   void Print(const std::string& s) override;
   const FunctionMap& GetFunctions() const override;
+  ImportManager* GetImportManager() override;
 
  private:
   const FunctionMap functions_;
