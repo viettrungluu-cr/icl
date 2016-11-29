@@ -35,9 +35,9 @@ InputFileManager::InputFileManager(ReadFileFunction read_file_function)
 
 InputFileManager::~InputFileManager() = default;
 
-bool InputFileManager::LoadFile(const LocationRange& origin,
-                                const SourceFile& name,
-                                const InputFile** file) {
+bool InputFileManager::GetFile(const LocationRange& origin,
+                               const SourceFile& name,
+                               const InputFile** file) {
   // See if we have a cached load.
   InputFileInfo* input_file_info = nullptr;
   {
@@ -64,7 +64,7 @@ bool InputFileManager::LoadFile(const LocationRange& origin,
       InputFile* f = new InputFile(name);
       *file = f;
       input_file_info->input_file.reset(f);
-      if (!icl::LoadFile(read_file_function_, origin, name, f)) {
+      if (!LoadFile(read_file_function_, origin, name, f)) {
         assert(f->err().has_error());
         return false;
       }

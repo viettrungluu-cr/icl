@@ -21,22 +21,17 @@ TestWithScope::TestWithScope()
   scope_.set_item_collector(&items_);
 }
 
-TestWithScope::~TestWithScope() {
-}
+TestWithScope::~TestWithScope() = default;
 
 void TestWithScope::Print(const std::string& s) {
   print_output_.append(s);
 }
 
-bool TestWithScope::GetInputFile(const SourceFile& name,
-                                 InputFile** file,
-                                 Err* err) {
+bool TestWithScope::GetInputFile(const LocationRange& origin,
+                                 const SourceFile& name,
+                                 const InputFile** file) {
   assert(false);  // Not implemented!
-  return false;
-}
-
-bool TestWithScope::LoadFile(const SourceFile& name, std::string* contents) {
-  assert(false);  // Not implemented!
+  *file = nullptr;
   return false;
 }
 

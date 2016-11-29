@@ -27,9 +27,14 @@ class InputFileManager {
   InputFileManager(const InputFileManager&) = delete;
   InputFileManager& operator=(const InputFileManager&) = delete;
 
-  bool LoadFile(const LocationRange& origin,
-                const SourceFile& name,
-                const InputFile** file);
+  // Gets (reading/loading/parsing) the file specified by |name| to |*file|
+  // (|**file| will live as long as this object). Returns true on success and
+  // false on failure, in which case |*file| will still be set (but with an
+  // error). |origin| is the requesting location (e.g., of an import statement)
+  // and is used for error reporting.
+  bool GetFile(const LocationRange& origin,
+               const SourceFile& name,
+               const InputFile** file);
 
  private:
   struct InputFileInfo;

@@ -21,7 +21,7 @@
 
 namespace icl {
 
-Runner::RunResult::RunResult(const SourceFile& name) : file_(name) {}
+Runner::RunResult::RunResult() = default;
 Runner::RunResult::RunResult(RunResult&&) = default;
 Runner::RunResult::~RunResult() = default;
 Runner::RunResult& Runner::RunResult::operator=(RunResult&&) = default;
@@ -30,23 +30,24 @@ Runner::Runner(Delegate* delegate) : delegate_(delegate) {}
 
 Runner::~Runner() = default;
 
-Runner::RunResult Runner::Run(const SourceFile& source_file) {
-  RunResult result(source_file);
+Runner::RunResult Runner::Run(const SourceFile& name) {
+  RunResult result;
 
   LocationRange no_origin;
-  if (!LoadFile([this](const SourceFile& name, std::string* contents) -> bool {
-                  return delegate_->LoadFile(name, contents);
-                }, no_origin, source_file, &result.file_)) {
-    assert(result.file_.err().has_error());
-    result.error_message_ = result.file_.err().GetErrorMessage();
+  if (!delegate_->GetInputFile(no_origin, name, &result.file_)) {
+    assert(result.file_);
+    assert(result.file_->err().has_error());
+    result.error_message_ = result.file_->err().GetErrorMessage();
     return result;
   }
+  assert(result.file_);
+  assert(!result.file_->err().has_error());
 
   // TODO(C++14): Use std::make_unique.
   auto scope = std::unique_ptr<Scope>(new Scope(delegate_));
   Err err;
 
-  result.file_.root_parse_node()->Execute(scope.get(), &err);
+  result.file_->root_parse_node()->Execute(scope.get(), &err);
   if (err.has_error()) {
     result.error_message_ = err.GetErrorMessage();
     return result;

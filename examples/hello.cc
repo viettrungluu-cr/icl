@@ -9,6 +9,7 @@
 
 #include "icl/delegate.h"
 #include "icl/function_impls.h"
+#include "icl/input_file_manager.h"
 #include "icl/runner.h"
 #include "icl/source_file.h"
 
@@ -16,26 +17,18 @@ namespace {
 
 class DelegateImpl : public icl::Delegate {
  public:
-  DelegateImpl() : functions_(icl::function_impls::GetStandardFunctions()) {}
+  DelegateImpl() : functions_(icl::function_impls::GetStandardFunctions()),
+                   input_file_manager_(&DelegateImpl::ReadFile) {}
   ~DelegateImpl() = default;
 
   DelegateImpl(const DelegateImpl&) = delete;
   DelegateImpl& operator=(const DelegateImpl&) = delete;
 
   // |icl::Delegate| methods:
-  bool GetInputFile(const icl::SourceFile& name,
-                    icl::InputFile** file,
-                    icl::Err* err) override {
-//FIXME
-    assert(false);  // Not implemented!
-    return false;
-  }
-
-  bool LoadFile(const icl::SourceFile& name, std::string* contents) override {
-    assert(name.value() == "//noname");
-    *contents = "a = \"hello world\"\n"
-                "print(a)";
-    return true;
+  bool GetInputFile(const icl::LocationRange& origin,
+                    const icl::SourceFile& name,
+                    const icl::InputFile** file) override {
+    return input_file_manager_.GetFile(origin, name, file);
   }
   void Print(const std::string& s) override {
     std::cout << s;
@@ -45,7 +38,15 @@ class DelegateImpl : public icl::Delegate {
   }
 
  private:
+  static bool ReadFile(const icl::SourceFile& name, std::string* contents) {
+    assert(name.value() == "//noname");
+    *contents = "a = \"hello world\"\n"
+                "print(a)";
+    return true;
+  }
+
   const icl::FunctionMap functions_;
+  icl::InputFileManager input_file_manager_;
 };
 
 }  // namespace

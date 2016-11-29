@@ -20,7 +20,7 @@ class Runner {
  public:
   class RunResult {
    public:
-    explicit RunResult(const SourceFile& name);
+    RunResult();
     RunResult(RunResult&&);
     ~RunResult();
 
@@ -39,7 +39,7 @@ class Runner {
     bool is_success_ = false;
     std::string error_message_;
 
-    InputFile file_;
+    const InputFile* file_ = nullptr;
     std::unique_ptr<Scope> scope_;
   };
 
@@ -49,7 +49,7 @@ class Runner {
   Runner(const Runner&) = delete;
   Runner& operator=(const Runner&) = delete;
 
-  RunResult Run(const SourceFile& source_file);
+  RunResult Run(const SourceFile& name);
 
  private:
   Delegate* const delegate_;

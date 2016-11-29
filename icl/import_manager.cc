@@ -10,7 +10,7 @@
 #include <memory>
 #include <mutex>
 
-#include "icl/delegate.h"  // FIXME remove
+#include "icl/delegate.h"
 #include "icl/err.h"
 #include "icl/input_file.h"
 #include "icl/load_file.h"
@@ -28,17 +28,16 @@ std::unique_ptr<Scope> UncachedImport(Delegate* delegate,
                                       const SourceFile& name,
                                       const ParseNode* node_for_err,
                                       Err* err) {
-//FIXME this is totally wrong; the InputFile has to be persisted!
-  InputFile file(name);
-  if (!LoadFile(
-          [delegate](const SourceFile& name, std::string* contents) -> bool {
-            return delegate->LoadFile(name, contents);
-          }, node_for_err->GetRange(), name, &file)) {
-    assert(file.err().has_error());
-    *err = file.err();
+  const InputFile* file = nullptr;
+  if (!delegate->GetInputFile(node_for_err->GetRange(), name, &file)) {
+    assert(file);
+    assert(file->err().has_error());
+    *err = file->err();
     return nullptr;
   }
-  assert(file.root_parse_node());
+  assert(file);
+  assert(!file->err().has_error());
+  assert(file->root_parse_node());
 
   std::unique_ptr<Scope> scope(new Scope(delegate));
   scope->set_source_dir(name.GetDir());
@@ -50,7 +49,7 @@ std::unique_ptr<Scope> UncachedImport(Delegate* delegate,
 //  ScopePerFileProvider per_file_provider(scope.get(), false);
 
   scope->SetProcessingImport();
-  file.root_parse_node()->Execute(scope.get(), err);
+  file->root_parse_node()->Execute(scope.get(), err);
   if (err->has_error()) {
     // If there was an error, append the caller location so the error message
     // displays a why the file was imported (esp. useful for failed asserts).

@@ -13,6 +13,7 @@ namespace icl {
 
 class Err;
 class InputFile;
+class LocationRange;
 class SourceFile;
 
 // Interface for the user to provide various required functionality/settings.
@@ -25,17 +26,16 @@ class SourceFile;
 // delegate must be thread-safe.
 class Delegate {
  public:
-//FIXME docs
-  virtual bool GetInputFile(const SourceFile& name,
-                            InputFile** file,
-                            Err* err) = 0;
-
-//FIXME probably get rid of this
-  // Loads the contents of the file named |name| (which must be non-"null") to
-  // |*contents| (|contents| must be non-null and point to an empty string).
-  // Returns true on success or false on failure (in which case |*contents| is
-  // undefined).
-  virtual bool LoadFile(const SourceFile& name, std::string* contents) = 0;
+  // Gets (reading/loading/parsing) the input file specified by |name| to
+  // |*file| (|**file| will live as long as this object). Returns true on
+  // success and false on failure, in which case |*file| will still be set (but
+  // with an error). |origin| is the requesting location (e.g., of an import
+  // statement) and is used for error reporting.
+  //
+  // Note: Typically this is implemented by having an |InputFileManager| member.
+  virtual bool GetInputFile(const LocationRange& origin,
+                            const SourceFile& name,
+                            const InputFile** file) = 0;
 
   // TODO(vtl): Should this take a |StringPiece| instead?
   virtual void Print(const std::string& s) = 0;
