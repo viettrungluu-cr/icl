@@ -22,6 +22,10 @@ void AddImportFunction(FunctionMap* functions);
 // functions are listed below.)
 FunctionMap GetStandardFunctions();
 
+// Gets a |FunctionMap| with the standard functions, plus "import". (The
+// standard functions are indicated below.)
+FunctionMap GetStandardFunctionsWithImport();
+
 // Get entries for build-in functions. Standard functions are indicated by *.
 FunctionMapEntry AssertFn();    // * "assert"
 FunctionMapEntry DefinedFn();   // * "defined"

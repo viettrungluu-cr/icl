@@ -1,12 +1,23 @@
 group("examples") {
   deps = [
     ":hello",
+    ":hello_imports",
   ]
 }
 
 executable("hello") {
   sources = [
     "hello.cc",
+  ]
+
+  deps = [
+    "//icl",
+  ]
+}
+
+executable("hello_imports") {
+  sources = [
+    "hello_imports.cc",
   ]
 
   deps = [

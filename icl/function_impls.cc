@@ -37,6 +37,13 @@ FunctionMap GetStandardFunctions() {
   return functions;
 }
 
+FunctionMap GetStandardFunctionsWithImport() {
+  FunctionMap functions;
+  AddStandardFunctions(&functions);
+  AddImportFunction(&functions);
+  return functions;
+}
+
 // assert ----------------------------------------------------------------------
 
 namespace {
@@ -174,7 +181,7 @@ class ImportImpl : public Function {
   Value GenericNoBlockFn(Scope* scope,
                          const FunctionCallNode* function,
                          const std::vector<Value>& args,
-                         Err* err) {
+                         Err* err) const override {
     if (!EnsureSingleStringArg(function, args, err))
       return Value();
 
