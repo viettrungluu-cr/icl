@@ -1,7 +1,18 @@
 group("examples") {
   deps = [
+    ":bags",
     ":hello",
     ":hello_imports",
+  ]
+}
+
+executable("bags") {
+  sources = [
+    "bags.cc",
+  ]
+
+  deps = [
+    "//icl",
   ]
 }
 

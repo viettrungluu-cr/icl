@@ -25,8 +25,9 @@ class Item {
 
  protected:
   // Note: |type| (the pointer value, not just the string value!) should
-  // uniquely identify the implementing subclass, since it may be used for
-  // manually RTTI purposes (by comparing pointer values!).
+  // identify the implementing subclass, since it may be used for manually RTTI
+  // purposes (by comparing pointer values!). It should also be a friendly,
+  // human-readable name.
   Item(const char* type, Delegate* delegate)
       : type_(type), delegate_(delegate) {}
 

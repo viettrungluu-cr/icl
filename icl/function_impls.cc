@@ -27,10 +27,6 @@ void AddStandardFunctions(FunctionMap* functions) {
   functions->insert(function_impls::TemplateFn());
 }
 
-void AddImportFunction(FunctionMap* functions) {
-  functions->insert(function_impls::ImportFn());
-}
-
 FunctionMap GetStandardFunctions() {
   FunctionMap functions;
   AddStandardFunctions(&functions);
@@ -40,7 +36,7 @@ FunctionMap GetStandardFunctions() {
 FunctionMap GetStandardFunctionsWithImport() {
   FunctionMap functions;
   AddStandardFunctions(&functions);
-  AddImportFunction(&functions);
+  functions.insert(function_impls::ImportFn());
   return functions;
 }
 

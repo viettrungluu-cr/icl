@@ -7,12 +7,14 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include "icl/input_file.h"
 
 namespace icl {
 
 class Delegate;
+class Item;
 class Scope;
 class SourceFile;
 
@@ -20,6 +22,9 @@ class Runner {
  public:
   class RunResult {
    public:
+    // Must match |Scope::ItemVector|.
+    using ItemVector = std::vector<std::unique_ptr<Item>>;
+
     RunResult();
     RunResult(RunResult&&);
     ~RunResult();
@@ -32,13 +37,16 @@ class Runner {
 
     bool is_success() const { return is_success_; }
     const std::string& error_message() const { return error_message_; }
+    const ItemVector& items() const { return items_; }
 
    private:
     friend class Runner;
 
     bool is_success_ = false;
     std::string error_message_;
+    ItemVector items_;
 
+//FIXME do we really need the scope? probably not? how about the file?
     const InputFile* file_ = nullptr;
     std::unique_ptr<Scope> scope_;
   };

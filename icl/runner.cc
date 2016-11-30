@@ -12,6 +12,7 @@
 #include "icl/delegate.h"
 #include "icl/err.h"
 #include "icl/input_file.h"
+#include "icl/item.h"
 #include "icl/load_file.h"
 #include "icl/parse_tree.h"
 #include "icl/parser.h"
@@ -45,8 +46,9 @@ Runner::RunResult Runner::Run(const SourceFile& name) {
 
   // TODO(C++14): Use std::make_unique.
   auto scope = std::unique_ptr<Scope>(new Scope(delegate_));
-  Err err;
+  scope->set_item_collector(&result.items_);
 
+  Err err;
   result.file_->root_parse_node()->Execute(scope.get(), &err);
   if (err.has_error()) {
     result.error_message_ = err.GetErrorMessage();
