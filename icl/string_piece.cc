@@ -66,6 +66,91 @@ StringPiece::size_type StringPiece::find(value_type c, size_type pos) const {
       static_cast<size_t>(result - begin()) : StringPiece::npos;
 }
 
+StringPiece::size_type StringPiece::rfind(const StringPiece& s,
+                                          size_type pos) const {
+  if (size() < s.size())
+    return StringPiece::npos;
+
+  if (s.empty())
+    return std::min(size(), pos);
+
+  StringPiece::const_iterator last =
+      begin() + std::min(size() - s.size(), pos) + s.size();
+  StringPiece::const_iterator result =
+      std::find_end(begin(), last, s.begin(), s.end());
+  return result != last ?
+      static_cast<size_t>(result - begin()) : StringPiece::npos;
+}
+
+StringPiece::size_type StringPiece::rfind(value_type c, size_type pos) const {
+  if (size() == 0)
+    return StringPiece::npos;
+
+  for (size_t i = std::min(pos, size() - 1); ;
+       --i) {
+    if (data()[i] == c)
+      return i;
+    if (i == 0)
+      break;
+  }
+  return StringPiece::npos;
+}
+
+// 8-bit version using lookup table.
+StringPiece::size_type StringPiece::find_first_of(const StringPiece& s,
+                                                  size_type pos) const {
+  if (size() == 0 || s.size() == 0)
+    return StringPiece::npos;
+
+  // Avoid the cost of BuildLookupTable() for a single-character search.
+  if (s.size() == 1)
+    return find(s.data()[0], pos);
+
+  bool lookup[UCHAR_MAX + 1] = { false };
+  BuildLookupTable(s, lookup);
+  for (size_t i = pos; i < size(); ++i) {
+    if (lookup[static_cast<unsigned char>(data()[i])]) {
+      return i;
+    }
+  }
+  return StringPiece::npos;
+}
+
+// 8-bit version using lookup table.
+StringPiece::size_type StringPiece::find_first_not_of(const StringPiece& s,
+                                                      size_type pos) const {
+  if (size() == 0)
+    return StringPiece::npos;
+  if (s.size() == 0)
+    return 0;
+
+  // Avoid the cost of BuildLookupTable() for a single-character search.
+  if (s.size() == 1)
+    return find_first_not_of(s.data()[0], pos);
+
+  bool lookup[UCHAR_MAX + 1] = { false };
+  BuildLookupTable(s, lookup);
+  for (size_t i = pos; i < size(); ++i) {
+    if (!lookup[static_cast<unsigned char>(data()[i])]) {
+      return i;
+    }
+  }
+  return StringPiece::npos;
+}
+
+StringPiece::size_type StringPiece::find_first_not_of(value_type c,
+                                                      size_type pos) const {
+  if (size() == 0)
+    return StringPiece::npos;
+
+  for (; pos < size(); ++pos) {
+    if (data()[pos] != c) {
+      return pos;
+    }
+  }
+  return StringPiece::npos;
+}
+
 //FIXME move more "internal" stuff to just plain impls
 
 bool operator==(const StringPiece& x, const StringPiece& y) {
@@ -82,91 +167,6 @@ std::ostream& operator<<(std::ostream& o, const StringPiece& piece) {
 
 namespace internal {
 
-size_t rfind(const StringPiece& self, const StringPiece& s, size_t pos) {
-  if (self.size() < s.size())
-    return StringPiece::npos;
-
-  if (s.empty())
-    return std::min(self.size(), pos);
-
-  StringPiece::const_iterator last =
-      self.begin() + std::min(self.size() - s.size(), pos) + s.size();
-  StringPiece::const_iterator result =
-      std::find_end(self.begin(), last, s.begin(), s.end());
-  return result != last ?
-      static_cast<size_t>(result - self.begin()) : StringPiece::npos;
-}
-
-size_t rfind(const StringPiece& self, char c, size_t pos) {
-  if (self.size() == 0)
-    return StringPiece::npos;
-
-  for (size_t i = std::min(pos, self.size() - 1); ;
-       --i) {
-    if (self.data()[i] == c)
-      return i;
-    if (i == 0)
-      break;
-  }
-  return StringPiece::npos;
-}
-
-// 8-bit version using lookup table.
-size_t find_first_of(const StringPiece& self,
-                     const StringPiece& s,
-                     size_t pos) {
-  if (self.size() == 0 || s.size() == 0)
-    return StringPiece::npos;
-
-  // Avoid the cost of BuildLookupTable() for a single-character search.
-  if (s.size() == 1)
-    return self.find(s.data()[0], pos);
-
-  bool lookup[UCHAR_MAX + 1] = { false };
-  BuildLookupTable(s, lookup);
-  for (size_t i = pos; i < self.size(); ++i) {
-    if (lookup[static_cast<unsigned char>(self.data()[i])]) {
-      return i;
-    }
-  }
-  return StringPiece::npos;
-}
-
-// 8-bit version using lookup table.
-size_t find_first_not_of(const StringPiece& self,
-                         const StringPiece& s,
-                         size_t pos) {
-  if (self.size() == 0)
-    return StringPiece::npos;
-if (s.size() == 0)
-    return 0;
-
-  // Avoid the cost of BuildLookupTable() for a single-character search.
-  if (s.size() == 1)
-    return find_first_not_of(self, s.data()[0], pos);
-
-  bool lookup[UCHAR_MAX + 1] = { false };
-  BuildLookupTable(s, lookup);
-  for (size_t i = pos; i < self.size(); ++i) {
-    if (!lookup[static_cast<unsigned char>(self.data()[i])]) {
-      return i;
-    }
-  }
-  return StringPiece::npos;
-}
-
-size_t find_first_not_of(const StringPiece& self, char c, size_t pos) {
-  if (self.size() == 0)
-    return StringPiece::npos;
-
-  for (; pos < self.size(); ++pos) {
-    if (self.data()[pos] != c) {
-      return pos;
-    }
-  }
-  return StringPiece::npos;
-}
-
 // 8-bit version using lookup table.
 size_t find_last_of(const StringPiece& self, const StringPiece& s, size_t pos) {
   if (self.size() == 0 || s.size() == 0)
@@ -174,7 +174,7 @@ size_t find_last_of(const StringPiece& self, const StringPiece& s, size_t pos) {
 
   // Avoid the cost of BuildLookupTable() for a single-character search.
   if (s.size() == 1)
-    return rfind(self, s.data()[0], pos);
+    return self.rfind(s.data()[0], pos);
 
   bool lookup[UCHAR_MAX + 1] = { false };
   BuildLookupTable(s, lookup);

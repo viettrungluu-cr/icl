@@ -36,16 +36,6 @@ class StringPiece;
 //FIXME simplify, to remove 16-bit versions
 namespace internal {
 
-size_t rfind(const StringPiece& self, const StringPiece& s, size_t pos);
-size_t rfind(const StringPiece& self, char c, size_t pos);
-
-size_t find_first_of(const StringPiece& self, const StringPiece& s, size_t pos);
-
-size_t find_first_not_of(const StringPiece& self,
-                         const StringPiece& s,
-                         size_t pos);
-size_t find_first_not_of(const StringPiece& self, char c, size_t pos);
-
 size_t find_last_of(const StringPiece& self, const StringPiece& s, size_t pos);
 size_t find_last_of(const StringPiece& self, char c, size_t pos);
 
@@ -212,28 +202,18 @@ class StringPiece {
 
   // rfind: Reverse find.
   size_type rfind(const StringPiece& s,
-                  size_type pos = StringPiece::npos) const {
-    return internal::rfind(*this, s, pos);
-  }
-  size_type rfind(value_type c, size_type pos = StringPiece::npos) const {
-    return internal::rfind(*this, c, pos);
-  }
+                  size_type pos = StringPiece::npos) const;
+  size_type rfind(value_type c, size_type pos = StringPiece::npos) const;
 
   // find_first_of: Find the first occurence of one of a set of characters.
-  size_type find_first_of(const StringPiece& s, size_type pos = 0) const {
-    return internal::find_first_of(*this, s, pos);
-  }
+  size_type find_first_of(const StringPiece& s, size_type pos = 0) const;
   size_type find_first_of(value_type c, size_type pos = 0) const {
     return find(c, pos);
   }
 
   // find_first_not_of: Find the first occurence not of a set of characters.
-  size_type find_first_not_of(const StringPiece& s, size_type pos = 0) const {
-    return internal::find_first_not_of(*this, s, pos);
-  }
-  size_type find_first_not_of(value_type c, size_type pos = 0) const {
-    return internal::find_first_not_of(*this, c, pos);
-  }
+  size_type find_first_not_of(const StringPiece& s, size_type pos = 0) const;
+  size_type find_first_not_of(value_type c, size_type pos = 0) const;
 
   // find_last_of: Find the last occurence of one of a set of characters.
   size_type find_last_of(const StringPiece& s,
