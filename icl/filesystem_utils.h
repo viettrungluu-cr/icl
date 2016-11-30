@@ -22,15 +22,6 @@ class ParseNode;
 class SourceDir;
 class Value;
 
-//FIXME
-/*
-std::string FilePathToUTF8(const base::FilePath::StringType& str);
-inline std::string FilePathToUTF8(const base::FilePath& path) {
-  return FilePathToUTF8(path.value());
-}
-base::FilePath UTF8ToFilePath(const StringPiece& sp);
-*/
-
 // Extensions -----------------------------------------------------------------
 
 // Returns the index of the extension (character after the last dot not after a
@@ -155,29 +146,6 @@ SourceDir SourceDirForPath(const base::FilePath& source_root,
 // Like SourceDirForPath but returns the SourceDir representing the current
 // directory.
 SourceDir SourceDirForCurrentDirectory(const base::FilePath& source_root);
-
-// Given the label of a toolchain and whether that toolchain is the default
-// toolchain, returns the name of the subdirectory for that toolchain's
-// output. This will be the empty string to indicate that the toolchain outputs
-// go in the root build directory. Otherwise, the result will end in a slash.
-std::string GetOutputSubdirName(const Label& toolchain_label, bool is_default);
-
-// Returns true if the contents of the file and stream given are equal, false
-// otherwise.
-bool ContentsEqual(const base::FilePath& file_path, const std::string& data);
-
-// Writes given stream contents to the given file if it differs from existing
-// file contents. Returns true if new contents was successfully written or
-// existing file contents doesn't need updating, false on write error. |err| is
-// set on write error if not nullptr.
-bool WriteFileIfChanged(const base::FilePath& file_path,
-                        const std::string& data,
-                        Err* err);
-
-// Writes given stream contents to the given file. Returns true if data was
-// successfully written, false otherwise. |err| is set on error if not nullptr.
-bool WriteFile(const base::FilePath& file_path, const std::string& data,
-               Err* err);
 */
 
 

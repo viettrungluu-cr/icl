@@ -131,17 +131,6 @@ void AppendFixedAbsolutePathSuffix(const BuildSettings* build_settings,
 
 //FIXME
 /*
-std::string FilePathToUTF8(const base::FilePath::StringType& str) {
-  return str;
-}
-
-base::FilePath UTF8ToFilePath(const StringPiece& sp) {
-  return base::FilePath(sp.as_string());
-}
-*/
-
-//FIXME
-/*
 size_t FindExtensionOffset(const std::string& path) {
   for (int i = static_cast<int>(path.size()); i >= 0; i--) {
     if (path[i] == '/')
@@ -541,64 +530,6 @@ SourceDir SourceDirForCurrentDirectory(const base::FilePath& source_root) {
   base::FilePath cd;
   base::GetCurrentDirectory(&cd);
   return SourceDirForPath(source_root, cd);
-}
-
-std::string GetOutputSubdirName(const Label& toolchain_label, bool is_default) {
-  // The default toolchain has no subdir.
-  if (is_default)
-    return std::string();
-
-  // For now just assume the toolchain name is always a valid dir name. We may
-  // want to clean up the in the future.
-  return toolchain_label.name() + "/";
-}
-
-bool ContentsEqual(const base::FilePath& file_path, const std::string& data) {
-  // Compare file and stream sizes first. Quick and will save us some time if
-  // they are different sizes.
-  int64_t file_size;
-  if (!base::GetFileSize(file_path, &file_size) ||
-      static_cast<size_t>(file_size) != data.size()) {
-    return false;
-  }
-
-  std::string file_data;
-  file_data.resize(file_size);
-  if (!base::ReadFileToString(file_path, &file_data))
-    return false;
-
-  return file_data == data;
-}
-
-bool WriteFileIfChanged(const base::FilePath& file_path,
-                        const std::string& data,
-                        Err* err) {
-  if (ContentsEqual(file_path, data))
-    return true;
-
-  return WriteFile(file_path, data, err);
-}
-
-bool WriteFile(const base::FilePath& file_path, const std::string& data,
-               Err* err) {
-  // Create the directory if necessary.
-  if (!base::CreateDirectory(file_path.DirName())) {
-    if (err) {
-      *err =
-          Err(Location(), "Unable to create directory.",
-              "I was using \"" + FilePathToUTF8(file_path.DirName()) + "\".");
-    }
-    return false;
-  }
-
-  int size = static_cast<int>(data.size());
-  bool write_success = base::WriteFile(file_path, data.c_str(), size) == size;
-  if (!write_success && err) {
-    *err = Err(Location(), "Unable to write file.",
-               "I was writing \"" + FilePathToUTF8(file_path) + "\".");
-  }
-
-  return write_success;
 }
 */
 
