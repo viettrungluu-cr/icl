@@ -55,6 +55,12 @@ class DelegateImpl : public icl::Delegate {
                 "my_bag(\"bar\") {\n"
                 "  hello = 123\n"
                 "  hello = \"world\"\n"
+                "}\n"
+                "\n"
+                "foreach(n, [\"a\", \"b\", \"c\"]) {\n"
+                "  my_bag(\"bag_\" + n) {\n"
+                "    z = n\n"
+                "  }\n"
                 "}\n";
     return true;
   }
