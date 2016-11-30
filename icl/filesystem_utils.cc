@@ -207,28 +207,6 @@ StringPiece FindLastDirComponent(const SourceDir& dir) {
   }
   return StringPiece(&dir_string[0], end);
 }
-
-bool IsStringInOutputDir(const SourceDir& output_dir, const std::string& str) {
-  // This check will be wrong for all proper prefixes "e.g. "/output" will
-  // match "/out" but we don't really care since this is just a sanity check.
-  const std::string& dir_str = output_dir.value();
-  return str.compare(0, dir_str.length(), dir_str) == 0;
-}
-
-bool EnsureStringIsInOutputDir(const SourceDir& output_dir,
-                               const std::string& str,
-                               const ParseNode* origin,
-                               Err* err) {
-  if (IsStringInOutputDir(output_dir, str))
-    return true;  // Output directory is hardcoded.
-
-  *err = Err(origin, "File is not inside output directory.",
-      "The given file should be in the output directory. Normally you would "
-      "specify\n\"$target_out_dir/foo\" or "
-      "\"$target_gen_dir/foo\". I interpreted this as\n\""
-      + str + "\".");
-  return false;
-}
 */
 
 bool IsPathAbsolute(const StringPiece& path) {
@@ -246,12 +224,9 @@ bool IsPathAbsolute(const StringPiece& path) {
   return true;
 }
 
-//FIXME
-/*
 bool IsPathSourceAbsolute(const StringPiece& path) {
   return (path.size() >= 2 && path[0] == '/' && path[1] == '/');
 }
-*/
 
 bool MakeAbsolutePathRelativeIfPossible(const StringPiece& source_root,
                                         const StringPiece& path,
