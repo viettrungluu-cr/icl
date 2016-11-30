@@ -22,37 +22,13 @@
 #ifndef ICL_STRING_PIECE_H_
 #define ICL_STRING_PIECE_H_
 
+#include <assert.h>
 #include <stddef.h>
 
 #include <iosfwd>
 #include <string>
 
 namespace icl {
-
-// internal --------------------------------------------------------------------
-
-class StringPiece;
-
-//FIXME simplify, to remove 16-bit versions
-namespace internal {
-
-size_t find_last_of(const StringPiece& self, const StringPiece& s, size_t pos);
-size_t find_last_of(const StringPiece& self, char c, size_t pos);
-
-size_t find_last_not_of(const StringPiece& self,
-                        const StringPiece& s,
-                        size_t pos);
-size_t find_last_not_of(const StringPiece& self, char c, size_t pos);
-
-StringPiece substr(const StringPiece& self, size_t pos, size_t n);
-
-#ifndef NDEBUG
-// Asserts that begin <= end to catch some errors with iterator usage.
-void AssertIteratorsInOrder(std::string::const_iterator begin,
-                            std::string::const_iterator end);
-#endif
-
-}  // namespace internal
 
 // StringPiece -----------------------------------------------------------------
 
@@ -86,11 +62,7 @@ class StringPiece {
       : ptr_(offset), length_(len) {}
   StringPiece(const typename std::string::const_iterator& begin,
               const typename std::string::const_iterator& end) {
-#ifndef NDEBUG
-    // This assertion is done out-of-line to avoid bringing in logging.h and
-    // instantiating logging macros for every instantiation.
-    internal::AssertIteratorsInOrder(begin, end);
-#endif
+    assert(begin <= end);
     length_ = static_cast<size_t>(std::distance(begin, end));
 
     // The length test before assignment is to avoid dereferencing an iterator
@@ -217,9 +189,7 @@ class StringPiece {
 
   // find_last_of: Find the last occurence of one of a set of characters.
   size_type find_last_of(const StringPiece& s,
-                         size_type pos = StringPiece::npos) const {
-    return internal::find_last_of(*this, s, pos);
-  }
+                         size_type pos = StringPiece::npos) const;
   size_type find_last_of(value_type c,
                          size_type pos = StringPiece::npos) const {
     return rfind(c, pos);
@@ -227,17 +197,17 @@ class StringPiece {
 
   // find_last_not_of: Find the last occurence not of a set of characters.
   size_type find_last_not_of(const StringPiece& s,
-                             size_type pos = StringPiece::npos) const {
-    return internal::find_last_not_of(*this, s, pos);
-  }
+                             size_type pos = StringPiece::npos) const;
   size_type find_last_not_of(value_type c,
-                             size_type pos = StringPiece::npos) const {
-    return internal::find_last_not_of(*this, c, pos);
-  }
+                             size_type pos = StringPiece::npos) const;
 
   // substr.
   StringPiece substr(size_type pos, size_type n = StringPiece::npos) const {
-    return internal::substr(*this, pos, n);
+    if (pos > size())
+      pos = size();
+    if (n > size() - pos)
+      n = size() - pos;
+    return StringPiece(data() + pos, n);
   }
 
  protected:

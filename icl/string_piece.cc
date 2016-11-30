@@ -151,7 +151,65 @@ StringPiece::size_type StringPiece::find_first_not_of(value_type c,
   return StringPiece::npos;
 }
 
-//FIXME move more "internal" stuff to just plain impls
+// 8-bit version using lookup table.
+StringPiece::size_type StringPiece::find_last_of(const StringPiece& s,
+                                                 size_type pos) const {
+  if (size() == 0 || s.size() == 0)
+    return StringPiece::npos;
+
+  // Avoid the cost of BuildLookupTable() for a single-character search.
+  if (s.size() == 1)
+    return rfind(s.data()[0], pos);
+
+  bool lookup[UCHAR_MAX + 1] = { false };
+  BuildLookupTable(s, lookup);
+  for (size_t i = std::min(pos, size() - 1); ; --i) {
+    if (lookup[static_cast<unsigned char>(data()[i])])
+      return i;
+    if (i == 0)
+      break;
+  }
+  return StringPiece::npos;
+}
+
+// 8-bit version using lookup table.
+StringPiece::size_type StringPiece::find_last_not_of(const StringPiece& s,
+                                                     size_type pos) const {
+  if (size() == 0)
+    return StringPiece::npos;
+
+  size_t i = std::min(pos, size() - 1);
+  if (s.size() == 0)
+    return i;
+
+  // Avoid the cost of BuildLookupTable() for a single-character search.
+  if (s.size() == 1)
+    return find_last_not_of(s.data()[0], pos);
+
+  bool lookup[UCHAR_MAX + 1] = { false };
+  BuildLookupTable(s, lookup);
+  for (; ; --i) {
+    if (!lookup[static_cast<unsigned char>(data()[i])])
+      return i;
+    if (i == 0)
+      break;
+  }
+  return StringPiece::npos;
+}
+
+StringPiece::size_type StringPiece::find_last_not_of(value_type c,
+                                                     size_type pos) const {
+  if (size() == 0)
+    return StringPiece::npos;
+
+  for (size_t i = std::min(pos, size() - 1); ; --i) {
+    if (data()[i] != c)
+      return i;
+    if (i == 0)
+      break;
+  }
+  return StringPiece::npos;
+}
 
 bool operator==(const StringPiece& x, const StringPiece& y) {
   if (x.size() != y.size())
@@ -164,81 +222,5 @@ std::ostream& operator<<(std::ostream& o, const StringPiece& piece) {
   o.write(piece.data(), static_cast<std::streamsize>(piece.size()));
   return o;
 }
-
-namespace internal {
-
-// 8-bit version using lookup table.
-size_t find_last_of(const StringPiece& self, const StringPiece& s, size_t pos) {
-  if (self.size() == 0 || s.size() == 0)
-    return StringPiece::npos;
-
-  // Avoid the cost of BuildLookupTable() for a single-character search.
-  if (s.size() == 1)
-    return self.rfind(s.data()[0], pos);
-
-  bool lookup[UCHAR_MAX + 1] = { false };
-  BuildLookupTable(s, lookup);
-  for (size_t i = std::min(pos, self.size() - 1); ; --i) {
-    if (lookup[static_cast<unsigned char>(self.data()[i])])
-      return i;
-    if (i == 0)
-      break;
-  }
-  return StringPiece::npos;
-}
-
-// 8-bit version using lookup table.
-size_t find_last_not_of(const StringPiece& self,
-                        const StringPiece& s,
-                        size_t pos) {
-  if (self.size() == 0)
-    return StringPiece::npos;
-
-  size_t i = std::min(pos, self.size() - 1);
-  if (s.size() == 0)
-    return i;
-
-  // Avoid the cost of BuildLookupTable() for a single-character search.
-  if (s.size() == 1)
-    return find_last_not_of(self, s.data()[0], pos);
-
-  bool lookup[UCHAR_MAX + 1] = { false };
-  BuildLookupTable(s, lookup);
-  for (; ; --i) {
-    if (!lookup[static_cast<unsigned char>(self.data()[i])])
-      return i;
-    if (i == 0)
-      break;
-  }
-  return StringPiece::npos;
-}
-
-size_t find_last_not_of(const StringPiece& self, char c, size_t pos) {
-  if (self.size() == 0)
-    return StringPiece::npos;
-
-  for (size_t i = std::min(pos, self.size() - 1); ; --i) {
-    if (self.data()[i] != c)
-      return i;
-    if (i == 0)
-      break;
-  }
-  return StringPiece::npos;
-}
-
-StringPiece substr(const StringPiece& self, size_t pos, size_t n) {
-  if (pos > self.size()) pos = self.size();
-  if (n > self.size() - pos) n = self.size() - pos;
-  return StringPiece(self.data() + pos, n);
-}
-
-#ifndef NDEBUG
-void AssertIteratorsInOrder(std::string::const_iterator begin,
-                            std::string::const_iterator end) {
-  assert(begin <= end);
-}
-#endif
-
-}  // namespace internal
 
 }  // namespace icl
