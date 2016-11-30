@@ -28,13 +28,16 @@ class Value;
 // Two slashes at the beginning indicate a path relative to the source root.
 class SourceDir {
  public:
-  SourceDir();
+  SourceDir() = default;
+  SourceDir(const SourceDir&) = default;
+  SourceDir(SourceDir&&) = default;
+
   explicit SourceDir(std::string&& s);
 
-  ~SourceDir();
+  ~SourceDir() = default;
 
-//FIXME move?
-  // Copy and assign allowed.
+  SourceDir& operator=(const SourceDir&) = default;
+  SourceDir& operator=(SourceDir&&) = default;
 
   // Resolves a file or dir name relative to this source directory. Will return
   // an empty SourceDir/File on error and set the give *err pointer (required).

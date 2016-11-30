@@ -31,15 +31,11 @@ void EnsureEndsWithSlash(std::string* s) {
 
 }  // namespace
 
-SourceDir::SourceDir() = default;
-
 SourceDir::SourceDir(std::string&& s)
     : value_(std::move(s)) {
   EnsureEndsWithSlash(&value_);
   AssertValueSourceDirString(value_);
 }
-
-SourceDir::~SourceDir() = default;
 
 SourceFile SourceDir::ResolveRelativeFile(
     const Value& p,

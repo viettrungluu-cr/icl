@@ -11,8 +11,6 @@
 #include <functional>
 #include <string>
 
-//FIXME
-//#include "base/files/file_path.h"
 #include "icl/source_dir.h"
 #include "icl/string_piece.h"
 
@@ -24,15 +22,17 @@ class SourceDir;
 // ends in one.
 class SourceFile {
  public:
-  SourceFile();
+  SourceFile() = default;
+  SourceFile(const SourceFile&) = default;
+  SourceFile(SourceFile&&) = default;
 
   // Takes a known absolute source file. Always begins in a slash.
   explicit SourceFile(std::string&& value);
 
-  ~SourceFile();
+  ~SourceFile() = default;
 
-  // Copy and assign supported.
-//FIXME support move?
+  SourceFile& operator=(const SourceFile&) = default;
+  SourceFile& operator=(SourceFile&&) = default;
 
   bool is_null() const { return value_.empty(); }
   const std::string& value() const { return value_; }
@@ -43,8 +43,7 @@ class SourceFile {
 
   // Resolves this source file relative to some given source root. Returns
   // an empty file path on error.
-//FIXME
-//  base::FilePath Resolve(const base::FilePath& source_root) const;
+  std::string Resolve(const StringPiece& source_root) const;
 
   // Returns true if this file starts with a "//" which indicates a path
   // from the source root.

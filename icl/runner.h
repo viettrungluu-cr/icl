@@ -24,6 +24,7 @@ class Runner {
 
     RunResult();
     RunResult(RunResult&&);
+
     ~RunResult();
 
     RunResult& operator=(RunResult&&);

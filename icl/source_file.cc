@@ -13,16 +13,12 @@
 
 namespace icl {
 
-SourceFile::SourceFile() = default;
-
 SourceFile::SourceFile(std::string&& value) : value_(std::move(value)) {
   assert(!value_.empty());
   assert(value_.front() == '/');
   assert(value_.back() != '/');
   NormalizePath(&value_);
 }
-
-SourceFile::~SourceFile() = default;
 
 std::string SourceFile::GetName() const {
   if (is_null())
@@ -43,29 +39,18 @@ SourceDir SourceFile::GetDir() const {
   return SourceDir(value_.substr(0u, last_slash + 1));
 }
 
-//FIXME
-/*
-base::FilePath SourceFile::Resolve(const base::FilePath& source_root) const {
+std::string SourceFile::Resolve(const StringPiece& source_root) const {
+  assert(!source_root.empty());
+
   if (is_null())
-    return base::FilePath();
+    return std::string();
 
-  std::string converted;
-  if (is_system_absolute()) {
-    if (value_.size() > 2 && value_[2] == ':') {
-      // Windows path, strip the leading slash.
-      converted.assign(&value_[1], value_.size() - 1);
-    } else {
-      converted.assign(value_);
-    }
-    return base::FilePath(UTF8ToFilePath(converted));
-  }
+  if (is_system_absolute())
+    return value_;
 
-  converted.assign(&value_[2], value_.size() - 2);
-  if (source_root.empty())
-    return UTF8ToFilePath(converted).NormalizePathSeparatorsTo('/');
-  return source_root.Append(UTF8ToFilePath(converted))
-      .NormalizePathSeparatorsTo('/');
+  return (source_root.back() == '/')
+      ? source_root.as_string() + value_.substr(2)
+      : source_root.as_string() + '/' + value_.substr(2);
 }
-*/
 
 }  // namespace icl
