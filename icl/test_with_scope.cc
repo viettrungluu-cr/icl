@@ -55,17 +55,4 @@ TestParseInput::TestParseInput(std::string&& input)
 
 TestParseInput::~TestParseInput() = default;
 
-/*
-TestTarget::TestTarget(const TestWithScope& setup,
-                       const std::string& label_string,
-                       Target::OutputType type)
-    : Target(setup.settings(), setup.ParseLabel(label_string)) {
-  visibility().SetPublic();
-  set_output_type(type);
-}
-
-TestTarget::~TestTarget() {
-}
-*/
-
 }  // namespace icl

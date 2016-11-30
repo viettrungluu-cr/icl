@@ -14,7 +14,6 @@
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
 //#include "tools/gn/scope_per_file_provider.h"
-//#include "tools/gn/target.h"
 #include "icl/token.h"
 #include "icl/value.h"
 
@@ -88,20 +87,6 @@ class TestParseInput {
 
   Err parse_err_;
 };
-
-//FIXME
-#if 0
-// Shortcut for creating targets for tests that take the test setup, a pretty-
-// style label, and a target type and sets everything up. The target will
-// default to public visibility.
-class TestTarget : public Target {
- public:
-  TestTarget(const TestWithScope& setup,
-             const std::string& label_string,
-             Target::OutputType type);
-  ~TestTarget() override;
-};
-#endif
 
 }  // namespace icl
 
