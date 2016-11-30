@@ -35,7 +35,38 @@ inline void BuildLookupTable(const StringPiece& characters_wanted,
 
 }  // namespace
 
-template class BasicStringPiece<std::string>;
+// static
+const StringPiece::size_type StringPiece::npos;
+
+StringPiece::size_type StringPiece::copy(value_type* buf,
+                                         size_type n,
+                                         size_type pos) const {
+  size_t ret = std::min(size() - pos, n);
+  memcpy(buf, data() + pos, ret * sizeof(char));
+  return ret;
+}
+
+StringPiece::size_type StringPiece::find(const StringPiece& s,
+                                         size_type pos) const {
+  if (pos > size())
+    return StringPiece::npos;
+
+  StringPiece::const_iterator result =
+      std::search(begin() + pos, end(), s.begin(), s.end());
+  const size_t xpos = static_cast<size_t>(result - begin());
+  return xpos + s.size() <= size() ? xpos : StringPiece::npos;
+}
+
+StringPiece::size_type StringPiece::find(value_type c, size_type pos) const {
+  if (pos >= size())
+    return StringPiece::npos;
+
+  StringPiece::const_iterator result = std::find(begin() + pos, end(), c);
+  return result != end() ?
+      static_cast<size_t>(result - begin()) : StringPiece::npos;
+}
+
+//FIXME move more "internal" stuff to just plain impls
 
 bool operator==(const StringPiece& x, const StringPiece& y) {
   if (x.size() != y.size())
@@ -51,45 +82,6 @@ std::ostream& operator<<(std::ostream& o, const StringPiece& piece) {
 
 namespace internal {
 
-void CopyToString(const StringPiece& self, std::string* target) {
-  if (self.empty())
-    target->clear();
-  else
-    target->assign(self.data(), self.size());
-}
-
-void AppendToString(const StringPiece& self, std::string* target) {
-  if (!self.empty())
-    target->append(self.data(), self.size());
-}
-
-size_t copy(const StringPiece& self, char* buf, size_t n, size_t pos) {
-  size_t ret = std::min(self.size() - pos, n);
-  memcpy(buf, self.data() + pos, ret * sizeof(char));
-  return ret;
-}
-
-size_t find(const StringPiece& self, const StringPiece& s, size_t pos) {
-  if (pos > self.size())
-    return StringPiece::npos;
-
-  typename StringPiece::const_iterator result =
-      std::search(self.begin() + pos, self.end(), s.begin(), s.end());
-  const size_t xpos =
-    static_cast<size_t>(result - self.begin());
-  return xpos + s.size() <= self.size() ? xpos : StringPiece::npos;
-}
-
-size_t find(const StringPiece& self, char c, size_t pos) {
-  if (pos >= self.size())
-    return StringPiece::npos;
-
-  typename StringPiece::const_iterator result =
-      std::find(self.begin() + pos, self.end(), c);
-  return result != self.end() ?
-      static_cast<size_t>(result - self.begin()) : StringPiece::npos;
-}
-
 size_t rfind(const StringPiece& self, const StringPiece& s, size_t pos) {
   if (self.size() < s.size())
     return StringPiece::npos;
@@ -97,9 +89,9 @@ size_t rfind(const StringPiece& self, const StringPiece& s, size_t pos) {
   if (s.empty())
     return std::min(self.size(), pos);
 
-  typename StringPiece::const_iterator last =
+  StringPiece::const_iterator last =
       self.begin() + std::min(self.size() - s.size(), pos) + s.size();
-  typename StringPiece::const_iterator result =
+  StringPiece::const_iterator result =
       std::find_end(self.begin(), last, s.begin(), s.end());
   return result != last ?
       static_cast<size_t>(result - self.begin()) : StringPiece::npos;
@@ -128,7 +120,7 @@ size_t find_first_of(const StringPiece& self,
 
   // Avoid the cost of BuildLookupTable() for a single-character search.
   if (s.size() == 1)
-    return find(self, s.data()[0], pos);
+    return self.find(s.data()[0], pos);
 
   bool lookup[UCHAR_MAX + 1] = { false };
   BuildLookupTable(s, lookup);

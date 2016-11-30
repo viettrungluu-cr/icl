@@ -29,29 +29,12 @@
 
 namespace icl {
 
-template <typename STRING_TYPE> class BasicStringPiece;
-typedef BasicStringPiece<std::string> StringPiece;
-
 // internal --------------------------------------------------------------------
 
+class StringPiece;
+
 //FIXME simplify, to remove 16-bit versions
-// Many of the StringPiece functions use different implementations for the
-// 8-bit and 16-bit versions, and we don't want lots of template expansions in
-// this (very common) header that will slow down compilation.
-//
-// So here we define overloaded functions called by the StringPiece template.
-// For those that share an implementation, the two versions will expand to a
-// template internal to the .cc file.
 namespace internal {
-
-void CopyToString(const StringPiece& self, std::string* target);
-
-void AppendToString(const StringPiece& self, std::string* target);
-
-size_t copy(const StringPiece& self, char* buf, size_t n, size_t pos);
-
-size_t find(const StringPiece& self, const StringPiece& s, size_t pos);
-size_t find(const StringPiece& self, char c, size_t pos);
 
 size_t rfind(const StringPiece& self, const StringPiece& s, size_t pos);
 size_t rfind(const StringPiece& self, char c, size_t pos);
@@ -81,19 +64,15 @@ void AssertIteratorsInOrder(std::string::const_iterator begin,
 
 }  // namespace internal
 
-// BasicStringPiece ------------------------------------------------------------
+// StringPiece -----------------------------------------------------------------
 
 // Defines the types, methods, operators, and data members common to both
-// StringPiece and StringPiece16. Do not refer to this class directly, but
-// rather to BasicStringPiece, StringPiece, or StringPiece16.
-//
-// This is templatized by string class type rather than character type, so
-// BasicStringPiece<std::string> or BasicStringPiece<base::string16>.
-template <typename STRING_TYPE> class BasicStringPiece {
+// StringPiece and StringPiece16.
+class StringPiece {
  public:
   // Standard STL container boilerplate.
   typedef size_t size_type;
-  typedef typename STRING_TYPE::value_type value_type;
+  typedef char value_type;
   typedef const value_type* pointer;
   typedef const value_type& reference;
   typedef const value_type& const_reference;
@@ -101,22 +80,22 @@ template <typename STRING_TYPE> class BasicStringPiece {
   typedef const value_type* const_iterator;
   typedef std::reverse_iterator<const_iterator> const_reverse_iterator;
 
-  static const size_type npos;
+  static const size_type npos = static_cast<size_type>(-1);
 
  public:
   // We provide non-explicit singleton constructors so users can pass
   // in a "const char*" or a "string" wherever a "StringPiece" is
   // expected (likewise for char16, string16, StringPiece16).
-  BasicStringPiece() : ptr_(NULL), length_(0) {}
-  BasicStringPiece(const value_type* str)
+  StringPiece() : ptr_(NULL), length_(0) {}
+  StringPiece(const value_type* str)
       : ptr_(str),
-        length_((str == NULL) ? 0 : STRING_TYPE::traits_type::length(str)) {}
-  BasicStringPiece(const STRING_TYPE& str)
+        length_((str == NULL) ? 0 : std::string::traits_type::length(str)) {}
+  StringPiece(const std::string& str)
       : ptr_(str.data()), length_(str.size()) {}
-  BasicStringPiece(const value_type* offset, size_type len)
+  StringPiece(const value_type* offset, size_type len)
       : ptr_(offset), length_(len) {}
-  BasicStringPiece(const typename STRING_TYPE::const_iterator& begin,
-                   const typename STRING_TYPE::const_iterator& end) {
+  StringPiece(const typename std::string::const_iterator& begin,
+              const typename std::string::const_iterator& end) {
 #ifndef NDEBUG
     // This assertion is done out-of-line to avoid bringing in logging.h and
     // instantiating logging macros for every instantiation.
@@ -148,7 +127,7 @@ template <typename STRING_TYPE> class BasicStringPiece {
   }
   void set(const value_type* str) {
     ptr_ = str;
-    length_ = str ? STRING_TYPE::traits_type::length(str) : 0;
+    length_ = str ? std::string::traits_type::length(str) : 0;
   }
 
   value_type operator[](size_type i) const { return ptr_[i]; }
@@ -164,7 +143,7 @@ template <typename STRING_TYPE> class BasicStringPiece {
     length_ -= n;
   }
 
-  int compare(const BasicStringPiece<STRING_TYPE>& x) const {
+  int compare(const StringPiece& x) const {
     int r = wordmemcmp(
         ptr_, x.ptr_, (length_ < x.length_ ? length_ : x.length_));
     if (r == 0) {
@@ -174,9 +153,9 @@ template <typename STRING_TYPE> class BasicStringPiece {
     return r;
   }
 
-  STRING_TYPE as_string() const {
+  std::string as_string() const {
     // std::string doesn't like to take a NULL pointer even with a 0 size.
-    return empty() ? STRING_TYPE() : STRING_TYPE(data(), size());
+    return empty() ? std::string() : std::string(data(), size());
   }
 
   const_iterator begin() const { return ptr_; }
@@ -194,57 +173,54 @@ template <typename STRING_TYPE> class BasicStringPiece {
   static int wordmemcmp(const value_type* p,
                         const value_type* p2,
                         size_type N) {
-    return STRING_TYPE::traits_type::compare(p, p2, N);
+    return std::string::traits_type::compare(p, p2, N);
   }
 
   // Sets the value of the given string target type to be the current string.
   // This saves a temporary over doing |a = b.as_string()|
-  void CopyToString(STRING_TYPE* target) const {
-    internal::CopyToString(*this, target);
+  void CopyToString(std::string* target) const {
+    if (empty())
+      target->clear();
+    else
+      target->assign(data(), size());
   }
 
-  void AppendToString(STRING_TYPE* target) const {
-    internal::AppendToString(*this, target);
+  void AppendToString(std::string* target) const {
+    if (!empty())
+      target->append(data(), size());
   }
 
-  size_type copy(value_type* buf, size_type n, size_type pos = 0) const {
-    return internal::copy(*this, buf, n, pos);
-  }
+  // TODO(vtl): Consider inlining this.
+  size_type copy(value_type* buf, size_type n, size_type pos = 0) const;
 
   // Does "this" start with "x"
-  bool starts_with(const BasicStringPiece& x) const {
+  bool starts_with(const StringPiece& x) const {
     return ((this->length_ >= x.length_) &&
             (wordmemcmp(this->ptr_, x.ptr_, x.length_) == 0));
   }
 
   // Does "this" end with "x"
-  bool ends_with(const BasicStringPiece& x) const {
+  bool ends_with(const StringPiece& x) const {
     return ((this->length_ >= x.length_) &&
             (wordmemcmp(this->ptr_ + (this->length_-x.length_),
                         x.ptr_, x.length_) == 0));
   }
 
   // find: Search for a character or substring at a given offset.
-  size_type find(const BasicStringPiece<STRING_TYPE>& s,
-                 size_type pos = 0) const {
-    return internal::find(*this, s, pos);
-  }
-  size_type find(value_type c, size_type pos = 0) const {
-    return internal::find(*this, c, pos);
-  }
+  size_type find(const StringPiece& s, size_type pos = 0) const;
+  size_type find(value_type c, size_type pos = 0) const;
 
   // rfind: Reverse find.
-  size_type rfind(const BasicStringPiece& s,
-                  size_type pos = BasicStringPiece::npos) const {
+  size_type rfind(const StringPiece& s,
+                  size_type pos = StringPiece::npos) const {
     return internal::rfind(*this, s, pos);
   }
-  size_type rfind(value_type c, size_type pos = BasicStringPiece::npos) const {
+  size_type rfind(value_type c, size_type pos = StringPiece::npos) const {
     return internal::rfind(*this, c, pos);
   }
 
   // find_first_of: Find the first occurence of one of a set of characters.
-  size_type find_first_of(const BasicStringPiece& s,
-                          size_type pos = 0) const {
+  size_type find_first_of(const StringPiece& s, size_type pos = 0) const {
     return internal::find_first_of(*this, s, pos);
   }
   size_type find_first_of(value_type c, size_type pos = 0) const {
@@ -252,8 +228,7 @@ template <typename STRING_TYPE> class BasicStringPiece {
   }
 
   // find_first_not_of: Find the first occurence not of a set of characters.
-  size_type find_first_not_of(const BasicStringPiece& s,
-                              size_type pos = 0) const {
+  size_type find_first_not_of(const StringPiece& s, size_type pos = 0) const {
     return internal::find_first_not_of(*this, s, pos);
   }
   size_type find_first_not_of(value_type c, size_type pos = 0) const {
@@ -261,46 +236,34 @@ template <typename STRING_TYPE> class BasicStringPiece {
   }
 
   // find_last_of: Find the last occurence of one of a set of characters.
-  size_type find_last_of(const BasicStringPiece& s,
-                         size_type pos = BasicStringPiece::npos) const {
+  size_type find_last_of(const StringPiece& s,
+                         size_type pos = StringPiece::npos) const {
     return internal::find_last_of(*this, s, pos);
   }
   size_type find_last_of(value_type c,
-                         size_type pos = BasicStringPiece::npos) const {
+                         size_type pos = StringPiece::npos) const {
     return rfind(c, pos);
   }
 
   // find_last_not_of: Find the last occurence not of a set of characters.
-  size_type find_last_not_of(const BasicStringPiece& s,
-                             size_type pos = BasicStringPiece::npos) const {
+  size_type find_last_not_of(const StringPiece& s,
+                             size_type pos = StringPiece::npos) const {
     return internal::find_last_not_of(*this, s, pos);
   }
   size_type find_last_not_of(value_type c,
-                             size_type pos = BasicStringPiece::npos) const {
+                             size_type pos = StringPiece::npos) const {
     return internal::find_last_not_of(*this, c, pos);
   }
 
   // substr.
-  BasicStringPiece substr(size_type pos,
-                          size_type n = BasicStringPiece::npos) const {
+  StringPiece substr(size_type pos, size_type n = StringPiece::npos) const {
     return internal::substr(*this, pos, n);
   }
 
  protected:
   const value_type* ptr_;
-  size_type     length_;
+  size_type length_;
 };
-
-template <typename STRING_TYPE>
-const typename BasicStringPiece<STRING_TYPE>::size_type
-BasicStringPiece<STRING_TYPE>::npos =
-    typename BasicStringPiece<STRING_TYPE>::size_type(-1);
-
-// MSVC doesn't like complex extern templates and DLLs.
-//FIXME
-#if !defined(COMPILER_MSVC)
-extern template class BasicStringPiece<std::string>;
-#endif
 
 // StringPiece operators -------------------------------------------------------
 
