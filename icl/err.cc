@@ -7,9 +7,8 @@
 #include <assert.h>
 #include <stddef.h>
 
-//FIXME
-//#include "base/strings/string_util.h"
-//#include "tools/gn/filesystem_utils.h"
+#include <string>
+
 #include "icl/input_file.h"
 #include "icl/parse_tree.h"
 #include "icl/tokenizer.h"
@@ -189,9 +188,7 @@ void Err::AppendErrorMessageInternal(bool is_sub_err, std::string* out) const {
   if (input_file) {
     std::string line = GetNthLine(input_file->contents(),
                                   location_.line_number());
-//FIXME
-    if (true) {
-//    if (!base::ContainsOnlyChars(line, base::kWhitespaceASCII)) {
+    if (line.find_first_not_of(" \t\n\r\x0c") != std::string::npos) {
       out->append(line);
       out->push_back('\n');
       OutputHighlighedPosition(location_, ranges_, line.size(), out);
