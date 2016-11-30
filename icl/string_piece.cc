@@ -5,7 +5,6 @@
 
 #include "icl/string_piece.h"
 
-#include <assert.h>
 #include <limits.h>
 #include <string.h>
 
@@ -28,9 +27,8 @@ inline void BuildLookupTable(const StringPiece& characters_wanted,
                              bool* table) {
   const size_t length = characters_wanted.length();
   const char* const data = characters_wanted.data();
-  for (size_t i = 0; i < length; ++i) {
+  for (size_t i = 0; i < length; ++i)
     table[static_cast<unsigned char>(data[i])] = true;
-  }
 }
 
 }  // namespace
@@ -49,27 +47,26 @@ StringPiece::size_type StringPiece::copy(value_type* buf,
 StringPiece::size_type StringPiece::find(const StringPiece& s,
                                          size_type pos) const {
   if (pos > size())
-    return StringPiece::npos;
+    return npos;
 
   StringPiece::const_iterator result =
       std::search(begin() + pos, end(), s.begin(), s.end());
   const size_t xpos = static_cast<size_t>(result - begin());
-  return xpos + s.size() <= size() ? xpos : StringPiece::npos;
+  return xpos + s.size() <= size() ? xpos : npos;
 }
 
 StringPiece::size_type StringPiece::find(value_type c, size_type pos) const {
   if (pos >= size())
-    return StringPiece::npos;
+    return npos;
 
   StringPiece::const_iterator result = std::find(begin() + pos, end(), c);
-  return result != end() ?
-      static_cast<size_t>(result - begin()) : StringPiece::npos;
+  return result != end() ? static_cast<size_t>(result - begin()) : npos;
 }
 
 StringPiece::size_type StringPiece::rfind(const StringPiece& s,
                                           size_type pos) const {
   if (size() < s.size())
-    return StringPiece::npos;
+    return npos;
 
   if (s.empty())
     return std::min(size(), pos);
@@ -78,13 +75,12 @@ StringPiece::size_type StringPiece::rfind(const StringPiece& s,
       begin() + std::min(size() - s.size(), pos) + s.size();
   StringPiece::const_iterator result =
       std::find_end(begin(), last, s.begin(), s.end());
-  return result != last ?
-      static_cast<size_t>(result - begin()) : StringPiece::npos;
+  return result != last ? static_cast<size_t>(result - begin()) : npos;
 }
 
 StringPiece::size_type StringPiece::rfind(value_type c, size_type pos) const {
   if (size() == 0)
-    return StringPiece::npos;
+    return npos;
 
   for (size_t i = std::min(pos, size() - 1); ;
        --i) {
@@ -93,14 +89,14 @@ StringPiece::size_type StringPiece::rfind(value_type c, size_type pos) const {
     if (i == 0)
       break;
   }
-  return StringPiece::npos;
+  return npos;
 }
 
 // 8-bit version using lookup table.
 StringPiece::size_type StringPiece::find_first_of(const StringPiece& s,
                                                   size_type pos) const {
   if (size() == 0 || s.size() == 0)
-    return StringPiece::npos;
+    return npos;
 
   // Avoid the cost of BuildLookupTable() for a single-character search.
   if (s.size() == 1)
@@ -109,18 +105,17 @@ StringPiece::size_type StringPiece::find_first_of(const StringPiece& s,
   bool lookup[UCHAR_MAX + 1] = { false };
   BuildLookupTable(s, lookup);
   for (size_t i = pos; i < size(); ++i) {
-    if (lookup[static_cast<unsigned char>(data()[i])]) {
+    if (lookup[static_cast<unsigned char>(data()[i])])
       return i;
-    }
   }
-  return StringPiece::npos;
+  return npos;
 }
 
 // 8-bit version using lookup table.
 StringPiece::size_type StringPiece::find_first_not_of(const StringPiece& s,
                                                       size_type pos) const {
   if (size() == 0)
-    return StringPiece::npos;
+    return npos;
   if (s.size() == 0)
     return 0;
 
@@ -131,31 +126,29 @@ StringPiece::size_type StringPiece::find_first_not_of(const StringPiece& s,
   bool lookup[UCHAR_MAX + 1] = { false };
   BuildLookupTable(s, lookup);
   for (size_t i = pos; i < size(); ++i) {
-    if (!lookup[static_cast<unsigned char>(data()[i])]) {
+    if (!lookup[static_cast<unsigned char>(data()[i])])
       return i;
-    }
   }
-  return StringPiece::npos;
+  return npos;
 }
 
 StringPiece::size_type StringPiece::find_first_not_of(value_type c,
                                                       size_type pos) const {
   if (size() == 0)
-    return StringPiece::npos;
+    return npos;
 
   for (; pos < size(); ++pos) {
-    if (data()[pos] != c) {
+    if (data()[pos] != c)
       return pos;
-    }
   }
-  return StringPiece::npos;
+  return npos;
 }
 
 // 8-bit version using lookup table.
 StringPiece::size_type StringPiece::find_last_of(const StringPiece& s,
                                                  size_type pos) const {
   if (size() == 0 || s.size() == 0)
-    return StringPiece::npos;
+    return npos;
 
   // Avoid the cost of BuildLookupTable() for a single-character search.
   if (s.size() == 1)
@@ -169,14 +162,14 @@ StringPiece::size_type StringPiece::find_last_of(const StringPiece& s,
     if (i == 0)
       break;
   }
-  return StringPiece::npos;
+  return npos;
 }
 
 // 8-bit version using lookup table.
 StringPiece::size_type StringPiece::find_last_not_of(const StringPiece& s,
                                                      size_type pos) const {
   if (size() == 0)
-    return StringPiece::npos;
+    return npos;
 
   size_t i = std::min(pos, size() - 1);
   if (s.size() == 0)
@@ -194,13 +187,13 @@ StringPiece::size_type StringPiece::find_last_not_of(const StringPiece& s,
     if (i == 0)
       break;
   }
-  return StringPiece::npos;
+  return npos;
 }
 
 StringPiece::size_type StringPiece::find_last_not_of(value_type c,
                                                      size_type pos) const {
   if (size() == 0)
-    return StringPiece::npos;
+    return npos;
 
   for (size_t i = std::min(pos, size() - 1); ; --i) {
     if (data()[i] != c)
@@ -208,14 +201,7 @@ StringPiece::size_type StringPiece::find_last_not_of(value_type c,
     if (i == 0)
       break;
   }
-  return StringPiece::npos;
-}
-
-bool operator==(const StringPiece& x, const StringPiece& y) {
-  if (x.size() != y.size())
-    return false;
-
-  return StringPiece::wordmemcmp(x.data(), y.data(), x.size()) == 0;
+  return npos;
 }
 
 std::ostream& operator<<(std::ostream& o, const StringPiece& piece) {

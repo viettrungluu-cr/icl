@@ -173,9 +173,8 @@ class StringPiece {
   size_type find(value_type c, size_type pos = 0) const;
 
   // rfind: Reverse find.
-  size_type rfind(const StringPiece& s,
-                  size_type pos = StringPiece::npos) const;
-  size_type rfind(value_type c, size_type pos = StringPiece::npos) const;
+  size_type rfind(const StringPiece& s, size_type pos = npos) const;
+  size_type rfind(value_type c, size_type pos = npos) const;
 
   // find_first_of: Find the first occurence of one of a set of characters.
   size_type find_first_of(const StringPiece& s, size_type pos = 0) const;
@@ -188,21 +187,17 @@ class StringPiece {
   size_type find_first_not_of(value_type c, size_type pos = 0) const;
 
   // find_last_of: Find the last occurence of one of a set of characters.
-  size_type find_last_of(const StringPiece& s,
-                         size_type pos = StringPiece::npos) const;
-  size_type find_last_of(value_type c,
-                         size_type pos = StringPiece::npos) const {
+  size_type find_last_of(const StringPiece& s, size_type pos = npos) const;
+  size_type find_last_of(value_type c, size_type pos = npos) const {
     return rfind(c, pos);
   }
 
   // find_last_not_of: Find the last occurence not of a set of characters.
-  size_type find_last_not_of(const StringPiece& s,
-                             size_type pos = StringPiece::npos) const;
-  size_type find_last_not_of(value_type c,
-                             size_type pos = StringPiece::npos) const;
+  size_type find_last_not_of(const StringPiece& s, size_type pos = npos) const;
+  size_type find_last_not_of(value_type c, size_type pos = npos) const;
 
   // substr.
-  StringPiece substr(size_type pos, size_type n = StringPiece::npos) const {
+  StringPiece substr(size_type pos, size_type n = npos) const {
     if (pos > size())
       pos = size();
     if (n > size() - pos)
@@ -217,7 +212,11 @@ class StringPiece {
 
 // StringPiece operators -------------------------------------------------------
 
-bool operator==(const StringPiece& x, const StringPiece& y);
+inline bool operator==(const StringPiece& x, const StringPiece& y) {
+  if (x.size() != y.size())
+    return false;
+  return StringPiece::wordmemcmp(x.data(), y.data(), x.size()) == 0;
+}
 
 inline bool operator!=(const StringPiece& x, const StringPiece& y) {
   return !(x == y);
