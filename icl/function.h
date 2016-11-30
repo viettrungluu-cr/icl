@@ -105,12 +105,13 @@ bool EnsureNotProcessingImport(const ParseNode* node,
                                const Scope* scope,
                                Err* err);
 
+// TODO(vtl): Rename this to |FillItemBlockScope|.
 // Sets up the |block_scope| for executing a target (or something like it).
 // The |scope| is the containing scope. It should have been already set as the
 // parent for the |block_scope| when the |block_scope| was created.
 //
-// This will set up the target defaults and set the |target_name| variable in
-// the block scope to the current target name, which is assumed to be the first
+// This will set up the target defaults and set the |item_name| variable in the
+// block scope to the current target name, which is assumed to be the first
 // argument to the function.
 //
 // On success, returns true. On failure, sets the error and returns false.

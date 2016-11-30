@@ -51,9 +51,9 @@ class SourceFile {
     return value_.size() >= 2 && value_[0] == '/' && value_[1] == '/';
   }
 
-//FIXME this seems very slightly dubious (is "null" system-absolute?)
   // Returns true if this file starts with a single slash which indicates a
   // system-absolute path.
+  // TODO(vtl): This seems very slightly dubious (is "null" system-absolute?).
   bool is_system_absolute() const {
     return !is_source_absolute();
   }

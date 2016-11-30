@@ -67,11 +67,11 @@ TEST(ParseTree, BlockUnusedVars) {
   // Printing both values should be OK.
   //
   // The crazy template definition here is a way to execute a block without
-  // defining a target. Templates require that both the target_name and the
+  // defining a target. Templates require that both the item_name and the
   // invoker be used, which is what the assertion statement inside the template
   // does.
   TestParseInput input_all_used(
-      "template(\"foo\") { assert(target_name != 0 && invoker != 0) }\n"
+      "template(\"foo\") { assert(item_name != 0 && invoker != 0) }\n"
       "foo(\"a\") {\n"
       "  a = 12\n"
       "  b = 13\n"

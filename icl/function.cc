@@ -212,12 +212,12 @@ bool FillTargetBlockScope(const Scope* scope,
   if (!EnsureSingleStringArg(function, args, err))
     return false;
 
-  // Set the target name variable to the current target, and mark it used
-  // because we don't want to issue an error if the script ignores it.
-  const StringPiece target_name(variables::kTargetName);
-  block_scope->SetValue(target_name, Value(function, args[0].string_value()),
+  // Set the item name variable to the current item, and mark it used because we
+  // don't want to issue an error if the script ignores it.
+  const StringPiece item_name(variables::kItemName);
+  block_scope->SetValue(item_name, Value(function, args[0].string_value()),
                         function);
-  block_scope->MarkUsed(target_name);
+  block_scope->MarkUsed(item_name);
   return true;
 }
 

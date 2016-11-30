@@ -18,7 +18,7 @@ TEST(Template, Basic) {
   TestWithScope setup;
   TestParseInput input(
       "template(\"foo\") {\n"
-      "  print(target_name)\n"
+      "  print(item_name)\n"
       "  print(invoker.bar)\n"
       "}\n"
       "foo(\"lala\") {\n"
@@ -34,7 +34,7 @@ TEST(Template, Basic) {
   EXPECT_EQ("lala\n42\n", setup.print_output());
 }
 
-TEST(Template, UnusedTargetNameShouldThrowError) {
+TEST(Template, UnusedItemNameShouldThrowError) {
   TestWithScope setup;
   TestParseInput input(
       "template(\"foo\") {\n"
@@ -54,7 +54,7 @@ TEST(Template, UnusedInvokerShouldThrowError) {
   TestWithScope setup;
   TestParseInput input(
       "template(\"foo\") {\n"
-      "  print(target_name)\n"
+      "  print(item_name)\n"
       "}\n"
       "foo(\"lala\") {\n"
       "  bar = 42\n"
@@ -70,7 +70,7 @@ TEST(Template, UnusedVarInInvokerShouldThrowError) {
   TestWithScope setup;
   TestParseInput input(
       "template(\"foo\") {\n"
-      "  print(target_name)\n"
+      "  print(item_name)\n"
       "  print(invoker.bar)\n"
       "}\n"
       "foo(\"lala\") {\n"

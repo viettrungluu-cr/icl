@@ -179,7 +179,7 @@ test("scope_test") {
 
 test("source_dir_test") {
   sources = [
-    "source_dir_unittest.cc",  #FIXME this is all commented out!
+    "source_dir_unittest.cc",
   ]
 
   deps = [

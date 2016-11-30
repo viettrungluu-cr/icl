@@ -78,9 +78,8 @@ Value Template::Invoke(Scope* scope,
   invoker_value->SetScopeValue(std::move(invocation_scope));
   template_scope.set_source_dir(scope->GetSourceDir());
 
-  const StringPiece target_name(variables::kTargetName);
-  template_scope.SetValue(target_name,
-                          Value(invocation, args[0].string_value()),
+  const StringPiece item_name(variables::kItemName);
+  template_scope.SetValue(item_name, Value(invocation, args[0].string_value()),
                           invocation);
 
   // Actually run the template code.

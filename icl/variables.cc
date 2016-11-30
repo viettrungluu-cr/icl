@@ -10,7 +10,7 @@ namespace variables {
 // Built-in variables ----------------------------------------------------------
 
 const char kInvoker[] = "invoker";
-const char kTargetName[] = "target_name";
+const char kItemName[] = "item_name";
 
 }  // namespace variables
 }  // namespace icl

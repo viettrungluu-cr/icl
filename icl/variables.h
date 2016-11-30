@@ -11,8 +11,7 @@ namespace variables {
 // Builtin vars ----------------------------------------------------------------
 
 extern const char kInvoker[];
-//FIXME Rename to "item name"?
-extern const char kTargetName[];
+extern const char kItemName[];
 
 }  // namespace variables
 }  // namespace icl
