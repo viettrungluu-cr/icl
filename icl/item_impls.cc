@@ -70,5 +70,4 @@ BagItem::BagItem(const char* type, Delegate* delegate, const std::string& name)
 
 BagItem::~BagItem() = default;
 
-
 }  // namespace icl
