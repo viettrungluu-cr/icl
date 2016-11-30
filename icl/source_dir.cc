@@ -41,12 +41,13 @@ SourceDir::SourceDir(std::string&& s)
 
 SourceDir::~SourceDir() = default;
 
-//FIXME
-/*
 SourceFile SourceDir::ResolveRelativeFile(
     const Value& p,
     Err* err,
     const StringPiece& source_root) const {
+  // TODO(vtl): What are we supposed to do if we're null/empty?
+  assert(!is_null());
+
   SourceFile ret;
   if (!p.VerifyTypeIs(Value::STRING, err))
     return ret;
@@ -82,9 +83,7 @@ SourceFile SourceDir::ResolveRelativeFile(
   }
 
   if (!source_root.empty()) {
-    std::string absolute =
-        FilePathToUTF8(Resolve(UTF8ToFilePath(source_root)).AppendASCII(
-            str).value());
+    std::string absolute = Resolve(source_root) + str;
     NormalizePath(&absolute);
     if (!MakeAbsolutePathRelativeIfPossible(source_root, absolute,
                                             &ret.value_)) {
@@ -95,7 +94,7 @@ SourceFile SourceDir::ResolveRelativeFile(
 
   // With no source_root_, there's nothing we can do about
   // e.g. p=../../../path/to/file and value_=//source and we'll
-  // errornously return //file.
+  // erroneously return //file.
   ret.value_.reserve(value_.size() + str.size());
   ret.value_.assign(value_);
   ret.value_.append(str.data(), str.size());
@@ -104,6 +103,8 @@ SourceFile SourceDir::ResolveRelativeFile(
   return ret;
 }
 
+//FIXME
+/*
 SourceDir SourceDir::ResolveRelativeDir(const Value& p,
                                         Err* err,
                                         const StringPiece& source_root) const {
@@ -164,28 +165,21 @@ SourceDir SourceDir::ResolveRelativeDir(const Value& blame_but_dont_use,
 
   return ret;
 }
-
-base::FilePath SourceDir::Resolve(const base::FilePath& source_root) const {
-  if (is_null())
-    return base::FilePath();
-
-  std::string converted;
-  if (is_system_absolute()) {
-    if (value_.size() > 2 && value_[2] == ':') {
-      // Windows path, strip the leading slash.
-      converted.assign(&value_[1], value_.size() - 1);
-    } else {
-      converted.assign(value_);
-    }
-    return base::FilePath(UTF8ToFilePath(converted));
-  }
-
-  // String the double-leading slash for source-relative paths.
-  converted.assign(&value_[2], value_.size() - 2);
-  return source_root.Append(UTF8ToFilePath(converted))
-      .NormalizePathSeparatorsTo('/');
-}
 */
+
+std::string SourceDir::Resolve(const StringPiece& source_root) const {
+  assert(!source_root.empty());
+
+  if (is_null())
+    return std::string();
+
+  if (is_system_absolute())
+    return value_;
+
+  return (source_root.back() == '/')
+      ? source_root.as_string() + value_.substr(2)
+      : source_root.as_string() + '/' + value_.substr(2);
+}
 
 void SourceDir::SwapValue(std::string* v) {
   value_.swap(*v);
