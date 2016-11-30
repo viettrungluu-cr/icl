@@ -12,7 +12,6 @@
 #include <utility>
 
 #include "icl/delegate.h"
-#include "icl/function_impls.h"  //FIXME remove this dependency
 #include "icl/err.h"
 #include "icl/parse_tree.h"
 #include "icl/scope.h"
@@ -21,9 +20,6 @@
 #include "icl/value.h"
 #include "icl/variables.h"
 /*
-#include "tools/gn/config.h"
-#include "tools/gn/config_values_generator.h"
-#include "tools/gn/input_file.h"
 #include "tools/gn/parse_node_value_adapter.h"
 #include "tools/gn/value_extractors.h"
 */
@@ -44,7 +40,7 @@ bool VerifyNoBlockForFunctionCall(const FunctionCallNode* function,
   *err = Err(block, "Unexpected '{'.",
       "This function call doesn't take a {} block following it, and you\n"
       "can't have a {} block that's not connected to something like an if\n"
-      "statement or a target declaration.");
+      "statement or an item declaration.");
   err->AppendRange(function->function().range());
   return false;
 }
@@ -183,11 +179,7 @@ bool EnsureNotProcessingImport(const ParseNode* node,
                                const Scope* scope,
                                Err* err) {
   if (scope->IsProcessingImport()) {
-//FIXME fix message
-    *err = Err(node, "Not valid from an import.",
-        "Imports are for defining defaults, variables, and rules. The\n"
-        "appropriate place for this kind of thing is really in a normal\n"
-        "BUILD file.");
+    *err = Err(node, "Not valid from an import.");
     return false;
   }
   return true;

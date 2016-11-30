@@ -7,6 +7,7 @@
 #include <assert.h>
 
 #include <memory>
+#include <string>
 #include <utility>
 
 #include "icl/item.h"
@@ -38,16 +39,18 @@ class BagImpl : public Function {
     if (err->has_error())
       return Value();
 
-//FIXME disallow duplicate names
     std::unique_ptr<BagItem> bag_item(new BagItem(type_, scope->delegate(),
                                                   args[0].string_value()));
     block_scope.GetCurrentScopeValues(&bag_item->key_value_map_);
     block_scope.MarkAllUsed();
 
-    auto item_collector = scope->GetItemCollector();
-//FIXME what if item_collector is null?
-    assert(item_collector);
-    item_collector->push_back(std::move(bag_item));
+    auto collector = scope->GetItemCollector();
+    if (!collector) {
+      *err = Err(function, std::string("Can't define an item of type ") +
+                               type_ + " in this context.");
+      return Value();
+    }
+    collector->push_back(std::move(bag_item));
 
     return Value();
   }
