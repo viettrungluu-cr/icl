@@ -78,8 +78,6 @@ TEST(SourceDir, ResolveRelativeFile) {
   EXPECT_FALSE(err.has_error());
 }
 
-//FIXME
-/*
 TEST(SourceDir, ResolveRelativeDir) {
   Err err;
   SourceDir base("//base/");
@@ -125,7 +123,6 @@ TEST(SourceDir, ResolveRelativeDir) {
       SourceDir("/source/"));
   EXPECT_FALSE(err.has_error());
 }
-*/
 
 }  // namespace
 }  // namespace icl

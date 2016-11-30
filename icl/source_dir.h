@@ -12,8 +12,6 @@
 #include <string>
 
 #include "icl/string_piece.h"
-//FIXME
-//#include "base/files/file_path.h"
 
 namespace icl {
 
@@ -49,8 +47,6 @@ class SourceDir {
       const Value& p,
       Err* err,
       const StringPiece& source_root = StringPiece()) const;
-//FIXME
-/*
   SourceDir ResolveRelativeDir(
       const Value& p,
       Err* err,
@@ -64,7 +60,6 @@ class SourceDir {
       const StringPiece& p,
       Err* err,
       const StringPiece& source_root = StringPiece()) const;
-*/
 
   // Resolves this source file relative to some given source root. Returns
   // an empty file path on error.

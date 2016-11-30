@@ -103,8 +103,6 @@ SourceFile SourceDir::ResolveRelativeFile(
   return ret;
 }
 
-//FIXME
-/*
 SourceDir SourceDir::ResolveRelativeDir(const Value& p,
                                         Err* err,
                                         const StringPiece& source_root) const {
@@ -117,6 +115,9 @@ SourceDir SourceDir::ResolveRelativeDir(const Value& blame_but_dont_use,
                                         const StringPiece& str,
                                         Err* err,
                                         const StringPiece& source_root) const {
+  // TODO(vtl): What are we supposed to do if we're null/empty?
+  assert(!is_null());
+
   SourceDir ret;
 
   if (str.empty()) {
@@ -143,9 +144,7 @@ SourceDir SourceDir::ResolveRelativeDir(const Value& blame_but_dont_use,
   }
 
   if (!source_root.empty()) {
-    std::string absolute =
-        FilePathToUTF8(Resolve(UTF8ToFilePath(source_root)).AppendASCII(
-            str.as_string()).value());
+    std::string absolute = Resolve(source_root) + str.as_string();
     NormalizePath(&absolute);
     if (!MakeAbsolutePathRelativeIfPossible(source_root, absolute,
                                             &ret.value_)) {
@@ -165,7 +164,6 @@ SourceDir SourceDir::ResolveRelativeDir(const Value& blame_but_dont_use,
 
   return ret;
 }
-*/
 
 std::string SourceDir::Resolve(const StringPiece& source_root) const {
   assert(!source_root.empty());
