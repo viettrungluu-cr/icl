@@ -9,13 +9,10 @@
 #include <string>
 #include <vector>
 
-#include "icl/input_file.h"
-
 namespace icl {
 
 class Delegate;
 class Item;
-class Scope;
 class SourceFile;
 
 class Runner {
@@ -45,10 +42,6 @@ class Runner {
     bool is_success_ = false;
     std::string error_message_;
     ItemVector items_;
-
-//FIXME do we really need the scope? probably not? how about the file?
-    const InputFile* file_ = nullptr;
-    std::unique_ptr<Scope> scope_;
   };
 
   explicit Runner(Delegate* delegate);

@@ -35,28 +35,27 @@ Runner::RunResult Runner::Run(const SourceFile& name) {
   RunResult result;
 
   LocationRange no_origin;
-  if (!delegate_->GetInputFile(no_origin, name, &result.file_)) {
-    assert(result.file_);
-    assert(result.file_->err().has_error());
-    result.error_message_ = result.file_->err().GetErrorMessage();
+  const InputFile* file = nullptr;
+  if (!delegate_->GetInputFile(no_origin, name, &file)) {
+    assert(file);
+    assert(file->err().has_error());
+    result.error_message_ = file->err().GetErrorMessage();
     return result;
   }
-  assert(result.file_);
-  assert(!result.file_->err().has_error());
+  assert(file);
+  assert(!file->err().has_error());
 
-  // TODO(C++14): Use std::make_unique.
-  auto scope = std::unique_ptr<Scope>(new Scope(delegate_));
-  scope->set_item_collector(&result.items_);
+  Scope scope(delegate_);
+  scope.set_item_collector(&result.items_);
 
   Err err;
-  result.file_->root_parse_node()->Execute(scope.get(), &err);
+  file->root_parse_node()->Execute(&scope, &err);
   if (err.has_error()) {
     result.error_message_ = err.GetErrorMessage();
     return result;
   }
 
   result.is_success_ = true;
-  result.scope_ = std::move(scope);
   return result;
 }
 
