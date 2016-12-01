@@ -24,6 +24,7 @@
 
 #include <assert.h>
 #include <stddef.h>
+#include <string.h>
 
 #include <iosfwd>
 #include <string>
@@ -152,8 +153,13 @@ class StringPiece {
       target->append(data(), size());
   }
 
-  // TODO(vtl): Consider inlining this.
-  size_type copy(value_type* buf, size_type n, size_type pos = 0) const;
+  size_type copy(value_type* buf, size_type n, size_type pos = 0) const {
+    // |pos| must be at most |size()|.
+    if (n > size() - pos)
+      n = size() - pos;
+    memcpy(buf, data() + pos, n);
+    return n;
+  }
 
   // Does "this" start with "x"
   bool starts_with(const StringPiece& x) const {

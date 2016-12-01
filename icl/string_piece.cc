@@ -6,7 +6,6 @@
 #include "icl/string_piece.h"
 
 #include <limits.h>
-#include <string.h>
 
 #include <algorithm>
 #include <ostream>
@@ -35,14 +34,6 @@ inline void BuildLookupTable(const StringPiece& characters_wanted,
 
 // static
 const StringPiece::size_type StringPiece::npos;
-
-StringPiece::size_type StringPiece::copy(value_type* buf,
-                                         size_type n,
-                                         size_type pos) const {
-  size_t ret = std::min(size() - pos, n);
-  memcpy(buf, data() + pos, ret * sizeof(char));
-  return ret;
-}
 
 StringPiece::size_type StringPiece::find(const StringPiece& s,
                                          size_type pos) const {
