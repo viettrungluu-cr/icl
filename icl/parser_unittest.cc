@@ -682,13 +682,6 @@ TEST(Parser, HangingIf) {
   DoParserErrorTest("if", 1, 1);
 }
 
-//FIXME this is now an execute error
-/*
-TEST(Parser, NegatingList) {
-  DoParserErrorTest("executable(\"wee\") { sources =- [ \"foo.cc\" ] }", 1, 30);
-}
-*/
-
 TEST(Parser, ConditionNoBracesIf) {
   DoParserErrorTest(
       "if (true)\n"
