@@ -47,7 +47,8 @@ ParserHelper Parser::expressions_[] = {
     {&Parser::Literal, nullptr, -1},                          // FALSE_TOKEN
     {nullptr, &Parser::Assignment, PRECEDENCE_ASSIGNMENT},    // EQUAL
     {nullptr, &Parser::BinaryOperator, PRECEDENCE_SUM},       // PLUS
-    {nullptr, &Parser::BinaryOperator, PRECEDENCE_SUM},       // MINUS
+//FIXME why not both?
+    {&Parser::Neg, &Parser::BinaryOperator, PRECEDENCE_SUM},  // MINUS
     {nullptr, &Parser::Assignment, PRECEDENCE_ASSIGNMENT},    // PLUS_EQUALS
     {nullptr, &Parser::Assignment, PRECEDENCE_ASSIGNMENT},    // MINUS_EQUALS
     {nullptr, &Parser::BinaryOperator, PRECEDENCE_EQUALITY},  // EQUAL_EQUAL
@@ -97,8 +98,7 @@ Parser::Parser(const std::vector<Token>& tokens, Err* err)
   }
 }
 
-Parser::~Parser() {
-}
+Parser::~Parser() = default;
 
 // static
 std::unique_ptr<ParseNode> Parser::Parse(const std::vector<Token>& tokens,
@@ -281,6 +281,21 @@ std::unique_ptr<ParseNode> Parser::Group(const Token& token) {
 }
 
 std::unique_ptr<ParseNode> Parser::Not(const Token& token) {
+  std::unique_ptr<ParseNode> expr = ParseExpression(PRECEDENCE_PREFIX + 1);
+  if (has_error())
+    return std::unique_ptr<ParseNode>();
+  if (!expr) {
+    if (!has_error())
+      *err_ = Err(token, "Expected right-hand side for '!'.");
+    return std::unique_ptr<ParseNode>();
+  }
+  std::unique_ptr<UnaryOpNode> unary_op(new UnaryOpNode);
+  unary_op->set_op(token);
+  unary_op->set_operand(std::move(expr));
+  return std::move(unary_op);
+}
+
+std::unique_ptr<ParseNode> Parser::Neg(const Token& token) {
   std::unique_ptr<ParseNode> expr = ParseExpression(PRECEDENCE_PREFIX + 1);
   if (has_error())
     return std::unique_ptr<ParseNode>();

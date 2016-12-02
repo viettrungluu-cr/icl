@@ -392,7 +392,7 @@ Value ExecuteMinus(const BinaryOpNode* op_node,
                    const Value& right,
                    Err* err) {
   // Left-hand-side int. The only thing to do is subtract another int.
-  if (left.type() == Value::INTEGER && right.type() != Value::INTEGER) {
+  if (left.type() == Value::INTEGER && right.type() == Value::INTEGER) {
     // Int - int -> subtraction.
     return Value(op_node, left.int_value() - right.int_value());
   }
@@ -653,15 +653,24 @@ Value ExecuteUnaryOperator(Scope* scope,
                            const UnaryOpNode* op_node,
                            const Value& expr,
                            Err* err) {
-  assert(op_node->op().type() == Token::BANG);
+  if (op_node->op().type() == Token::MINUS) {
+    if (expr.type() != Value::INTEGER) {
+      *err = Err(op_node, "Operand of unary - operator is not an integer.",
+          "Type is \"" + std::string(Value::DescribeType(expr.type())) +
+          "\" instead.");
+      return Value();
+    }
+    // TODO(vtl): Maybe we should check overflow? (Elsewhere too.)
+    return Value(op_node, -expr.int_value());
+  }
 
+  assert(op_node->op().type() == Token::BANG);
   if (expr.type() != Value::BOOLEAN) {
     *err = Err(op_node, "Operand of ! operator is not a boolean.",
         "Type is \"" + std::string(Value::DescribeType(expr.type())) +
         "\" instead.");
     return Value();
   }
-  // TODO(scottmg): Why no unary minus?
   return Value(op_node, !expr.boolean_value());
 }
 

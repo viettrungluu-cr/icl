@@ -215,8 +215,7 @@ Token::Type Tokenizer::ClassifyCurrent() const {
   if (next_char == '"')
     return Token::STRING;
 
-  // Note: '-' handled specially below.
-  if (next_char != '-' && CouldBeOperator(next_char))
+  if (CouldBeOperator(next_char))
     return Token::UNCLASSIFIED_OPERATOR;
 
   if (IsIdentifierFirstChar(next_char))
@@ -242,18 +241,6 @@ Token::Type Tokenizer::ClassifyCurrent() const {
 
   if (next_char == '#')
     return Token::UNCLASSIFIED_COMMENT;
-
-  // For the case of '-' differentiate between a negative number and anything
-  // else.
-  if (next_char == '-') {
-    if (!CanIncrement())
-      return Token::UNCLASSIFIED_OPERATOR;  // Just the minus before end of
-                                            // file.
-    char following_char = input_[cur_ + 1];
-    if (IsAsciiDigit(following_char))
-      return Token::INTEGER;
-    return Token::UNCLASSIFIED_OPERATOR;
-  }
 
   return Token::INVALID;
 }

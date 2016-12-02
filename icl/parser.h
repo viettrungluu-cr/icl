@@ -64,6 +64,7 @@ class Parser {
   std::unique_ptr<ParseNode> Name(const Token& token);
   std::unique_ptr<ParseNode> Group(const Token& token);
   std::unique_ptr<ParseNode> Not(const Token& token);
+  std::unique_ptr<ParseNode> Neg(const Token& token);  // Unary minus.
   std::unique_ptr<ParseNode> List(const Token& token);
   std::unique_ptr<ParseNode> BlockComment(const Token& token);
 

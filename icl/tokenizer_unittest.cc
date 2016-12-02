@@ -60,27 +60,25 @@ TEST(Tokenizer, Identifier) {
   EXPECT_TRUE(CheckTokenizer("  foo ", one_ident));
 }
 
-TEST(Tokenizer, Integer) {
+TEST(Tokenizer, Integers) {
   TokenExpectation integers[] = {
     { Token::INTEGER, "123" },
-    { Token::INTEGER, "-123" }
-  };
-  EXPECT_TRUE(CheckTokenizer("  123 -123 ", integers));
-}
-
-TEST(Tokenizer, IntegerNoSpace) {
-  TokenExpectation integers[] = {
+    { Token::MINUS, "-" },
     { Token::INTEGER, "123" },
-    { Token::INTEGER, "-123" }
+    { Token::MINUS, "+" },
+    { Token::INTEGER, "123" },
+    { Token::MINUS, "-" },
+    { Token::MINUS, "-" },
+    { Token::INTEGER, "123" },
   };
-  EXPECT_TRUE(CheckTokenizer("  123-123 ", integers));
+  EXPECT_TRUE(CheckTokenizer("  123-123+123--123 ", integers));
 }
 
 TEST(Tokenizer, String) {
   TokenExpectation strings[] = {
     { Token::STRING, "\"foo\"" },
     { Token::STRING, "\"bar\\\"baz\"" },
-    { Token::STRING, "\"asdf\\\\\"" }
+    { Token::STRING, "\"asdf\\\\\"" },
   };
   EXPECT_TRUE(CheckTokenizer("  \"foo\" \"bar\\\"baz\" \"asdf\\\\\" ",
               strings));

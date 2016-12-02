@@ -693,14 +693,13 @@ Value LiteralNode::Execute(Scope* scope, Err* err) const {
       return Value(this, false);
     case Token::INTEGER: {
       StringPiece s = value_.value();
-      if ((s.starts_with("0") && s.size() > 1) || s.starts_with("-0")) {
-        if (s == "-0")
-          *err = MakeErrorDescribing("Negative zero doesn't make sense");
-        else
-          *err = MakeErrorDescribing("Leading zeros not allowed");
+      if (s.starts_with("0") && s.size() > 1) {
+        *err = MakeErrorDescribing("Leading zeros not allowed");
         return Value();
       }
       int64_t result_int;
+      // Note: This means that the literal for INT64_MIN (-2^63) isn't valid,
+      // just like in C/C++ (sadness).
       // TODO(vtl): Should have |StringPiece| versions of the conversion
       // functions.
       if (!StringToNumberWithError<int64_t>(s.as_string(), &result_int)) {

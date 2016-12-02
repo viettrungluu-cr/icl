@@ -228,7 +228,6 @@ TEST(ParseTree, Integers) {
       "10",
       "-54321",
       "9223372036854775807",   // INT64_MAX
-      "-9223372036854775808",  // INT64_MIN
   };
   for (auto* s : kGood) {
     TestParseInput input(std::string("x = ") + s);
@@ -241,10 +240,10 @@ TEST(ParseTree, Integers) {
   }
 
   static const char* const kBad[] = {
-      "-0",
       "010",
       "-010",
       "9223372036854775808",   // INT64_MAX + 1
+      "-9223372036854775808",  // sadness: INT64_MIN
       "-9223372036854775809",  // INT64_MIN - 1
   };
   for (auto* s : kBad) {
@@ -255,6 +254,46 @@ TEST(ParseTree, Integers) {
     Err err;
     input.parsed()->Execute(setup.scope(), &err);
     EXPECT_TRUE(err.has_error());
+  }
+}
+
+TEST(ParseTree, Arithmetic) {
+  static const struct {
+    const char* expr;
+    int64_t result;
+  } kCases[] = {
+      {"x = 0", 0}, {"x = -0", 0}, {"x = - 0", 0},
+      {"x = 123", 123}, {"x = -123", -123}, {"x = - 123", -123},
+      {"x = 1+2", 3}, {"x = 1+ 2", 3}, {"x = 1 +2", 3}, {"x = 1 +2", 3},
+          {"x = 1 + 2", 3},
+      {"x = 1-2", -1}, {"x = 1- 2", -1}, {"x = 1 -2", -1}, {"x = 1 -2", -1},
+          {"x = 1 - 2", -1},
+      {"x = -1-2", -3}, {"x = -1- 2", -3}, {"x = -1 -2", -3}, {"x = -1 -2", -3},
+          {"x = -1 - 2", -3},
+      {"x = - 1-2", -3}, {"x = - 1- 2", -3}, {"x = - 1 -2", -3},
+          {"x = - 1 -2", -3}, {"x = - 1 - 2", -3},
+      {"x = 1--2", 3}, {"x = 1-- 2", 3}, {"x = 1- -2", 3}, {"x = 1- - 2", 3},
+          {"x = 1 --2", 3}, {"x = 1 -- 2", 3}, {"x = 1 - -2", 3},
+          {"x = 1 - - 2", 3},
+      {"x = 123\nx += 4", 127},
+      {"x = 123\nx += -4", 119},
+      {"x = 123\nx -= 4", 119},
+      {"x = 123\nx -= -4", 127},
+  };
+
+  for (const auto& cs : kCases) {
+    SCOPED_TRACE(cs.expr);
+
+    TestParseInput input(cs.expr);
+    EXPECT_FALSE(input.has_error());
+    TestWithScope setup;
+    Err err;
+    input.parsed()->Execute(setup.scope(), &err);
+    EXPECT_FALSE(err.has_error()) << err.GetErrorMessage();
+    const Value* value = setup.scope()->GetValue("x");
+    ASSERT_TRUE(value);
+    ASSERT_EQ(Value::INTEGER, value->type());
+    EXPECT_EQ(cs.result, value->int_value());
   }
 }
 
