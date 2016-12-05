@@ -65,7 +65,7 @@ TEST(Tokenizer, Integers) {
     { Token::INTEGER, "123" },
     { Token::MINUS, "-" },
     { Token::INTEGER, "123" },
-    { Token::MINUS, "+" },
+    { Token::PLUS, "+" },
     { Token::INTEGER, "123" },
     { Token::MINUS, "-" },
     { Token::MINUS, "-" },
