@@ -13,6 +13,7 @@ class InputFile;
 class LocationRange;
 class SourceFile;
 
+//FIXME make this take an std::string (or StringPiece?) instead of a SourceFile
 using ReadFileFunction = std::function<bool(const SourceFile&, std::string*)>;
 
 bool LoadFile(ReadFileFunction read_file_function,

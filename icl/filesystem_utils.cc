@@ -7,9 +7,6 @@
 #include <assert.h>
 
 //FIXME
-//#include <algorithm>
-
-//FIXME
 //#include "base/files/file_util.h"
 //#include "base/logging.h"
 //#include "base/strings/string_util.h"

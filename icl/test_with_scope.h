@@ -39,12 +39,13 @@ class TestWithScope : public Delegate {
   std::string& print_output() { return print_output_; }
 
   // |Delegate| methods:
+  const FunctionMap& GetFunctions() const override;
+  ImportManager* GetImportManager() override;
   bool GetInputFile(const LocationRange& origin,
                     const SourceFile& name,
                     const InputFile** file) override;
+  StringPiece GetSourceRoot() const override;
   void Print(const std::string& s) override;
-  const FunctionMap& GetFunctions() const override;
-  ImportManager* GetImportManager() override;
 
  private:
   const FunctionMap functions_;

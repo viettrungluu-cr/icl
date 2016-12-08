@@ -46,6 +46,7 @@ Runner::RunResult Runner::Run(const SourceFile& name) {
   assert(!file->err().has_error());
 
   Scope scope(delegate_);
+  scope.set_source_dir(name.GetDir());
   scope.set_item_collector(&result.items_);
 
   Err err;

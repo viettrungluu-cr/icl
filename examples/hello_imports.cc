@@ -27,19 +27,22 @@ class DelegateImpl : public icl::Delegate {
   DelegateImpl& operator=(const DelegateImpl&) = delete;
 
   // |icl::Delegate| methods:
-  bool GetInputFile(const icl::LocationRange& origin,
-                    const icl::SourceFile& name,
-                    const icl::InputFile** file) override {
-    return input_file_manager_.GetFile(origin, name, file);
-  }
-  void Print(const std::string& s) override {
-    std::cout << s;
-  }
   const icl::FunctionMap& GetFunctions() const override {
     return functions_;
   }
   icl::ImportManager* GetImportManager() override {
     return &import_manager_;
+  }
+  bool GetInputFile(const icl::LocationRange& origin,
+                    const icl::SourceFile& name,
+                    const icl::InputFile** file) override {
+    return input_file_manager_.GetFile(origin, name, file);
+  }
+  icl::StringPiece GetSourceRoot() const override {
+    return "/";
+  }
+  void Print(const std::string& s) override {
+    std::cout << s;
   }
 
  private:

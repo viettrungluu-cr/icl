@@ -23,8 +23,13 @@ TestWithScope::TestWithScope()
 
 TestWithScope::~TestWithScope() = default;
 
-void TestWithScope::Print(const std::string& s) {
-  print_output_.append(s);
+const FunctionMap& TestWithScope::GetFunctions() const {
+  return functions_;
+}
+
+ImportManager* TestWithScope::GetImportManager() {
+  assert(false);  // Not implemented! Import statements not supported.
+  return nullptr;
 }
 
 bool TestWithScope::GetInputFile(const LocationRange& origin,
@@ -35,13 +40,12 @@ bool TestWithScope::GetInputFile(const LocationRange& origin,
   return false;
 }
 
-const FunctionMap& TestWithScope::GetFunctions() const {
-  return functions_;
+void TestWithScope::Print(const std::string& s) {
+  print_output_.append(s);
 }
 
-ImportManager* TestWithScope::GetImportManager() {
-  assert(false);  // Not implemented! Import statements not supported.
-  return nullptr;
+StringPiece TestWithScope::GetSourceRoot() const {
+  return "/";
 }
 
 TestParseInput::TestParseInput(std::string&& input)

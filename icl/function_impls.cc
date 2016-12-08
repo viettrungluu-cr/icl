@@ -181,12 +181,10 @@ class ImportImpl : public Function {
     if (!EnsureSingleStringArg(function, args, err))
       return Value();
 
-//FIXME
-    SourceFile import_file((std::string(args[0].string_value())));
-//    const SourceDir& input_dir = scope->GetSourceDir();
-//    SourceFile import_file =
-//        input_dir.ResolveRelativeFile(args[0], err,
-//            scope->settings()->build_settings()->root_path_utf8());
+    const SourceDir& input_dir = scope->GetSourceDir();
+    SourceFile import_file =
+        input_dir.ResolveRelativeFile(args[0], err,
+                                      scope->delegate()->GetSourceRoot());
     if (!err->has_error()) {
       scope->delegate()->GetImportManager()->DoImport(import_file, function,
                                                       scope, err);

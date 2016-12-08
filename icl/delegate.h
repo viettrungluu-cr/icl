@@ -8,6 +8,7 @@
 #include <string>
 
 #include "icl/function.h"
+#include "icl/string_piece.h"
 
 namespace icl {
 
@@ -27,6 +28,14 @@ class SourceFile;
 // delegate must be thread-safe.
 class Delegate {
  public:
+//FIXME needs a comment
+  virtual const FunctionMap& GetFunctions() const = 0;
+
+  // Gets the import manager (typically just a member). Must return non-null if
+  // import statements are supported.
+  // TODO(vtl): Should this be const?
+  virtual ImportManager* GetImportManager() = 0;
+
   // Gets (reading/loading/parsing) the input file specified by |name| to
   // |*file| (|**file| will live as long as this object). Returns true on
   // success and false on failure, in which case |*file| will still be set (but
@@ -34,18 +43,16 @@ class Delegate {
   // statement) and is used for error reporting.
   //
   // Note: Typically this is implemented by having an |InputFileManager| member.
+  // TODO(vtl): Should this be const?
   virtual bool GetInputFile(const LocationRange& origin,
                             const SourceFile& name,
                             const InputFile** file) = 0;
 
+//FIXME needs a comment
+  virtual StringPiece GetSourceRoot() const = 0;
+
   // TODO(vtl): Should this take a |StringPiece| instead?
   virtual void Print(const std::string& s) = 0;
-
-  virtual const FunctionMap& GetFunctions() const = 0;
-
-  // Gets the import manager (typically just a member). Must return non-null if
-  // import statements are supported.
-  virtual ImportManager* GetImportManager() = 0;
 
  protected:
   Delegate() = default;
